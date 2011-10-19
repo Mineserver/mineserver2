@@ -1,0 +1,25 @@
+Mineserver 2.0
+==============
+
+Overview
+--------
+
+This is an effort to rewrite the core of Mineserver, keeping all the cool
+stuff and getting rid of the not-so-cool stuff.
+
+NOTE
+----
+
+This is very much a work in progress! I'll be slowly pulling in bits of code
+from the original Mineserver repository to make this functional.
+
+Goals
+-----
+
+1. Clean up the code structure (this is important).
+2. Use a state machine approach to manage game mechanics.
+3. Implement a proper (first class) plugin system.
+4. Use ZeroMQ to distribute various tasks, such as chunk generation, lighting,
+   Mob AI, physics, etc. Anything CPU-heavy basically.
+5. Implement some form of absolute clustering to enable players to be spread
+   over multiple nodes.
