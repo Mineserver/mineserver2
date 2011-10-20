@@ -85,7 +85,7 @@ Mineserver::PacketStream& Mineserver::PacketStream::operator>>(uint8_t& val)
 
 Mineserver::PacketStream& Mineserver::PacketStream::operator<<(int16_t val)
 {
-  uint16_t nval = htobe16(val);
+  int16_t nval = htobe16(val);
 
   append(reinterpret_cast<const uint8_t*>(&nval), sizeof(nval));
 
@@ -103,9 +103,29 @@ Mineserver::PacketStream& Mineserver::PacketStream::operator>>(int16_t& val)
   return *this;
 }
 
+Mineserver::PacketStream& Mineserver::PacketStream::operator<<(uint16_t val)
+{
+  uint16_t nval = htobe16(val);
+
+  append(reinterpret_cast<const uint8_t*>(&nval), sizeof(nval));
+
+  return *this;
+}
+
+Mineserver::PacketStream& Mineserver::PacketStream::operator>>(uint16_t& val)
+{
+  if (haveData(2))
+  {
+    val = betoh16(*(reinterpret_cast<uint16_t*>(&(m_buffer[m_pos]))));
+    m_pos += 2;
+  }
+
+  return *this;
+}
+
 Mineserver::PacketStream& Mineserver::PacketStream::operator<<(int32_t val)
 {
-  uint32_t nval = htobe32(val);
+  int32_t nval = htobe32(val);
 
   append(reinterpret_cast<const uint8_t*>(&nval), sizeof(nval));
 
@@ -123,9 +143,29 @@ Mineserver::PacketStream& Mineserver::PacketStream::operator>>(int32_t& val)
   return *this;
 }
 
+Mineserver::PacketStream& Mineserver::PacketStream::operator<<(uint32_t val)
+{
+  uint32_t nval = htobe32(val);
+
+  append(reinterpret_cast<const uint8_t*>(&nval), sizeof(nval));
+
+  return *this;
+}
+
+Mineserver::PacketStream& Mineserver::PacketStream::operator>>(uint32_t& val)
+{
+  if (haveData(4))
+  {
+    val = betoh32(*(reinterpret_cast<uint32_t*>(&(m_buffer[m_pos]))));
+    m_pos += 4;
+  }
+
+  return *this;
+}
+
 Mineserver::PacketStream& Mineserver::PacketStream::operator<<(int64_t val)
 {
-  uint64_t nval = htobe64(val);
+  int64_t nval = htobe64(val);
 
   append(reinterpret_cast<const uint8_t*>(&nval), sizeof(nval));
 
@@ -137,6 +177,26 @@ Mineserver::PacketStream& Mineserver::PacketStream::operator>>(int64_t& val)
   if (haveData(8))
   {
     val = betoh64(*(reinterpret_cast<int64_t*>(&(m_buffer[m_pos]))));
+    m_pos += 8;
+  }
+
+  return *this;
+}
+
+Mineserver::PacketStream& Mineserver::PacketStream::operator<<(uint64_t val)
+{
+  uint64_t nval = htobe64(val);
+
+  append(reinterpret_cast<const uint8_t*>(&nval), sizeof(nval));
+
+  return *this;
+}
+
+Mineserver::PacketStream& Mineserver::PacketStream::operator>>(uint64_t& val)
+{
+  if (haveData(8))
+  {
+    val = betoh64(*(reinterpret_cast<uint64_t*>(&(m_buffer[m_pos]))));
     m_pos += 8;
   }
 

@@ -25,8 +25,8 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _PACKET_CLIENT_H
-#define _PACKET_CLIENT_H
+#ifndef _PACKET_SERVER_H
+#define _PACKET_SERVER_H
 
 #include "byteorder.h"
 #include "packetstream.h"
@@ -34,7 +34,7 @@
 
 namespace Mineserver
 {
-  class Packet_Client_0x00 : public Mineserver::Packet
+  class Packet_Server_0x00 : public Mineserver::Packet
   {
   public:
     int16_t id;
@@ -50,7 +50,7 @@ namespace Mineserver
     }
   };
 
-  class Packet_Client_0x01 : public Mineserver::Packet
+  class Packet_Server_0x01 : public Mineserver::Packet
   {
   public:
     int32_t version;
@@ -73,7 +73,7 @@ namespace Mineserver
     }
   };
 
-  class Packet_Client_0x02 : public Mineserver::Packet
+  class Packet_Server_0x02 : public Mineserver::Packet
   {
   public:
     std::string username;
@@ -89,7 +89,7 @@ namespace Mineserver
     }
   };
 
-  class Packet_Client_0x03 : public Mineserver::Packet
+  class Packet_Server_0x03 : public Mineserver::Packet
   {
   public:
     std::string message;
@@ -105,25 +105,78 @@ namespace Mineserver
     }
   };
 
-  class Packet_Client_0x07 : public Mineserver::Packet
+  class Packet_Server_0x04 : public Mineserver::Packet
   {
   public:
-    int32_t user;
-    int32_t target;
-    bool leftClick;
+    int64_t time;
   public:
     void read(Mineserver::PacketStream& ps)
     {
-      ps >> pid >> user >> target >> leftClick;
+      ps >> pid >> time;
       ps.remove();
     }
     void write(Mineserver::PacketStream& ps)
     {
-      ps << pid << user << target << leftClick;
+      ps << pid << time;
     }
   };
 
-  class Packet_Client_0x09 : public Mineserver::Packet
+  class Packet_Server_0x05 : public Mineserver::Packet
+  {
+  public:
+    int32_t entityId;
+    int16_t slot;
+    int16_t itemId;
+    int16_t damage;
+  public:
+    void read(Mineserver::PacketStream& ps)
+    {
+      ps >> pid >> entityId >> slot >> itemId >> damage;
+      ps.remove();
+    }
+    void write(Mineserver::PacketStream& ps)
+    {
+      ps << pid << entityId << slot << itemId << damage;
+    }
+  };
+
+  class Packet_Server_0x06 : public Mineserver::Packet
+  {
+  public:
+    int16_t x;
+    int16_t y;
+    int16_t z;
+  public:
+    void read(Mineserver::PacketStream& ps)
+    {
+      ps >> pid >> x >> y >> z;
+      ps.remove();
+    }
+    void write(Mineserver::PacketStream& ps)
+    {
+      ps << pid << x << y << z;
+    }
+  };
+
+  class Packet_Server_0x08 : public Mineserver::Packet
+  {
+  public:
+    int16_t health;
+    int16_t food;
+    float foodSaturation;
+  public:
+    void read(Mineserver::PacketStream& ps)
+    {
+      ps >> pid >> health >> food >> foodSaturation;
+      ps.remove();
+    }
+    void write(Mineserver::PacketStream& ps)
+    {
+      ps << pid << health << food << foodSaturation;
+    }
+  };
+
+  class Packet_Server_0x09 : public Mineserver::Packet
   {
   public:
     int8_t world;
@@ -143,7 +196,7 @@ namespace Mineserver
     }
   };
 
-  class Packet_Client_0x0A : public Mineserver::Packet
+  class Packet_Server_0x0A : public Mineserver::Packet
   {
   public:
     bool onGround;
@@ -159,7 +212,7 @@ namespace Mineserver
     }
   };
 
-  class Packet_Client_0x0B : public Mineserver::Packet
+  class Packet_Server_0x0B : public Mineserver::Packet
   {
   public:
     double x;
@@ -179,7 +232,7 @@ namespace Mineserver
     }
   };
 
-  class Packet_Client_0x0C : public Mineserver::Packet
+  class Packet_Server_0x0C : public Mineserver::Packet
   {
   public:
     float yaw;
@@ -197,7 +250,7 @@ namespace Mineserver
     }
   };
 
-  class Packet_Client_0x0D : public Mineserver::Packet
+  class Packet_Server_0x0D : public Mineserver::Packet
   {
   public:
     double x;
@@ -219,65 +272,27 @@ namespace Mineserver
     }
   };
 
-  class Packet_Client_0x0E : public Mineserver::Packet
+  class Packet_Server_0x11 : public Mineserver::Packet
   {
   public:
-    int8_t status;
+    int32_t entityId;
+    int8_t inBed;
     int32_t x;
-    int8_t y;
+    int16_t y;
     int32_t z;
-    int8_t face;
   public:
     void read(Mineserver::PacketStream& ps)
     {
-      ps >> pid >> status >> x >> y >> z >> face;
+      ps >> pid >> entityId >> inBed >> x >> y >> z;
       ps.remove();
     }
     void write(Mineserver::PacketStream& ps)
     {
-      ps << pid << status << x << y << z << face;
+      ps << pid << entityId << inBed << x << y << z;
     }
   };
 
-  class Packet_Client_0x0F : public Mineserver::Packet
-  {
-  public:
-    int32_t x;
-    int8_t y;
-    int32_t z;
-    int8_t direction;
-    int16_t itemId;
-    int8_t amount;
-    int16_t damage;
-  public:
-    void read(Mineserver::PacketStream& ps)
-    {
-      ps >> pid >> x >> y >> z >> direction >> itemId >> amount >> damage;
-      ps.remove();
-    }
-    void write(Mineserver::PacketStream& ps)
-    {
-      ps << pid << x << y << z << direction << itemId << amount << damage;
-    }
-  };
-
-  class Packet_Client_0x10 : public Mineserver::Packet
-  {
-  public:
-    int16_t id;
-  public:
-    void read(Mineserver::PacketStream& ps)
-    {
-      ps >> pid >> id;
-      ps.remove();
-    }
-    void write(Mineserver::PacketStream& ps)
-    {
-      ps << pid << id;
-    }
-  };
-
-  class Packet_Client_0x12 : public Mineserver::Packet
+  class Packet_Server_0x12 : public Mineserver::Packet
   {
   public:
     int32_t entityId;
@@ -294,24 +309,146 @@ namespace Mineserver
     }
   };
 
-  class Packet_Client_0x13 : public Mineserver::Packet
+  class Packet_Server_0x14 : public Mineserver::Packet
   {
   public:
     int32_t entityId;
-    int8_t actionId;
+    std::string name;
+    int32_t x;
+    int32_t y;
+    int32_t z;
+    int8_t rotation;
+    int8_t pitch;
+    int16_t currentItem;
   public:
     void read(Mineserver::PacketStream& ps)
     {
-      ps >> pid >> entityId >> actionId;
+      ps >> pid >> entityId >> name >> x >> y >> z >> rotation >> pitch >> currentItem;
       ps.remove();
     }
     void write(Mineserver::PacketStream& ps)
     {
-      ps << pid << entityId << actionId;
+      ps << pid << entityId << name << x << y << z << rotation << pitch << currentItem;
     }
   };
 
-  class Packet_Client_0x27 : public Mineserver::Packet
+  class Packet_Server_0x15 : public Mineserver::Packet
+  {
+  public:
+    int32_t entityId;
+    int16_t itemId;
+    int8_t count;
+    int16_t data;
+    int32_t x;
+    int32_t y;
+    int32_t z;
+    int8_t rotation;
+    int8_t pitch;
+    int16_t currentItem;
+  public:
+    void read(Mineserver::PacketStream& ps)
+    {
+      ps >> pid >> entityId >> itemId >> count >> data >> x >> y >> z >> rotation >> pitch >> currentItem;
+      ps.remove();
+    }
+    void write(Mineserver::PacketStream& ps)
+    {
+      ps << pid << entityId << itemId << count << data << x << y << z << rotation << pitch << currentItem;
+    }
+  };
+
+  class Packet_Server_0x16 : public Mineserver::Packet
+  {
+  public:
+    int32_t collectedId;
+    int32_t collectorId;
+  public:
+    void read(Mineserver::PacketStream& ps)
+    {
+      ps >> pid >> collectedId >> collectorId;
+      ps.remove();
+    }
+    void write(Mineserver::PacketStream& ps)
+    {
+      ps << pid << collectedId << collectorId;
+    }
+  };
+
+  class Packet_Server_0x17 : public Mineserver::Packet
+  {
+  public:
+    int32_t entityId;
+    int8_t type;
+    int32_t x;
+    int32_t y;
+    int32_t z;
+    int32_t throwerId;
+    int16_t unknown1;
+    int16_t unknown2;
+    int16_t unknown3;
+  public:
+    void read(Mineserver::PacketStream& ps)
+    {
+      ps >> pid >> entityId >> type >> x >> y >> z >> throwerId;
+
+      if (throwerId > 0) {
+        ps >> unknown1 >> unknown2 >> unknown3;
+      }
+
+      ps.remove();
+    }
+    void write(Mineserver::PacketStream& ps)
+    {
+      ps << pid << entityId << type << x << y << z << throwerId;
+
+      if (throwerId > 0) {
+        ps << unknown1 << unknown2 << unknown3;
+      }
+    }
+  };
+
+  class Packet_Server_0x18 : public Mineserver::Packet
+  {
+  public:
+    int32_t entityId;
+    int8_t type;
+    int32_t x;
+    int32_t y;
+    int32_t z;
+    int8_t yaw;
+    int8_t pitch;
+    std::vector<int8_t> data;
+  public:
+    void read(Mineserver::PacketStream& ps)
+    {
+      ps >> pid >> entityId >> type >> x >> y >> z >> yaw >> pitch;
+
+      int8_t tmp;
+      while (true) {
+        ps >> tmp;
+
+        if (tmp == 0x7F) {
+          break;
+        } else {
+          data.push_back(tmp);
+        }
+      }
+
+      ps.remove();
+    }
+    void write(Mineserver::PacketStream& ps)
+    {
+      ps << pid << entityId << type << x << y << z << yaw << pitch;
+
+      for (std::vector<int8_t>::iterator it=data.begin();it!=data.end();++it) {
+        ps << *it;
+      }
+
+      ps << static_cast<int8_t>(0x7F);
+    }
+  };
+
+  class Packet_Server_0x27 : public Mineserver::Packet
   {
   public:
     int32_t entityId;
@@ -328,7 +465,7 @@ namespace Mineserver
     }
   };
 
-  class Packet_Client_0x65 : public Mineserver::Packet
+  class Packet_Server_0x65 : public Mineserver::Packet
   {
   public:
     int8_t windowId;
@@ -344,7 +481,7 @@ namespace Mineserver
     }
   };
 
-  class Packet_Client_0x66 : public Mineserver::Packet
+  class Packet_Server_0x66 : public Mineserver::Packet
   {
   public:
     int8_t windowId;
@@ -360,7 +497,7 @@ namespace Mineserver
     }
   };
 
-  class Packet_Client_0x6A : public Mineserver::Packet
+  class Packet_Server_0x6A : public Mineserver::Packet
   {
   public:
     int8_t windowId;
@@ -378,7 +515,7 @@ namespace Mineserver
     }
   };
 
-  class Packet_Client_0x6B : public Mineserver::Packet
+  class Packet_Server_0x6B : public Mineserver::Packet
   {
   public:
     int16_t slot;
@@ -397,7 +534,7 @@ namespace Mineserver
     }
   };
 
-  class Packet_Client_0x82 : public Mineserver::Packet
+  class Packet_Server_0x82 : public Mineserver::Packet
   {
   public:
     int32_t x;
@@ -419,7 +556,7 @@ namespace Mineserver
     }
   };
 
-  class Packet_Client_0xFE : public Mineserver::Packet
+  class Packet_Server_0xFE : public Mineserver::Packet
   {
   public:
     void read(Mineserver::PacketStream& ps)
@@ -433,7 +570,7 @@ namespace Mineserver
     }
   };
 
-  class Packet_Client_0xFF : public Mineserver::Packet
+  class Packet_Server_0xFF : public Mineserver::Packet
   {
   public:
     void read(Mineserver::PacketStream& ps)

@@ -97,10 +97,16 @@ namespace Mineserver
     PacketStream& operator>>(uint8_t& val);
     PacketStream& operator<<(int16_t val);
     PacketStream& operator>>(int16_t& val);
+    PacketStream& operator<<(uint16_t val);
+    PacketStream& operator>>(uint16_t& val);
     PacketStream& operator<<(int32_t val);
     PacketStream& operator>>(int32_t& val);
+    PacketStream& operator<<(uint32_t val);
+    PacketStream& operator>>(uint32_t& val);
     PacketStream& operator<<(int64_t val);
     PacketStream& operator>>(int64_t& val);
+    PacketStream& operator<<(uint64_t val);
+    PacketStream& operator>>(uint64_t& val);
     PacketStream& operator<<(float val);
     PacketStream& operator>>(float& val);
     PacketStream& operator<<(double val);
@@ -108,7 +114,6 @@ namespace Mineserver
     PacketStream& operator<<(const std::string& str);
     PacketStream& operator>>(std::string& str);
     PacketStream& operator<<(const PacketStream& other);
-    PacketStream& operator>>(const PacketStream& other);
   };
 };
 

@@ -29,6 +29,7 @@
 #define _PACKET_H
 
 #include "byteorder.h"
+#include "packetstream.h"
 
 namespace Mineserver
 {
@@ -107,6 +108,9 @@ namespace Mineserver
   {
   public:
     uint8_t pid;
+  public:
+    virtual void read(Mineserver::PacketStream& ps) = 0;
+    virtual void write(Mineserver::PacketStream& ps) = 0;
   };
 }
 
