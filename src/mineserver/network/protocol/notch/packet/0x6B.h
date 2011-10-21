@@ -29,11 +29,12 @@
 #define _MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x6B_H
 
 #include <mineserver/byteorder.h>
+#include <mineserver/network/packet/0x6B.h>
 #include <mineserver/network/protocol/notch/packet.h>
 
 namespace Mineserver
 {
-  struct Network_Protocol_Notch_Packet_0x6B : public Mineserver::Network_Protocol_Notch_Packet
+  struct Network_Protocol_Notch_Packet_0x6B : public Mineserver::Network_Protocol_Notch_Packet, public Mineserver::Network_Packet_0x6B
   {
     int16_t slot;
     int16_t itemId;

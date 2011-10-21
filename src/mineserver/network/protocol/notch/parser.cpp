@@ -25,22 +25,6 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _MINESERVER_NETWORK_PACKET_0x35_H
-#define _MINESERVER_NETWORK_PACKET_0x35_H
-
-#include <mineserver/byteorder.h>
 #include <mineserver/network/packet.h>
-
-namespace Mineserver
-{
-  struct Network_Packet_0x35 : public Mineserver::Network_Packet
-  {
-    int32_t x;
-    int8_t y;
-    int32_t z;
-    int8_t type;
-    int8_t meta;
-  };
-};
-
-#endif
+#include <mineserver/network/parser.h>
+#include <mineserver/network/protocol/notch/parser.h>

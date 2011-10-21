@@ -32,6 +32,19 @@
 #include <mineserver/network/protocol/notch/packetstream.h>
 #include <mineserver/network/protocol/notch/packet/0x02.h>
 
+int main()
+{
+  try {
+    boost::asio::io_service service;
+    Server server(service);
+    service.run();
+  } catch (std::exception& e) {
+    std::cerr << e.what() << std::endl;
+  }
+
+  return 0;
+}
+
 int main(int argc, char** argv)
 {
   Mineserver::Network_Protocol_Notch_PacketStream ps;

@@ -33,14 +33,13 @@
 
 namespace Mineserver
 {
-  struct Network_Packet_Server_0x67 : public Mineserver::Network_Packet
+  struct Network_Packet_0x67 : public Mineserver::Network_Packet
   {
     int8_t windowId;
     int16_t slot;
     int16_t itemId;
     int8_t count;
     int16_t uses;
-    }
   };
 };
 

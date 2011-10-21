@@ -29,16 +29,13 @@
 #define _MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x08_H
 
 #include <mineserver/byteorder.h>
+#include <mineserver/network/packet/0x08.h>
 #include <mineserver/network/protocol/notch/packet.h>
 
 namespace Mineserver
 {
-  struct Network_Protocol_Notch_Packet_0x08 : public Mineserver::Network_Protocol_Notch_Packet
+  struct Network_Protocol_Notch_Packet_0x08 : public Mineserver::Network_Protocol_Notch_Packet, public Mineserver::Network_Packet_0x08
   {
-    int16_t health;
-    int16_t food;
-    float foodSaturation;
-
     void read(Mineserver::Network_Protocol_Notch_PacketStream& ps);
     void write(Mineserver::Network_Protocol_Notch_PacketStream& ps);
   };

@@ -33,13 +33,11 @@
 
 namespace Mineserver
 {
-  struct Network_Packet_Server_0x68 : public Mineserver::Network_Packet
+  struct Network_Packet_0x68 : public Mineserver::Network_Packet
   {
     int8_t windowId;
     int16_t count;
     std::vector< std::pair< int16_t, std::pair< int8_t, int16_t > > > slots;
-      }
-    }
   };
 };
 

@@ -29,14 +29,13 @@
 #define _MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x02_H
 
 #include <mineserver/byteorder.h>
+#include <mineserver/network/packet/0x02.h>
 #include <mineserver/network/protocol/notch/packet.h>
 
 namespace Mineserver
 {
-  struct Network_Protocol_Notch_Packet_0x02 : public Mineserver::Network_Protocol_Notch_Packet
+  struct Network_Protocol_Notch_Packet_0x02 : public Mineserver::Network_Protocol_Notch_Packet, public Mineserver::Network_Packet_0x02
   {
-    std::string username;
-
     void read(Mineserver::Network_Protocol_Notch_PacketStream& ps);
     void write(Mineserver::Network_Protocol_Notch_PacketStream& ps);
   };

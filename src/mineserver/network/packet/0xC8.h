@@ -33,7 +33,7 @@
 
 namespace Mineserver
 {
-  struct Network_Packet_Server_0xC8 : public Mineserver::Network_Packet
+  struct Network_Packet_0xC8 : public Mineserver::Network_Packet
   {
     int16_t statisticId;
     int8_t amount;

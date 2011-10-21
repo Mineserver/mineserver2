@@ -33,7 +33,7 @@
 
 namespace Mineserver
 {
-  struct Network_Packet_Server_0x16 : public Mineserver::Network_Packet
+  struct Network_Packet_0x16 : public Mineserver::Network_Packet
   {
     int32_t collectedId;
     int32_t collectorId;

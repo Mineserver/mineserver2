@@ -33,8 +33,9 @@
 
 namespace Mineserver
 {
-  struct Network_Packet_Server_0xFF : public Mineserver::Network_Packet
+  struct Network_Packet_0xFF : public Mineserver::Network_Packet
   {
+    std::string reason;
   };
 };
 

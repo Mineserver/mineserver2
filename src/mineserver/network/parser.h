@@ -25,22 +25,28 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _MINESERVER_NETWORK_PACKET_0x35_H
-#define _MINESERVER_NETWORK_PACKET_0x35_H
+#ifndef _MINESERVER_NETWORK_PARSER_H
+#define _MINESERVER_NETWORK_PARSER_H
 
-#include <mineserver/byteorder.h>
+#include <queue>
+
 #include <mineserver/network/packet.h>
 
 namespace Mineserver
 {
-  struct Network_Packet_0x35 : public Mineserver::Network_Packet
+  class Network_Parser
   {
-    int32_t x;
-    int8_t y;
-    int32_t z;
-    int8_t type;
-    int8_t meta;
+  private:
+    std::queue<Mineserver::Network_Packet> m_incoming;
+    std::queue<Mineserver::Network_Packet> m_outgoing;
+  public:
+    virtual void putBytes(uint8_t* data, size_t len) = 0;
+    virtual void process() = 0;
+    bool empty() { return m_incoming.empty(); }
+    Mineserver::Network_Packet& getPacket() { return m_incoming.front(); }
+    void popPacket() { m_incoming.pop(); }
+    void putPacket(Mineserver::Network_Packet packet) { m_outgoing.push(packet); }
   };
-};
+}
 
 #endif

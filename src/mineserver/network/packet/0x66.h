@@ -33,7 +33,7 @@
 
 namespace Mineserver
 {
-  struct Network_Packet_Client_0x66 : public Mineserver::Network_Packet
+  struct Network_Packet_0x66 : public Mineserver::Network_Packet
   {
     int8_t windowId;
   };

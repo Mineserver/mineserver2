@@ -33,7 +33,7 @@
 
 namespace Mineserver
 {
-  struct Network_Packet_Server_0x2B : public Mineserver::Network_Packet
+  struct Network_Packet_0x2B : public Mineserver::Network_Packet
   {
     int8_t currentExperience;
     int8_t level;

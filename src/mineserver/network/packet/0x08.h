@@ -33,7 +33,7 @@
 
 namespace Mineserver
 {
-  struct Network_Packet_Server_0x08 : public Mineserver::Network_Packet
+  struct Network_Packet_0x08 : public Mineserver::Network_Packet
   {
     int16_t health;
     int16_t food;

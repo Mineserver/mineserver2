@@ -33,7 +33,7 @@
 
 namespace Mineserver
 {
-  struct Network_Packet_Server_0x0B : public Mineserver::Network_Packet
+  struct Network_Packet_0x0B : public Mineserver::Network_Packet
   {
     double x;
     double y;

@@ -33,7 +33,7 @@
 
 namespace Mineserver
 {
-  struct Network_Packet_Client_0xFE : public Mineserver::Network_Packet
+  struct Network_Packet_0xFE : public Mineserver::Network_Packet
   {
   };
 };

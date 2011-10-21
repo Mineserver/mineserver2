@@ -33,7 +33,7 @@
 
 namespace Mineserver
 {
-  struct Network_Packet_Server_0x3D : public Mineserver::Network_Packet
+  struct Network_Packet_0x3D : public Mineserver::Network_Packet
   {
     int32_t effectId;
     int32_t x;

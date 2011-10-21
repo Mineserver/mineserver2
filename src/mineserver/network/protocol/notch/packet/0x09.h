@@ -29,18 +29,13 @@
 #define _MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x09_H
 
 #include <mineserver/byteorder.h>
+#include <mineserver/network/packet/0x09.h>
 #include <mineserver/network/protocol/notch/packet.h>
 
 namespace Mineserver
 {
-  struct Network_Protocol_Notch_Packet_0x09 : public Mineserver::Network_Protocol_Notch_Packet
+  struct Network_Protocol_Notch_Packet_0x09 : public Mineserver::Network_Protocol_Notch_Packet, public Mineserver::Network_Packet_0x09
   {
-    int8_t world;
-    int8_t difficulty;
-    int8_t mode;
-    int16_t height;
-    int64_t seed;
-
     void read(Mineserver::Network_Protocol_Notch_PacketStream& ps);
     void write(Mineserver::Network_Protocol_Notch_PacketStream& ps);
   };

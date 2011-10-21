@@ -33,7 +33,7 @@
 
 namespace Mineserver
 {
-  struct Network_Packet_Server_0x05 : public Mineserver::Network_Packet
+  struct Network_Packet_0x05 : public Mineserver::Network_Packet
   {
     int32_t entityId;
     int16_t slot;

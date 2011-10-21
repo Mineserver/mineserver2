@@ -33,7 +33,7 @@
 
 namespace Mineserver
 {
-  struct Network_Packet_Client_0x07 : public Mineserver::Network_Packet
+  struct Network_Packet_0x07 : public Mineserver::Network_Packet
   {
     int32_t user;
     int32_t target;

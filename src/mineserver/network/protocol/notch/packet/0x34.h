@@ -29,19 +29,13 @@
 #define _MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x34_H
 
 #include <mineserver/byteorder.h>
+#include <mineserver/network/packet/0x34.h>
 #include <mineserver/network/protocol/notch/packet.h>
 
 namespace Mineserver
 {
-  struct Network_Protocol_Notch_Packet_0x34 : public Mineserver::Network_Protocol_Notch_Packet
+  struct Network_Protocol_Notch_Packet_0x34 : public Mineserver::Network_Protocol_Notch_Packet, public Mineserver::Network_Packet_0x34
   {
-    int32_t x;
-    int32_t z;
-    int16_t num;
-    std::vector<int16_t> coordinate;
-    std::vector<int8_t> type;
-    std::vector<int8_t> meta;
-
     void read(Mineserver::Network_Protocol_Notch_PacketStream& ps);
     void write(Mineserver::Network_Protocol_Notch_PacketStream& ps);
   };

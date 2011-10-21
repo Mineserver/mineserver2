@@ -33,7 +33,7 @@
 
 namespace Mineserver
 {
-  struct Network_Packet_Server_0x02 : public Mineserver::Network_Packet
+  struct Network_Packet_0x02 : public Mineserver::Network_Packet
   {
     std::string username;
   };

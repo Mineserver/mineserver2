@@ -29,21 +29,13 @@
 #define _MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x01_H
 
 #include <mineserver/byteorder.h>
+#include <mineserver/network/packet/0x01.h>
 #include <mineserver/network/protocol/notch/packet.h>
 
 namespace Mineserver
 {
-  struct Network_Protocol_Notch_Packet_0x01 : public Mineserver::Network_Protocol_Notch_Packet
+  struct Network_Protocol_Notch_Packet_0x01 : public Mineserver::Network_Protocol_Notch_Packet, public Mineserver::Network_Packet_0x01
   {
-    int32_t version;
-    std::string username;
-    int64_t junk_a;
-    int32_t junk_b;
-    int8_t junk_c;
-    int8_t junk_d;
-    uint8_t junk_e;
-    uint8_t junk_f;
-
     void read(Mineserver::Network_Protocol_Notch_PacketStream& ps);
     void write(Mineserver::Network_Protocol_Notch_PacketStream& ps);
   };

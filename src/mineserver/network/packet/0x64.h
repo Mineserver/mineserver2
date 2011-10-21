@@ -33,7 +33,7 @@
 
 namespace Mineserver
 {
-  struct Network_Packet_Server_0x64 : public Mineserver::Network_Packet
+  struct Network_Packet_0x64 : public Mineserver::Network_Packet
   {
     int8_t windowId;
     int8_t inventoryType;

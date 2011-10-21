@@ -29,19 +29,13 @@
 #define _MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x21_H
 
 #include <mineserver/byteorder.h>
+#include <mineserver/network/packet/0x21.h>
 #include <mineserver/network/protocol/notch/packet.h>
 
 namespace Mineserver
 {
-  struct Network_Protocol_Notch_Packet_0x21 : public Mineserver::Network_Protocol_Notch_Packet
+  struct Network_Protocol_Notch_Packet_0x21 : public Mineserver::Network_Protocol_Notch_Packet, public Mineserver::Network_Packet_0x21
   {
-    int32_t entityId;
-    int8_t x;
-    int8_t y;
-    int8_t z;
-    int8_t yaw;
-    int8_t pitch;
-
     void read(Mineserver::Network_Protocol_Notch_PacketStream& ps);
     void write(Mineserver::Network_Protocol_Notch_PacketStream& ps);
   };
