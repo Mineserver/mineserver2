@@ -35,6 +35,7 @@ namespace Mineserver
 {
   struct Network_Protocol_Notch_Packet_0xFF : public Mineserver::Network_Protocol_Notch_Packet
   {
+    std::string reason;
 
     void read(Mineserver::Network_Protocol_Notch_PacketStream& ps);
     void write(Mineserver::Network_Protocol_Notch_PacketStream& ps);

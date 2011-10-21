@@ -33,11 +33,11 @@
 
 void Mineserver::Network_Protocol_Notch_Packet_0xFF::read(Mineserver::Network_Protocol_Notch_PacketStream& ps)
 {
-  ps >> pid;
+  ps >> pid >> reason;
   ps.remove();
 }
 
 void Mineserver::Network_Protocol_Notch_Packet_0xFF::write(Mineserver::Network_Protocol_Notch_PacketStream& ps)
 {
-  ps << pid;
+  ps << pid << reason;
 }
