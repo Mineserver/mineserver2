@@ -29,7 +29,7 @@
 #define _MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x12_H
 
 #include <mineserver/byteorder.h>
-#include <mineserver/network/packet.h>
+#include <mineserver/network/protocol/notch/packet.h>
 
 namespace Mineserver
 {

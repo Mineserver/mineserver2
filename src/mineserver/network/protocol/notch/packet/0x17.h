@@ -29,7 +29,7 @@
 #define _MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x17_H
 
 #include <mineserver/byteorder.h>
-#include <mineserver/network/packet.h>
+#include <mineserver/network/protocol/notch/packet.h>
 
 namespace Mineserver
 {
@@ -46,11 +46,7 @@ namespace Mineserver
     int16_t unknown3;
 
     void read(Mineserver::Network_Protocol_Notch_PacketStream& ps);
-
-      ps.remove();
-    }
     void write(Mineserver::Network_Protocol_Notch_PacketStream& ps);
-    }
   };
 };
 

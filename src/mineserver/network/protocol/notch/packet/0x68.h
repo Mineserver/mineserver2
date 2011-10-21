@@ -29,7 +29,7 @@
 #define _MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x68_H
 
 #include <mineserver/byteorder.h>
-#include <mineserver/network/packet.h>
+#include <mineserver/network/protocol/notch/packet.h>
 
 namespace Mineserver
 {
@@ -40,15 +40,7 @@ namespace Mineserver
     std::vector< std::pair< int16_t, std::pair< int8_t, int16_t > > > slots;
 
     void read(Mineserver::Network_Protocol_Notch_PacketStream& ps);
-
-        slots.push_back(std::pair<int16_t, std::pair<int8_t, int16_t> >(itemId, std::pair<int8_t, int16_t>(count, uses)));
-      }
-
-      ps.remove();
-    }
     void write(Mineserver::Network_Protocol_Notch_PacketStream& ps);
-      }
-    }
   };
 };
 

@@ -29,20 +29,18 @@
 #include <iostream>
 #include <cstdio>
 
-#include "packetstream.h"
-#include "packet.h"
-#include "packet_client.h"
-#include "packet_server.h"
+#include <mineserver/network/protocol/notch/packetstream.h>
+#include <mineserver/network/protocol/notch/packet/0x02.h>
 
 int main(int argc, char** argv)
 {
-  Mineserver::PacketStream ps;
+  Mineserver::Network_Protocol_Notch_PacketStream ps;
 
   uint8_t bytes[] = {0x02, 0x00, 0x04, 0x00, 0x65, 0x00, 0x65, 0x00, 0x65, 0x00, 0x65};
 
   ps.append(bytes, 11);
 
-  Mineserver::Packet_Client_0x02 packet;
+  Mineserver::Network_Protocol_Notch_Packet_0x02 packet;
   packet.read(ps);
 
   printf("PID: %d\n", packet.pid);
