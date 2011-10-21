@@ -27,23 +27,39 @@
 
 #include <string>
 #include <iostream>
-#include <cstdio>
 
+#include <boost/bind.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
 
+#include <mineserver/network/client.h>
 #include <mineserver/network/server.h>
 
-int main()
+void Mineserver::Network_Server::startAccept()
 {
-  try {
-    boost::asio::io_service service;
+  // NOTE:
+  // Needs a parser object for the second argument
+  // This argument is null right now just to facilitate a test build!
+  Mineserver::Network_Client::pointer_t client = Mineserver::Network_Client::create(m_socket.get_io_service(), NULL);
 
-    Mineserver::Network_Server server(service);
+  m_socket.async_accept(
+    client->socket(),
+    boost::bind(
+      &Mineserver::Network_Server::handleAccept,
+      this,
+      client,
+      boost::asio::placeholders::error
+    )
+  );
+}
 
-    service.run();
-  } catch (std::exception& e) {
-    std::cerr << e.what() << std::endl;
+void Mineserver::Network_Server::handleAccept(Mineserver::Network_Client::pointer_t client, const boost::system::error_code& error)
+{
+  if (!error)
+  {
+    client->start();
   }
 
-  return 0;
+  startAccept();
 }

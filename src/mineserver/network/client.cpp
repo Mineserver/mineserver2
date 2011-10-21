@@ -27,23 +27,41 @@
 
 #include <string>
 #include <iostream>
-#include <cstdio>
 
+#include <boost/bind.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
 
-#include <mineserver/network/server.h>
+#include <mineserver/network/client.h>
 
-int main()
+void Mineserver::Network_Client::start()
 {
-  try {
-    boost::asio::io_service service;
+  m_socket.async_read_some(
+    boost::asio::buffer(m_buffer),
+    boost::bind(
+      &Mineserver::Network_Client::handleRead,
+      shared_from_this(),
+      boost::asio::placeholders::error,
+      boost::asio::placeholders::bytes_transferred
+    )
+  );
+}
 
-    Mineserver::Network_Server server(service);
+void Mineserver::Network_Client::stop()
+{
+  m_socket.close();
+}
 
-    service.run();
-  } catch (std::exception& e) {
-    std::cerr << e.what() << std::endl;
+void Mineserver::Network_Client::handleRead(const boost::system::error_code& e, size_t n)
+{
+  if (!e) {
+    m_parser->putBytes(reinterpret_cast<uint8_t*>(m_buffer.data()), n);
+  } else if (e != boost::asio::error::operation_aborted) {
+    stop();
   }
+}
 
-  return 0;
+void Mineserver::Network_Client::handleWrite(const boost::system::error_code& e)
+{
 }

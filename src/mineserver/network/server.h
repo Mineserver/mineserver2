@@ -25,25 +25,36 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#ifndef _MINESERVER_NETWORK_SERVER_H
+#define _MINESERVER_NETWORK_SERVER_H
+
 #include <string>
 #include <iostream>
-#include <cstdio>
 
+#include <boost/bind.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
 
-#include <mineserver/network/server.h>
+#include <mineserver/network/client.h>
 
-int main()
+namespace Mineserver
 {
-  try {
-    boost::asio::io_service service;
+  class Network_Server
+  {
+  private:
+    boost::asio::ip::tcp::acceptor m_socket;
 
-    Mineserver::Network_Server server(service);
+  public:
+    Network_Server(boost::asio::io_service& service) : m_socket(service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 7777))
+    {
+      startAccept();
+    }
 
-    service.run();
-  } catch (std::exception& e) {
-    std::cerr << e.what() << std::endl;
-  }
+  private:
+    void startAccept();
+    void handleAccept(Mineserver::Network_Client::pointer_t client, const boost::system::error_code& error);
+  };
+};
 
-  return 0;
-}
+#endif

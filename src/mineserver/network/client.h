@@ -25,25 +25,58 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#ifndef _MINESERVER_NETWORK_CLIENT_H
+#define _MINESERVER_NETWORK_CLIENT_H
+
 #include <string>
 #include <iostream>
-#include <cstdio>
 
+#include <boost/bind.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
 
-#include <mineserver/network/server.h>
+#include <mineserver/network/parser.h>
 
-int main()
+namespace Mineserver
 {
-  try {
-    boost::asio::io_service service;
+  class Network_Client : public boost::enable_shared_from_this<Mineserver::Network_Client>
+  {
+  public:
+    typedef boost::shared_ptr<Mineserver::Network_Client> pointer_t;
 
-    Mineserver::Network_Server server(service);
+  private:
+    boost::asio::ip::tcp::socket m_socket;
+    boost::array<uint8_t, 8192> m_buffer;
+    Mineserver::Network_Parser* m_parser;
 
-    service.run();
-  } catch (std::exception& e) {
-    std::cerr << e.what() << std::endl;
-  }
+  public:
+    static pointer_t create(boost::asio::io_service& service, Mineserver::Network_Parser* parser)
+    {
+      return pointer_t(new Mineserver::Network_Client(service, parser));
+    }
 
-  return 0;
-}
+    boost::asio::ip::tcp::socket& socket()
+    {
+      return m_socket;
+    }
+
+    Mineserver::Network_Parser* parser()
+    {
+      return m_parser;
+    }
+
+    void start();
+    void stop();
+
+  private:
+    Network_Client(boost::asio::io_service& service, Mineserver::Network_Parser* parser) : m_socket(service),m_parser(parser)
+    {
+    }
+
+    void handleRead(const boost::system::error_code& error, size_t transferred);
+    void handleWrite(const boost::system::error_code& error);
+  };
+};
+
+#endif
