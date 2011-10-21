@@ -32,6 +32,18 @@
 
 #include "packetstream.h"
 
+void Mineserver::PacketStream::bytesFrom(uint8_t* src, size_t n)
+{
+  m_buffer.reserve(n);
+  memcpy(reinterpret_cast<uint8_t*>(&(m_buffer[0])), src, n);
+}
+
+void Mineserver::PacketStream::bytesTo(uint8_t* dst, size_t n)
+{
+  memcpy(dst, reinterpret_cast<uint8_t*>(&(m_buffer[0])), n);
+  m_pos += n;
+}
+
 Mineserver::PacketStream& Mineserver::PacketStream::operator<<(bool val)
 {
   m_buffer.push_back(val ? 1 : 0);

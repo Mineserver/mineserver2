@@ -63,9 +63,9 @@ namespace Mineserver
       iconv_close(m_iconvUtfHandler);
     }
 
-    inline void append(const uint8_t* const buffer, const size_t len)
+    inline void append(const uint8_t* const buffer, const size_t n)
     {
-      m_buffer.insert(m_buffer.end(), buffer, buffer + len);
+      m_buffer.insert(m_buffer.end(), buffer, buffer + n);
     }
 
     inline void append(const PacketStream& p)
@@ -84,10 +84,13 @@ namespace Mineserver
       m_pos = 0;
     }
 
-    inline bool haveData(size_t len)
+    inline bool haveData(size_t n)
     {
-      return (m_buffer.size() - m_pos) >= len;
+      return (m_buffer.size() - m_pos) >= n;
     }
+
+    void bytesFrom(uint8_t* dst, size_t n);
+    void bytesTo(uint8_t* dst, size_t n);
 
     PacketStream& operator<<(bool val);
     PacketStream& operator>>(bool& val);

@@ -32,6 +32,7 @@
 #include "packetstream.h"
 #include "packet.h"
 #include "packet_client.h"
+#include "packet_server.h"
 
 int main(int argc, char** argv)
 {
