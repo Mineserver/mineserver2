@@ -122,7 +122,7 @@ int Mineserver::Network_Protocol_Notch_Parser::read(std::vector<uint8_t>& bytes,
     break;
   }
 
-  if (packetState == Mineserver::Network_Protocol_Notch_Packet::STATE_OK) {
+  if (packetState == Mineserver::Network_Protocol_Notch_Packet::STATE_MORE) {
     packets.push_back(*packet);
     m_packetStream.remove();
     state = Mineserver::Network_Parser::STATE_MORE;

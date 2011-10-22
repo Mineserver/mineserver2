@@ -29,6 +29,7 @@
 #define MINESERVER_NETWORK_PROTOCOL_NOTCH_PARSER_H
 
 #include <mineserver/network/packet.h>
+#include <mineserver/network/protocol/notch/packetstream.h>
 #include <mineserver/network/parser.h>
 
 namespace Mineserver

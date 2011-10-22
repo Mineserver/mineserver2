@@ -41,7 +41,7 @@ void Mineserver::Network_Server::startAccept()
   // NOTE:
   // Needs a parser object for the second argument
   // This argument is null right now just to facilitate a test build!
-  Mineserver::Network_Client::pointer_t client = Mineserver::Network_Client::create(m_socket.get_io_service(), NULL);
+  Mineserver::Network_Client::pointer_t client = Mineserver::Network_Client::create(m_socket.get_io_service(), &m_parser);
 
   m_socket.async_accept(
     client->socket(),

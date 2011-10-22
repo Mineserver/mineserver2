@@ -31,6 +31,8 @@
 
 #include <boost/asio.hpp>
 
+#include <mineserver/game.h>
+#include <mineserver/network/protocol/notch/parser.h>
 #include <mineserver/network/server.h>
 
 int main()
@@ -38,8 +40,9 @@ int main()
   boost::asio::io_service service;
 
   Mineserver::Game game;
+  Mineserver::Network_Protocol_Notch_Parser parser;
 
-  Mineserver::Network_Server server(game, service);
+  Mineserver::Network_Server server(game, parser, service);
 
   while (true) {
     try {
