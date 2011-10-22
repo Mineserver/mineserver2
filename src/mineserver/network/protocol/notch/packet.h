@@ -35,8 +35,10 @@ namespace Mineserver
 {
   struct Network_Protocol_Notch_Packet
   {
-    virtual void read(Mineserver::Network_Protocol_Notch_PacketStream& ps) = 0;
-    virtual void write(Mineserver::Network_Protocol_Notch_PacketStream& ps) = 0;
+    typedef Mineserver::Network_Protocol_Notch_PacketStream packet_stream_t;
+
+    virtual void read(packet_stream_t& ps) = 0;
+    virtual void write(packet_stream_t& ps) = 0;
   };
 }
 

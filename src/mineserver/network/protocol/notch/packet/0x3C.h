@@ -43,8 +43,8 @@ namespace Mineserver
     int32_t count;
     std::vector<uint8_t> data;
 
-    void read(Mineserver::Network_Protocol_Notch_PacketStream& ps);
-    void write(Mineserver::Network_Protocol_Notch_PacketStream& ps);
+    void read(packet_stream_t& ps);
+    void write(packet_stream_t& ps);
   };
 };
 

@@ -39,8 +39,8 @@ namespace Mineserver
     int16_t statisticId;
     int8_t amount;
 
-    void read(Mineserver::Network_Protocol_Notch_PacketStream& ps);
-    void write(Mineserver::Network_Protocol_Notch_PacketStream& ps);
+    void read(packet_stream_t& ps);
+    void write(packet_stream_t& ps);
   };
 };
 

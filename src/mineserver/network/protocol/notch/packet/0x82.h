@@ -44,8 +44,8 @@ namespace Mineserver
     std::string line3;
     std::string line4;
 
-    void read(Mineserver::Network_Protocol_Notch_PacketStream& ps);
-    void write(Mineserver::Network_Protocol_Notch_PacketStream& ps);
+    void read(packet_stream_t& ps);
+    void write(packet_stream_t& ps);
   };
 };
 

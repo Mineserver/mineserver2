@@ -31,7 +31,7 @@
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x33.h>
 
-void Mineserver::Network_Protocol_Notch_Packet_0x33::read(Mineserver::Network_Protocol_Notch_PacketStream& ps)
+void Mineserver::Network_Protocol_Notch_Packet_0x33::read(packet_stream_t& ps)
 {
   ps >> pid >> posX >> posY >> posZ >> sizeX >> sizeY >> sizeZ >> bytes;
   data.reserve(bytes);
@@ -39,7 +39,7 @@ void Mineserver::Network_Protocol_Notch_Packet_0x33::read(Mineserver::Network_Pr
   ps.remove();
 }
 
-void Mineserver::Network_Protocol_Notch_Packet_0x33::write(Mineserver::Network_Protocol_Notch_PacketStream& ps)
+void Mineserver::Network_Protocol_Notch_Packet_0x33::write(packet_stream_t& ps)
 {
   ps << pid << posX << posY << posZ << sizeX << sizeY << sizeZ << bytes;
   ps.bytesFrom(reinterpret_cast<uint8_t*>(&(data[0])), bytes);

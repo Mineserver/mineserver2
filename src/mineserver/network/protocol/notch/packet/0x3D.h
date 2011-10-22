@@ -42,8 +42,8 @@ namespace Mineserver
     int32_t z;
     int32_t data;
 
-    void read(Mineserver::Network_Protocol_Notch_PacketStream& ps);
-    void write(Mineserver::Network_Protocol_Notch_PacketStream& ps);
+    void read(packet_stream_t& ps);
+    void write(packet_stream_t& ps);
   };
 };
 

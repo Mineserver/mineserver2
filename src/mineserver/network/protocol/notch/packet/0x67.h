@@ -42,8 +42,8 @@ namespace Mineserver
     int8_t count;
     int16_t uses;
 
-    void read(Mineserver::Network_Protocol_Notch_PacketStream& ps);
-    void write(Mineserver::Network_Protocol_Notch_PacketStream& ps);
+    void read(packet_stream_t& ps);
+    void write(packet_stream_t& ps);
   };
 };
 

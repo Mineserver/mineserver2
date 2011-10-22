@@ -31,7 +31,7 @@
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x18.h>
 
-void Mineserver::Network_Protocol_Notch_Packet_0x18::read(Mineserver::Network_Protocol_Notch_PacketStream& ps)
+void Mineserver::Network_Protocol_Notch_Packet_0x18::read(packet_stream_t& ps)
 {
   ps >> pid >> entityId >> type >> x >> y >> z >> yaw >> pitch;
 
@@ -49,7 +49,7 @@ void Mineserver::Network_Protocol_Notch_Packet_0x18::read(Mineserver::Network_Pr
   ps.remove();
 }
 
-void Mineserver::Network_Protocol_Notch_Packet_0x18::write(Mineserver::Network_Protocol_Notch_PacketStream& ps)
+void Mineserver::Network_Protocol_Notch_Packet_0x18::write(packet_stream_t& ps)
 {
   ps << pid << entityId << type << x << y << z << yaw << pitch;
 

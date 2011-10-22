@@ -31,13 +31,13 @@
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x6B.h>
 
-void Mineserver::Network_Protocol_Notch_Packet_0x6B::read(Mineserver::Network_Protocol_Notch_PacketStream& ps)
+void Mineserver::Network_Protocol_Notch_Packet_0x6B::read(packet_stream_t& ps)
 {
   ps >> pid >> slot >> itemId >> quantity >> damage;
   ps.remove();
 }
 
-void Mineserver::Network_Protocol_Notch_Packet_0x6B::write(Mineserver::Network_Protocol_Notch_PacketStream& ps)
+void Mineserver::Network_Protocol_Notch_Packet_0x6B::write(packet_stream_t& ps)
 {
   ps << pid << slot << itemId << quantity << damage;
 }
