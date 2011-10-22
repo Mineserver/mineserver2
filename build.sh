@@ -11,4 +11,5 @@ find src -name '*.cpp' | sort | while read SRC; do
   fi;
 done;
 
+echo "Building application..."
 ${CXX} -Isrc -O0 -g -o bin/app obj/app.o obj/mineserver_*.o -lboost_system
