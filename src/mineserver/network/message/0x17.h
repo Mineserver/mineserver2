@@ -45,6 +45,6 @@ namespace Mineserver
     int16_t unknown2;
     int16_t unknown3;
   };
-};
+}
 
 #endif

@@ -41,6 +41,6 @@ namespace Mineserver
   public:
     void run();
   };
-};
+}
 
 #endif

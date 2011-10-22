@@ -41,6 +41,6 @@ namespace Mineserver
     double z;
     bool onGround;
   };
-};
+}
 
 #endif

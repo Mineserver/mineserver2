@@ -38,6 +38,6 @@ namespace Mineserver
     int8_t reason;
     int8_t mode;
   };
-};
+}
 
 #endif

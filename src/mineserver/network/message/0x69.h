@@ -39,6 +39,6 @@ namespace Mineserver
     int16_t progressBarId;
     int16_t value;
   };
-};
+}
 
 #endif

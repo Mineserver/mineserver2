@@ -41,6 +41,6 @@ namespace Mineserver
     int8_t data1;
     int8_t data2;
   };
-};
+}
 
 #endif

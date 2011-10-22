@@ -38,6 +38,6 @@ namespace Mineserver
     int32_t collectedId;
     int32_t collectorId;
   };
-};
+}
 
 #endif

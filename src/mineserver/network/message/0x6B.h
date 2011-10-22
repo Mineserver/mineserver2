@@ -40,6 +40,6 @@ namespace Mineserver
     int16_t quantity;
     int16_t damage;
   };
-};
+}
 
 #endif

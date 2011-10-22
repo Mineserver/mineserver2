@@ -39,6 +39,6 @@ namespace Mineserver
     int16_t z;
     bool mode;
   };
-};
+}
 
 #endif

@@ -46,6 +46,6 @@ namespace Mineserver
     uint8_t junk_e;
     uint8_t junk_f;
   };
-};
+}
 
 #endif

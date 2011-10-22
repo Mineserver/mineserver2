@@ -25,23 +25,42 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x18_H
-#define MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x18_H
-
-#include <mineserver/network/message/0x18.h>
+#include <mineserver/byteorder.h>
+#include <mineserver/network/message.h>
+#include <mineserver/network/protocol/notch/packetstream.h>
 #include <mineserver/network/protocol/notch/packet.h>
+#include <mineserver/network/protocol/notch/packet/0x18.h>
 
-namespace Mineserver
+int Mineserver::Network_Protocol_Notch_Packet_0x18::read(packet_stream_t& ps)
 {
-  struct Network_Protocol_Notch_Packet_0x18 : public Mineserver::Network_Protocol_Notch_Packet
-  {
-    Mineserver::Network_Message_0x18* message;
+  ps >> message->mid >> message->entityId >> message->type >> message->x >> message->y >> message->z >> message->yaw >> message->pitch;
 
-    Network_Protocol_Notch_Packet_0x18() { message = new Mineserver::Network_Message_0x18; }
+  int8_t tmp;
+  while (true) {
+    ps >> tmp;
 
-    int read(packet_stream_t& ps);
-    void write(packet_stream_t& ps);
-  };
-};
+    if (tmp == 0x7F) {
+      break;
+    } else {
+      message->data.push_back(tmp);
+    }
+  }
 
-#endif
+  if (ps.isValid()) {
+    ps.remove();
+    return STATE_MORE;
+  } else {
+    return STATE_NEEDMOREDATA;
+  }
+}
+
+void Mineserver::Network_Protocol_Notch_Packet_0x18::write(packet_stream_t& ps)
+{
+  ps << message->mid << message->entityId << message->type << message->x << message->y << message->z << message->yaw << message->pitch;
+
+  for (std::vector<int8_t>::const_iterator it=message->data.begin();it!=message->data.end();++it) {
+    ps << *it;
+  }
+
+  ps << static_cast<int8_t>(0x7F);
+}

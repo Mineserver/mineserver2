@@ -40,6 +40,6 @@ namespace Mineserver
     int8_t y;
     int8_t z;
   };
-};
+}
 
 #endif

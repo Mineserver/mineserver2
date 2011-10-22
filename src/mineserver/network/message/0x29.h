@@ -40,6 +40,6 @@ namespace Mineserver
     int8_t amplifier;
     int16_t duration;
   };
-};
+}
 
 #endif

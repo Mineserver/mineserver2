@@ -41,6 +41,6 @@ namespace Mineserver
     int8_t count;
     int16_t uses;
   };
-};
+}
 
 #endif

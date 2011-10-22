@@ -37,6 +37,6 @@ namespace Mineserver
   {
     int8_t windowId;
   };
-};
+}
 
 #endif

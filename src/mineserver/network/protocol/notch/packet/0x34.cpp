@@ -25,23 +25,34 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x34_H
-#define MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x34_H
-
-#include <mineserver/network/message/0x34.h>
+#include <mineserver/byteorder.h>
+#include <mineserver/network/message.h>
+#include <mineserver/network/protocol/notch/packetstream.h>
 #include <mineserver/network/protocol/notch/packet.h>
+#include <mineserver/network/protocol/notch/packet/0x34.h>
 
-namespace Mineserver
+int Mineserver::Network_Protocol_Notch_Packet_0x34::read(packet_stream_t& ps)
 {
-  struct Network_Protocol_Notch_Packet_0x34 : public Mineserver::Network_Protocol_Notch_Packet
-  {
-    Mineserver::Network_Message_0x34* message;
+  ps >> message->mid >> message->x >> message->z >> message->num;
+  message->coordinate.reserve(message->num*2);
+  ps.bytesTo(reinterpret_cast<uint8_t*>(&(message->coordinate[0])), message->num*2);
+  message->type.reserve(message->num);
+  ps.bytesTo(reinterpret_cast<uint8_t*>(&(message->type[0])), message->num);
+  message->meta.reserve(message->num);
+  ps.bytesTo(reinterpret_cast<uint8_t*>(&(message->meta[0])), message->num);
 
-    Network_Protocol_Notch_Packet_0x34() { message = new Mineserver::Network_Message_0x34; }
+  if (ps.isValid()) {
+    ps.remove();
+    return STATE_MORE;
+  } else {
+    return STATE_NEEDMOREDATA;
+  }
+}
 
-    int read(packet_stream_t& ps);
-    void write(packet_stream_t& ps);
-  };
-};
-
-#endif
+void Mineserver::Network_Protocol_Notch_Packet_0x34::write(packet_stream_t& ps)
+{
+  ps << message->mid << message->x << message->z << message->num;
+  ps.bytesFrom(reinterpret_cast<uint8_t*>(&(message->coordinate[0])), message->num*2);
+  ps.bytesFrom(reinterpret_cast<uint8_t*>(&(message->type[0])), message->num);
+  ps.bytesFrom(reinterpret_cast<uint8_t*>(&(message->meta[0])), message->num);
+}

@@ -42,6 +42,6 @@ namespace Mineserver
     std::string title;
     int8_t slots;
   };
-};
+}
 
 #endif

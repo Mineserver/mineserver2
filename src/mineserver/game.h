@@ -57,6 +57,6 @@ namespace Mineserver
       m_clients.push_back(client);
     }
   };
-};
+}
 
 #endif

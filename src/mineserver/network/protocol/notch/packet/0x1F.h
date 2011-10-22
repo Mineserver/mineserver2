@@ -42,6 +42,6 @@ namespace Mineserver
     int read(packet_stream_t& ps);
     void write(packet_stream_t& ps);
   };
-};
+}
 
 #endif

@@ -38,6 +38,6 @@ namespace Mineserver
     int16_t statisticId;
     int8_t amount;
   };
-};
+}
 
 #endif

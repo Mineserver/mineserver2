@@ -37,6 +37,6 @@ namespace Mineserver
   {
     int64_t time;
   };
-};
+}
 
 #endif

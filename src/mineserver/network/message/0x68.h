@@ -41,6 +41,6 @@ namespace Mineserver
     int16_t count;
     std::vector< std::pair< int16_t, std::pair< int8_t, int16_t > > > slots;
   };
-};
+}
 
 #endif

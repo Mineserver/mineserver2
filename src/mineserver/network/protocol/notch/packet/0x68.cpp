@@ -25,23 +25,52 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x68_H
-#define MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x68_H
-
-#include <mineserver/network/message/0x68.h>
+#include <mineserver/byteorder.h>
+#include <mineserver/network/message.h>
+#include <mineserver/network/protocol/notch/packetstream.h>
 #include <mineserver/network/protocol/notch/packet.h>
+#include <mineserver/network/protocol/notch/packet/0x68.h>
 
-namespace Mineserver
+int Mineserver::Network_Protocol_Notch_Packet_0x68::read(packet_stream_t& ps)
 {
-  struct Network_Protocol_Notch_Packet_0x68 : public Mineserver::Network_Protocol_Notch_Packet
-  {
-    Mineserver::Network_Message_0x68* message;
+  ps >> message->mid >> message->windowId >> message->count;
 
-    Network_Protocol_Notch_Packet_0x68() { message = new Mineserver::Network_Message_0x68; }
+  int16_t itemId, uses;
+  int8_t count;
 
-    int read(packet_stream_t& ps);
-    void write(packet_stream_t& ps);
-  };
-};
+  for (int16_t i=0;i<count;++i) {
+    itemId = uses = count = 0;
 
-#endif
+    ps >> itemId;
+
+    if (itemId != -1) {
+      ps >> count >> uses;
+    }
+
+    message->slots.push_back(std::pair<int16_t, std::pair<int8_t, int16_t> >(itemId, std::pair<int8_t, int16_t>(count, uses)));
+  }
+
+
+  if (ps.isValid()) {
+    ps.remove();
+    return STATE_MORE;
+  } else {
+    return STATE_NEEDMOREDATA;
+  }
+}
+
+void Mineserver::Network_Protocol_Notch_Packet_0x68::write(packet_stream_t& ps)
+{
+  ps << message->mid << message->windowId << message->count;
+
+  int16_t itemId, uses;
+  int8_t count;
+
+  for (std::vector<std::pair<int16_t, std::pair<int8_t, int16_t> > >::const_iterator it=message->slots.begin();it!=message->slots.end();++it) {
+    ps << it->first;
+
+    if (it->first != -1) {
+      ps << it->second.first << it->second.second;
+    }
+  }
+}

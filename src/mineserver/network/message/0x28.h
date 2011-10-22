@@ -40,6 +40,6 @@ namespace Mineserver
     int32_t entityId;
     std::vector<int8_t> data;
   };
-};
+}
 
 #endif

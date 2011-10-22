@@ -38,6 +38,6 @@ namespace Mineserver
     int32_t entityId;
     int8_t status;
   };
-};
+}
 
 #endif

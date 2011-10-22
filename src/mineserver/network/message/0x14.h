@@ -46,6 +46,6 @@ namespace Mineserver
     int8_t pitch;
     int16_t currentItem;
   };
-};
+}
 
 #endif

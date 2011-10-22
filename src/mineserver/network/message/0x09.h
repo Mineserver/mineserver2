@@ -41,6 +41,6 @@ namespace Mineserver
     int16_t height;
     int64_t seed;
   };
-};
+}
 
 #endif

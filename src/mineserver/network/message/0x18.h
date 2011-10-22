@@ -46,6 +46,6 @@ namespace Mineserver
     int8_t pitch;
     std::vector<int8_t> data;
   };
-};
+}
 
 #endif

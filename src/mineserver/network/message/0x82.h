@@ -51,6 +51,6 @@ namespace Mineserver
     std::string line3;
     std::string line4;
   };
-};
+}
 
 #endif

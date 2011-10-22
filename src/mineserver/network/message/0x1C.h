@@ -40,6 +40,6 @@ namespace Mineserver
     int16_t velocityY;
     int16_t velocityZ;
   };
-};
+}
 
 #endif

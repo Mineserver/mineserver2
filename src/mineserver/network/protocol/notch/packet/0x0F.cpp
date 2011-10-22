@@ -25,23 +25,25 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x0F_H
-#define MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x0F_H
-
-#include <mineserver/network/message/0x0F.h>
+#include <mineserver/byteorder.h>
+#include <mineserver/network/message.h>
+#include <mineserver/network/protocol/notch/packetstream.h>
 #include <mineserver/network/protocol/notch/packet.h>
+#include <mineserver/network/protocol/notch/packet/0x0F.h>
 
-namespace Mineserver
+int Mineserver::Network_Protocol_Notch_Packet_0x0F::read(packet_stream_t& ps)
 {
-  struct Network_Protocol_Notch_Packet_0x0F : public Mineserver::Network_Protocol_Notch_Packet
-  {
-    Mineserver::Network_Message_0x0F* message;
+  ps >> message->mid >> message->x >> message->y >> message->z >> message->direction >> message->itemId >> message->amount >> message->damage;
 
-    Network_Protocol_Notch_Packet_0x0F() { message = new Mineserver::Network_Message_0x0F; }
+  if (ps.isValid()) {
+    ps.remove();
+    return STATE_MORE;
+  } else {
+    return STATE_NEEDMOREDATA;
+  }
+}
 
-    int read(packet_stream_t& ps);
-    void write(packet_stream_t& ps);
-  };
-};
-
-#endif
+void Mineserver::Network_Protocol_Notch_Packet_0x0F::write(packet_stream_t& ps)
+{
+  ps << message->mid << message->x << message->y << message->z << message->direction << message->itemId << message->amount << message->damage;
+}

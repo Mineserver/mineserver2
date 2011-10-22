@@ -86,6 +86,6 @@ namespace Mineserver
     void handleRead(const boost::system::error_code& error, size_t transferred);
     void handleWrite(const boost::system::error_code& error);
   };
-};
+}
 
 #endif

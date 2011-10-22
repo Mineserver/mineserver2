@@ -41,6 +41,6 @@ namespace Mineserver
     int32_t y;
     int32_t z;
   };
-};
+}
 
 #endif

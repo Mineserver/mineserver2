@@ -100,7 +100,7 @@ namespace Mineserver
     MESSAGE_INCREMENT_STATISTIC = 0xC8,
     MESSAGE_PLAYER_LIST_ITEM = 0xC9,
     MESSAGE_LIST_PING = 0xFE,
-    MESSAGE_KICK = 0xFF,
+    MESSAGE_KICK = 0xFF
   };
 
   class Network_Message

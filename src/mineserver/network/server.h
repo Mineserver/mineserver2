@@ -58,6 +58,6 @@ namespace Mineserver
     void startAccept();
     void handleAccept(Mineserver::Network_Client::pointer_t client, const boost::system::error_code& error);
   };
-};
+}
 
 #endif

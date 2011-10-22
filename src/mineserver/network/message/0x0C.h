@@ -39,6 +39,6 @@ namespace Mineserver
     float pitch;
     bool onGround;
   };
-};
+}
 
 #endif

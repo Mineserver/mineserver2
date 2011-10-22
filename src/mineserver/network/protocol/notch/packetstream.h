@@ -139,6 +139,6 @@ namespace Mineserver
     Mineserver::Network_Protocol_Notch_PacketStream& operator>>(std::string& str);
     Mineserver::Network_Protocol_Notch_PacketStream& operator<<(const Mineserver::Network_Protocol_Notch_PacketStream& other);
   };
-};
+}
 
 #endif

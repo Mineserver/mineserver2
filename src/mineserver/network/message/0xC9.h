@@ -41,6 +41,6 @@ namespace Mineserver
     bool online;
     int16_t ping;
   };
-};
+}
 
 #endif

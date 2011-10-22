@@ -39,6 +39,6 @@ namespace Mineserver
   {
     std::string username;
   };
-};
+}
 
 #endif

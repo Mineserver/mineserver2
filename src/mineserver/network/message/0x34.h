@@ -44,6 +44,6 @@ namespace Mineserver
     std::vector<int8_t> type;
     std::vector<int8_t> meta;
   };
-};
+}
 
 #endif

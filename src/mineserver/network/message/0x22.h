@@ -42,6 +42,6 @@ namespace Mineserver
     int8_t yaw;
     int8_t pitch;
   };
-};
+}
 
 #endif

@@ -25,23 +25,25 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x6B_H
-#define MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x6B_H
-
-#include <mineserver/network/message/0x6B.h>
+#include <mineserver/byteorder.h>
+#include <mineserver/network/message.h>
+#include <mineserver/network/protocol/notch/packetstream.h>
 #include <mineserver/network/protocol/notch/packet.h>
+#include <mineserver/network/protocol/notch/packet/0x6B.h>
 
-namespace Mineserver
+int Mineserver::Network_Protocol_Notch_Packet_0x6B::read(packet_stream_t& ps)
 {
-  struct Network_Protocol_Notch_Packet_0x6B : public Mineserver::Network_Protocol_Notch_Packet
-  {
-    Mineserver::Network_Message_0x6B* message;
+  ps >> message->mid >> message->slot >> message->itemId >> message->quantity >> message->damage;
 
-    Network_Protocol_Notch_Packet_0x6B() { message = new Mineserver::Network_Message_0x6B; }
+  if (ps.isValid()) {
+    ps.remove();
+    return STATE_MORE;
+  } else {
+    return STATE_NEEDMOREDATA;
+  }
+}
 
-    int read(packet_stream_t& ps);
-    void write(packet_stream_t& ps);
-  };
-};
-
-#endif
+void Mineserver::Network_Protocol_Notch_Packet_0x6B::write(packet_stream_t& ps)
+{
+  ps << message->mid << message->slot << message->itemId << message->quantity << message->damage;
+}

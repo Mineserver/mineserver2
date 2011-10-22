@@ -37,6 +37,6 @@ namespace Mineserver
   {
     int16_t id;
   };
-};
+}
 
 #endif

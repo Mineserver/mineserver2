@@ -39,6 +39,6 @@ namespace Mineserver
     int32_t target;
     bool leftClick;
   };
-};
+}
 
 #endif

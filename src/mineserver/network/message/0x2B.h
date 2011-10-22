@@ -39,6 +39,6 @@ namespace Mineserver
     int8_t level;
     int16_t totalExperience;
   };
-};
+}
 
 #endif

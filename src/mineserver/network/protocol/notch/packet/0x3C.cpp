@@ -25,23 +25,28 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x3C_H
-#define MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x3C_H
-
-#include <mineserver/network/message/0x3C.h>
+#include <mineserver/byteorder.h>
+#include <mineserver/network/message.h>
+#include <mineserver/network/protocol/notch/packetstream.h>
 #include <mineserver/network/protocol/notch/packet.h>
+#include <mineserver/network/protocol/notch/packet/0x3C.h>
 
-namespace Mineserver
+int Mineserver::Network_Protocol_Notch_Packet_0x3C::read(packet_stream_t& ps)
 {
-  struct Network_Protocol_Notch_Packet_0x3C : public Mineserver::Network_Protocol_Notch_Packet
-  {
-    Mineserver::Network_Message_0x3C* message;
+  ps >> message->mid >> message->x >> message->y >> message->z >> message->unknown >> message->count;
+  message->data.reserve(message->count*3);
+  ps.bytesTo(reinterpret_cast<uint8_t*>(&(message->data[0])), message->count*3);
 
-    Network_Protocol_Notch_Packet_0x3C() { message = new Mineserver::Network_Message_0x3C; }
+  if (ps.isValid()) {
+    ps.remove();
+    return STATE_MORE;
+  } else {
+    return STATE_NEEDMOREDATA;
+  }
+}
 
-    int read(packet_stream_t& ps);
-    void write(packet_stream_t& ps);
-  };
-};
-
-#endif
+void Mineserver::Network_Protocol_Notch_Packet_0x3C::write(packet_stream_t& ps)
+{
+  ps << message->mid << message->x << message->y << message->z << message->unknown << message->count;
+  ps.bytesFrom(reinterpret_cast<uint8_t*>(&(message->data[0])), message->count*3);
+}

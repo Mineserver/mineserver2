@@ -36,6 +36,6 @@ namespace Mineserver
   struct Network_Message_0xFE : public Mineserver::Network_Message
   {
   };
-};
+}
 
 #endif

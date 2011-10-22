@@ -46,6 +46,6 @@ namespace Mineserver
     int32_t bytes;
     std::vector<uint8_t> data;
   };
-};
+}
 
 #endif

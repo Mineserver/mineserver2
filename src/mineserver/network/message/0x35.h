@@ -41,6 +41,6 @@ namespace Mineserver
     int8_t type;
     int8_t meta;
   };
-};
+}
 
 #endif
