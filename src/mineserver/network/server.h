@@ -36,6 +36,7 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
 
+#include <mineserver/game.h>
 #include <mineserver/network/client.h>
 
 namespace Mineserver
@@ -43,10 +44,11 @@ namespace Mineserver
   class Network_Server
   {
   private:
+    Mineserver::Game& m_game;
     boost::asio::ip::tcp::acceptor m_socket;
 
   public:
-    Network_Server(boost::asio::io_service& service) : m_socket(service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 7777))
+    Network_Server(Mineserver::Game& game, boost::asio::io_service& service) : m_game(game), m_socket(service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 7777))
     {
       startAccept();
     }

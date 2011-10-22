@@ -35,14 +35,26 @@
 
 int main()
 {
-  try {
-    boost::asio::io_service service;
+  boost::asio::io_service service;
 
-    Mineserver::Network_Server server(service);
+  Mineserver::Game game;
 
-    service.run();
-  } catch (std::exception& e) {
-    std::cerr << e.what() << std::endl;
+  Mineserver::Network_Server server(game, service);
+
+  while (true) {
+    try {
+      service.poll_one();
+    } catch (std::exception& e) {
+      std::cerr << e.what() << std::endl;
+    }
+
+    try {
+      game.run();
+    } catch (std::exception& e) {
+      std::cerr << e.what() << std::endl;
+    }
+
+    usleep(50000);
   }
 
   return 0;

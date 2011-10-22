@@ -25,42 +25,31 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <string>
-#include <iostream>
+#ifndef MINESERVER_GAME_H
+#define MINESERVER_GAME_H
 
-#include <boost/bind.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/asio.hpp>
+#include <map>
+#include <list>
 
+#include <mineserver/game/player.h>
 #include <mineserver/network/client.h>
-#include <mineserver/network/server.h>
 
-void Mineserver::Network_Server::startAccept()
+namespace Mineserver
 {
-  // NOTE:
-  // Needs a parser object for the second argument
-  // This argument is null right now just to facilitate a test build!
-  Mineserver::Network_Client::pointer_t client = Mineserver::Network_Client::create(m_socket.get_io_service(), NULL);
-
-  m_socket.async_accept(
-    client->socket(),
-    boost::bind(
-      &Mineserver::Network_Server::handleAccept,
-      this,
-      client,
-      boost::asio::placeholders::error
-    )
-  );
-}
-
-void Mineserver::Network_Server::handleAccept(Mineserver::Network_Client::pointer_t client, const boost::system::error_code& error)
-{
-  if (!error)
+  class Game
   {
-    client->start();
-    m_game.addClient(client);
-  }
+  private:
+    std::list<Mineserver::Game_Player*> m_players;
+    std::list<Mineserver::Network_Client*> m_clients;
+    std::map<Mineserver::Network_Client*,Mineserver::Game_Player*> m_clientMap;
+  public:
+    void run();
 
-  startAccept();
-}
+    void addClient(Mineserver::Network_Client* client)
+    {
+      m_clients.push_back(client);
+    }
+  };
+};
+
+#endif
