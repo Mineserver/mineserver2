@@ -25,20 +25,14 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x34_H
-#define MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x34_H
-
-#include <mineserver/byteorder.h>
-#include <mineserver/network/packet/0x34.h>
-#include <mineserver/network/protocol/notch/packet.h>
+#ifndef MINESERVER_NETWORK_PACKETABSTRACT_H
+#define MINESERVER_NETWORK_PACKETABSTRACT_H
 
 namespace Mineserver
 {
-  struct Network_Protocol_Notch_Packet_0x34 : public Mineserver::Network_Protocol_Notch_Packet, public Mineserver::Network_Packet_0x34
+  class Network_PacketAbstract
   {
-    int read(packet_stream_t& ps);
-    void write(packet_stream_t& ps);
   };
-};
+}
 
 #endif

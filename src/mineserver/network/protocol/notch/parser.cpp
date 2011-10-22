@@ -25,6 +25,115 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <vector>
+#include <list>
+
 #include <mineserver/network/packet.h>
 #include <mineserver/network/parser.h>
+
+#include <mineserver/network/protocol/notch/packet.h>
+#include <mineserver/network/protocol/notch/packet/0x00.h>
+#include <mineserver/network/protocol/notch/packet/0x01.h>
+#include <mineserver/network/protocol/notch/packet/0x02.h>
+#include <mineserver/network/protocol/notch/packet/0x03.h>
+#include <mineserver/network/protocol/notch/packet/0x04.h>
+#include <mineserver/network/protocol/notch/packet/0x05.h>
+#include <mineserver/network/protocol/notch/packet/0x06.h>
+#include <mineserver/network/protocol/notch/packet/0x07.h>
+#include <mineserver/network/protocol/notch/packet/0x08.h>
+#include <mineserver/network/protocol/notch/packet/0x09.h>
+#include <mineserver/network/protocol/notch/packet/0x0A.h>
+#include <mineserver/network/protocol/notch/packet/0x0B.h>
+#include <mineserver/network/protocol/notch/packet/0x0C.h>
+#include <mineserver/network/protocol/notch/packet/0x0D.h>
+#include <mineserver/network/protocol/notch/packet/0x0E.h>
+#include <mineserver/network/protocol/notch/packet/0x0F.h>
+#include <mineserver/network/protocol/notch/packet/0x10.h>
+#include <mineserver/network/protocol/notch/packet/0x11.h>
+#include <mineserver/network/protocol/notch/packet/0x12.h>
+#include <mineserver/network/protocol/notch/packet/0x13.h>
+#include <mineserver/network/protocol/notch/packet/0x14.h>
+#include <mineserver/network/protocol/notch/packet/0x15.h>
+#include <mineserver/network/protocol/notch/packet/0x16.h>
+#include <mineserver/network/protocol/notch/packet/0x17.h>
+#include <mineserver/network/protocol/notch/packet/0x18.h>
+#include <mineserver/network/protocol/notch/packet/0x19.h>
+#include <mineserver/network/protocol/notch/packet/0x1A.h>
+#include <mineserver/network/protocol/notch/packet/0x1C.h>
+#include <mineserver/network/protocol/notch/packet/0x1D.h>
+#include <mineserver/network/protocol/notch/packet/0x1E.h>
+#include <mineserver/network/protocol/notch/packet/0x1F.h>
+#include <mineserver/network/protocol/notch/packet/0x20.h>
+#include <mineserver/network/protocol/notch/packet/0x21.h>
+#include <mineserver/network/protocol/notch/packet/0x22.h>
+#include <mineserver/network/protocol/notch/packet/0x26.h>
+#include <mineserver/network/protocol/notch/packet/0x27.h>
+#include <mineserver/network/protocol/notch/packet/0x28.h>
+#include <mineserver/network/protocol/notch/packet/0x29.h>
+#include <mineserver/network/protocol/notch/packet/0x2A.h>
+#include <mineserver/network/protocol/notch/packet/0x2B.h>
+#include <mineserver/network/protocol/notch/packet/0x32.h>
+#include <mineserver/network/protocol/notch/packet/0x33.h>
+#include <mineserver/network/protocol/notch/packet/0x34.h>
+#include <mineserver/network/protocol/notch/packet/0x35.h>
+#include <mineserver/network/protocol/notch/packet/0x36.h>
+#include <mineserver/network/protocol/notch/packet/0x3C.h>
+#include <mineserver/network/protocol/notch/packet/0x3D.h>
+#include <mineserver/network/protocol/notch/packet/0x46.h>
+#include <mineserver/network/protocol/notch/packet/0x47.h>
+#include <mineserver/network/protocol/notch/packet/0x64.h>
+#include <mineserver/network/protocol/notch/packet/0x65.h>
+#include <mineserver/network/protocol/notch/packet/0x66.h>
+#include <mineserver/network/protocol/notch/packet/0x67.h>
+#include <mineserver/network/protocol/notch/packet/0x68.h>
+#include <mineserver/network/protocol/notch/packet/0x69.h>
+#include <mineserver/network/protocol/notch/packet/0x6A.h>
+#include <mineserver/network/protocol/notch/packet/0x6B.h>
+#include <mineserver/network/protocol/notch/packet/0x82.h>
+#include <mineserver/network/protocol/notch/packet/0x83.h>
+#include <mineserver/network/protocol/notch/packet/0xC8.h>
+#include <mineserver/network/protocol/notch/packet/0xC9.h>
+#include <mineserver/network/protocol/notch/packet/0xFE.h>
+#include <mineserver/network/protocol/notch/packet/0xFF.h>
+
 #include <mineserver/network/protocol/notch/parser.h>
+
+int Mineserver::Network_Protocol_Notch_Parser::read(std::vector<uint8_t>& bytes, std::list<Mineserver::Network_PacketAbstract>& packets)
+{
+  if (bytes.size() < 1) {
+    return Mineserver::Network_Parser::STATE_DONE;
+  }
+
+  uint8_t id = bytes[0];
+
+  Mineserver::Network_Protocol_Notch_Packet* packet = NULL;
+
+  m_packetStream.setBuffer(&bytes);
+  m_packetStream.setPos(0);
+
+  int state = Mineserver::Network_Parser::STATE_ERROR;
+  int packetState = Mineserver::Network_Protocol_Notch_Packet::STATE_ERROR;
+
+  switch (id)
+  {
+  case 0xFE:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0xFE;
+    packetState = packet->read(m_packetStream);
+    break;
+  }
+
+  if (packetState == Mineserver::Network_Protocol_Notch_Packet::STATE_OK) {
+    packets.push_back(*packet);
+    m_packetStream.remove();
+    state = Mineserver::Network_Parser::STATE_MORE;
+  } else if (packetState == Mineserver::Network_Protocol_Notch_Packet::STATE_NEEDMOREDATA) {
+    state = Mineserver::Network_Parser::STATE_DONE;
+  } else if (packetState == Mineserver::Network_Protocol_Notch_Packet::STATE_ERROR) {
+    state = Mineserver::Network_Parser::STATE_ERROR;
+  }
+
+  m_packetStream.setBuffer(NULL);
+  m_packetStream.setPos(0);
+
+  return state;
+}

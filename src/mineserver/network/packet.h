@@ -29,6 +29,7 @@
 #define MINESERVER_NETWORK_PACKET_H
 
 #include <mineserver/byteorder.h>
+#include <mineserver/network/packetabstract.h>
 
 namespace Mineserver
 {
@@ -103,7 +104,7 @@ namespace Mineserver
     PACKET_KICK = 0xFF,
   };
 
-  class Network_Packet
+  class Network_Packet : public Network_PacketAbstract
   {
   public:
     uint8_t pid;

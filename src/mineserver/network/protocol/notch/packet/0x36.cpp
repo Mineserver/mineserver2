@@ -31,10 +31,16 @@
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x36.h>
 
-void Mineserver::Network_Protocol_Notch_Packet_0x36::read(packet_stream_t& ps)
+int Mineserver::Network_Protocol_Notch_Packet_0x36::read(packet_stream_t& ps)
 {
   ps >> pid >> x >> y >> z >> data1 >> data2;
-  ps.remove();
+
+  if (ps.isValid()) {
+    ps.remove();
+    return STATE_MORE;
+  } else {
+    return STATE_NEEDMOREDATA;
+  }
 }
 
 void Mineserver::Network_Protocol_Notch_Packet_0x36::write(packet_stream_t& ps)

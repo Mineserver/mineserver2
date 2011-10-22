@@ -39,7 +39,7 @@ namespace Mineserver
     int8_t reason;
     int8_t mode;
 
-    void read(packet_stream_t& ps);
+    int read(packet_stream_t& ps);
     void write(packet_stream_t& ps);
   };
 };

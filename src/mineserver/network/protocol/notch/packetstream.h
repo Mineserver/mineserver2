@@ -39,18 +39,15 @@ namespace Mineserver
 {
   class Network_Protocol_Notch_PacketStream
   {
-  public:
-    typedef std::vector<uint8_t> ByteBuffer;
-
   private:
-    ByteBuffer m_buffer;
+    std::vector<uint8_t>* m_buffer;
     size_t m_pos;
     bool m_valid;
     iconv_t m_iconvUtfHandler;
     iconv_t m_iconvUcsHandler;
 
   public:
-    Network_Protocol_Notch_PacketStream() : m_buffer(),m_pos(0),m_valid(true)
+    Network_Protocol_Notch_PacketStream() : m_buffer(NULL),m_pos(0),m_valid(false)
     {
       m_iconvUcsHandler = iconv_open("UTF8", "UCS-2BE");
       m_iconvUtfHandler = iconv_open("UCS-2BE", "UTF8");
@@ -62,19 +59,44 @@ namespace Mineserver
       iconv_close(m_iconvUtfHandler);
     }
 
-    inline void append(const uint8_t* const buffer, const size_t n)
+    inline std::vector<uint8_t>* getBuffer()
     {
-      m_buffer.insert(m_buffer.end(), buffer, buffer + n);
+      return m_buffer;
     }
 
-    inline void append(const Mineserver::Network_Protocol_Notch_PacketStream& p)
+    inline void setBuffer(std::vector<uint8_t>* buffer)
     {
-      m_buffer.insert(m_buffer.end(), p.m_buffer.begin(), p.m_buffer.end());
+      m_buffer = buffer;
+    }
+
+    inline size_t getPos()
+    {
+      return m_pos;
+    }
+
+    inline void setPos(size_t pos)
+    {
+      m_pos = pos;
+    }
+
+    inline bool isValid()
+    {
+      return m_valid;
+    }
+
+    inline void setValid(bool valid)
+    {
+      m_valid = valid;
+    }
+
+    inline void append(const uint8_t* const buffer, const size_t n)
+    {
+      m_buffer->insert(m_buffer->end(), buffer, buffer + n);
     }
 
     inline void remove()
     {
-      m_buffer.erase(m_buffer.begin(), m_buffer.begin() + m_pos);
+      m_buffer->erase(m_buffer->begin(), m_buffer->begin() + m_pos);
       m_pos = 0;
     }
 
@@ -85,7 +107,7 @@ namespace Mineserver
 
     inline bool haveData(size_t n)
     {
-      return (m_buffer.size() - m_pos) >= n;
+      return (m_buffer->size() - m_pos) >= n;
     }
 
     void bytesFrom(uint8_t* dst, size_t n);

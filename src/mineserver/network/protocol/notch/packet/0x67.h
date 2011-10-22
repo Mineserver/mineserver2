@@ -42,7 +42,7 @@ namespace Mineserver
     int8_t count;
     int16_t uses;
 
-    void read(packet_stream_t& ps);
+    int read(packet_stream_t& ps);
     void write(packet_stream_t& ps);
   };
 };

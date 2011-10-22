@@ -27,6 +27,7 @@
 
 #include <iostream>
 
+#include <mineserver/network/client.h>
 #include <mineserver/game.h>
 
 void Mineserver::Game::run()

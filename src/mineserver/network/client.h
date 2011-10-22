@@ -30,6 +30,8 @@
 
 #include <string>
 #include <iostream>
+#include <list>
+#include <vector>
 
 #include <boost/bind.hpp>
 #include <boost/array.hpp>
@@ -48,8 +50,11 @@ namespace Mineserver
 
   private:
     boost::asio::ip::tcp::socket m_socket;
-    boost::array<uint8_t, 8192> m_buffer;
+    boost::array<uint8_t, 8192> m_tmp;
+    std::vector<uint8_t> m_buffer;
     Mineserver::Network_Parser* m_parser;
+    std::list<Mineserver::Network_PacketAbstract> m_incoming;
+    std::list<Mineserver::Network_PacketAbstract> m_outgoing;
 
   public:
     static pointer_t create(boost::asio::io_service& service, Mineserver::Network_Parser* parser)

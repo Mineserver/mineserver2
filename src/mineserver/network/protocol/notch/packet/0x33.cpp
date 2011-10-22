@@ -31,12 +31,18 @@
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x33.h>
 
-void Mineserver::Network_Protocol_Notch_Packet_0x33::read(packet_stream_t& ps)
+int Mineserver::Network_Protocol_Notch_Packet_0x33::read(packet_stream_t& ps)
 {
   ps >> pid >> posX >> posY >> posZ >> sizeX >> sizeY >> sizeZ >> bytes;
   data.reserve(bytes);
   ps.bytesTo(reinterpret_cast<uint8_t*>(&(data[0])), bytes);
-  ps.remove();
+
+  if (ps.isValid()) {
+    ps.remove();
+    return STATE_MORE;
+  } else {
+    return STATE_NEEDMOREDATA;
+  }
 }
 
 void Mineserver::Network_Protocol_Notch_Packet_0x33::write(packet_stream_t& ps)

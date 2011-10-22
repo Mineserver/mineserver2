@@ -42,7 +42,7 @@ namespace Mineserver
   class Game : public boost::enable_shared_from_this<Mineserver::Game>
   {
   public:
-    typedef boost::shared_ptr<Mineserver::Game_Player> pointer_t;
+    typedef boost::shared_ptr<Mineserver::Game> pointer_t;
 
   private:
     std::list<Mineserver::Game_Player::pointer_t> m_players;

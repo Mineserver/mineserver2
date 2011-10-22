@@ -41,7 +41,7 @@ namespace Mineserver
     std::string title;
     int8_t slots;
 
-    void read(packet_stream_t& ps);
+    int read(packet_stream_t& ps);
     void write(packet_stream_t& ps);
   };
 };

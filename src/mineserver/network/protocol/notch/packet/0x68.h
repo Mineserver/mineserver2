@@ -40,7 +40,7 @@ namespace Mineserver
     int16_t count;
     std::vector< std::pair< int16_t, std::pair< int8_t, int16_t > > > slots;
 
-    void read(packet_stream_t& ps);
+    int read(packet_stream_t& ps);
     void write(packet_stream_t& ps);
   };
 };

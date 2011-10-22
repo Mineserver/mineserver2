@@ -31,7 +31,7 @@
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x68.h>
 
-void Mineserver::Network_Protocol_Notch_Packet_0x68::read(packet_stream_t& ps)
+int Mineserver::Network_Protocol_Notch_Packet_0x68::read(packet_stream_t& ps)
 {
   ps >> pid >> windowId >> count;
 
@@ -50,7 +50,13 @@ void Mineserver::Network_Protocol_Notch_Packet_0x68::read(packet_stream_t& ps)
     slots.push_back(std::pair<int16_t, std::pair<int8_t, int16_t> >(itemId, std::pair<int8_t, int16_t>(count, uses)));
   }
 
-  ps.remove();
+
+  if (ps.isValid()) {
+    ps.remove();
+    return STATE_MORE;
+  } else {
+    return STATE_NEEDMOREDATA;
+  }
 }
 
 void Mineserver::Network_Protocol_Notch_Packet_0x68::write(packet_stream_t& ps)

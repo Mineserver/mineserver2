@@ -56,7 +56,12 @@ void Mineserver::Network_Client::stop()
 void Mineserver::Network_Client::handleRead(const boost::system::error_code& e, size_t n)
 {
   if (!e) {
-    m_parser->putBytes(reinterpret_cast<uint8_t*>(m_buffer.data()), n);
+    m_buffer.insert(m_buffer.end(), m_tmp.begin(), m_tmp.begin() + n);
+
+    int state;
+    do {
+      state = m_parser->read(m_buffer, m_incoming);
+    } while (state == Mineserver::Network_Parser::STATE_MORE);
   } else if (e != boost::asio::error::operation_aborted) {
     stop();
   }

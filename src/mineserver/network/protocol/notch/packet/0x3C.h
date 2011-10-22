@@ -43,7 +43,7 @@ namespace Mineserver
     int32_t count;
     std::vector<uint8_t> data;
 
-    void read(packet_stream_t& ps);
+    int read(packet_stream_t& ps);
     void write(packet_stream_t& ps);
   };
 };

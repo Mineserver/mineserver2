@@ -41,7 +41,7 @@ namespace Mineserver
     int16_t quantity;
     int16_t damage;
 
-    void read(packet_stream_t& ps);
+    int read(packet_stream_t& ps);
     void write(packet_stream_t& ps);
   };
 };

@@ -34,19 +34,19 @@
 
 void Mineserver::Network_Protocol_Notch_PacketStream::bytesFrom(uint8_t* src, size_t n)
 {
-  m_buffer.reserve(n);
-  memcpy(reinterpret_cast<uint8_t*>(&(m_buffer[0])), src, n);
+  m_buffer->reserve(n);
+  memcpy(reinterpret_cast<uint8_t*>(&((*m_buffer)[0])), src, n);
 }
 
 void Mineserver::Network_Protocol_Notch_PacketStream::bytesTo(uint8_t* dst, size_t n)
 {
-  memcpy(dst, reinterpret_cast<uint8_t*>(&(m_buffer[0])), n);
+  memcpy(dst, reinterpret_cast<uint8_t*>(&((*m_buffer)[0])), n);
   m_pos += n;
 }
 
 Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_Notch_PacketStream::operator<<(bool val)
 {
-  m_buffer.push_back(val ? 1 : 0);
+  m_buffer->push_back(val ? 1 : 0);
 
   return *this;
 }
@@ -55,7 +55,11 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
 {
   if (haveData(1))
   {
-    val = m_buffer[m_pos++] != 0;
+    val = ((*m_buffer)[m_pos++] != 0);
+  }
+  else
+  {
+    m_valid = false;
   }
 
   return *this;
@@ -63,7 +67,7 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
 
 Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_Notch_PacketStream::operator<<(int8_t val)
 {
-  m_buffer.push_back(val);
+  m_buffer->push_back(val);
 
   return *this;
 }
@@ -72,7 +76,11 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
 {
   if (haveData(1))
   {
-    val = m_buffer[m_pos++];
+    val = (*m_buffer)[m_pos++];
+  }
+  else
+  {
+    m_valid = false;
   }
 
   return *this;
@@ -80,7 +88,7 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
 
 Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_Notch_PacketStream::operator<<(uint8_t val)
 {
-  m_buffer.push_back(val);
+  m_buffer->push_back(val);
 
   return *this;
 }
@@ -89,7 +97,11 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
 {
   if (haveData(1))
   {
-    val = m_buffer[m_pos++];
+    val = (*m_buffer)[m_pos++];
+  }
+  else
+  {
+    m_valid = false;
   }
 
   return *this;
@@ -108,8 +120,12 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
 {
   if (haveData(2))
   {
-    val = betoh16(*(reinterpret_cast<int16_t*>(&(m_buffer[m_pos]))));
+    val = betoh16(*(reinterpret_cast<int16_t*>(&((*m_buffer)[m_pos]))));
     m_pos += 2;
+  }
+  else
+  {
+    m_valid = false;
   }
 
   return *this;
@@ -128,8 +144,12 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
 {
   if (haveData(2))
   {
-    val = betoh16(*(reinterpret_cast<uint16_t*>(&(m_buffer[m_pos]))));
+    val = betoh16(*(reinterpret_cast<uint16_t*>(&((*m_buffer)[m_pos]))));
     m_pos += 2;
+  }
+  else
+  {
+    m_valid = false;
   }
 
   return *this;
@@ -148,8 +168,12 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
 {
   if (haveData(4))
   {
-    val = betoh32(*(reinterpret_cast<int32_t*>(&(m_buffer[m_pos]))));
+    val = betoh32(*(reinterpret_cast<int32_t*>(&((*m_buffer)[m_pos]))));
     m_pos += 4;
+  }
+  else
+  {
+    m_valid = false;
   }
 
   return *this;
@@ -168,8 +192,12 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
 {
   if (haveData(4))
   {
-    val = betoh32(*(reinterpret_cast<uint32_t*>(&(m_buffer[m_pos]))));
+    val = betoh32(*(reinterpret_cast<uint32_t*>(&((*m_buffer)[m_pos]))));
     m_pos += 4;
+  }
+  else
+  {
+    m_valid = false;
   }
 
   return *this;
@@ -188,8 +216,12 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
 {
   if (haveData(8))
   {
-    val = betoh64(*(reinterpret_cast<int64_t*>(&(m_buffer[m_pos]))));
+    val = betoh64(*(reinterpret_cast<int64_t*>(&((*m_buffer)[m_pos]))));
     m_pos += 8;
+  }
+  else
+  {
+    m_valid = false;
   }
 
   return *this;
@@ -208,8 +240,12 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
 {
   if (haveData(8))
   {
-    val = betoh64(*(reinterpret_cast<uint64_t*>(&(m_buffer[m_pos]))));
+    val = betoh64(*(reinterpret_cast<uint64_t*>(&((*m_buffer)[m_pos]))));
     m_pos += 8;
+  }
+  else
+  {
+    m_valid = false;
   }
 
   return *this;
@@ -235,11 +271,15 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
 
     for (size_t i = 0; i < sizeof(res); ++i)
     {
-      *p++ = m_buffer[m_pos++];
+      *p++ = (*m_buffer)[m_pos++];
     }
 
     uint32_t ival = betoh32(res);
     memcpy(&val, &ival, 4);
+  }
+  else
+  {
+    m_valid = false;
   }
 
   return *this;
@@ -265,11 +305,15 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
 
     for (size_t i = 0; i < sizeof(res); ++i)
     {
-      *p++ = m_buffer[m_pos++];
+      *p++ = (*m_buffer)[m_pos++];
     }
 
     uint64_t ival = betoh64(res);
     memcpy(&val, &ival, 8);
+  }
+  else
+  {
+    m_valid = false;
   }
 
   return *this;
@@ -323,8 +367,12 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
 
   if (haveData(2))
   {
-    len = betoh16(*(reinterpret_cast<int16_t*>(&(m_buffer[m_pos]))));
+    len = betoh16(*(reinterpret_cast<int16_t*>(&((*m_buffer)[m_pos]))));
     m_pos += 2;
+  }
+  else
+  {
+    m_valid = false;
   }
 
   if (haveData(len * 2))
@@ -335,7 +383,7 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
     src_s = src_l = len * 2;
     dst_s = dst_l = src_l * 2;
 
-    char* src_c = reinterpret_cast<char*>(&(m_buffer[m_pos]));
+    char* src_c = reinterpret_cast<char*>(&((*m_buffer)[m_pos]));
     dst = dst_c = new char[dst_s];
 
     size_t rc = iconv(m_iconvUcsHandler, &src_c, &src_l, &dst_c, &dst_l);
@@ -358,12 +406,10 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
 
     delete[] dst;
   }
+  else
+  {
+    m_valid = false;
+  }
 
-  return *this;
-}
-
-Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_Notch_PacketStream::operator<<(const Mineserver::Network_Protocol_Notch_PacketStream& other)
-{
-  append(other);
   return *this;
 }

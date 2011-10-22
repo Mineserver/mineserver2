@@ -38,7 +38,7 @@ namespace Mineserver
   {
     int8_t windowId;
 
-    void read(packet_stream_t& ps);
+    int read(packet_stream_t& ps);
     void write(packet_stream_t& ps);
   };
 };

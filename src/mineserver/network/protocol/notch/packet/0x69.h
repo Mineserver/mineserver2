@@ -40,7 +40,7 @@ namespace Mineserver
     int16_t progressBarId;
     int16_t value;
 
-    void read(packet_stream_t& ps);
+    int read(packet_stream_t& ps);
     void write(packet_stream_t& ps);
   };
 };

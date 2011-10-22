@@ -42,7 +42,7 @@ namespace Mineserver
     int32_t z;
     int32_t data;
 
-    void read(packet_stream_t& ps);
+    int read(packet_stream_t& ps);
     void write(packet_stream_t& ps);
   };
 };

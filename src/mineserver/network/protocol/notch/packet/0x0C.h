@@ -36,7 +36,7 @@ namespace Mineserver
 {
   struct Network_Protocol_Notch_Packet_0x0C : public Mineserver::Network_Protocol_Notch_Packet, public Mineserver::Network_Packet_0x0C
   {
-    void read(packet_stream_t& ps);
+    int read(packet_stream_t& ps);
     void write(packet_stream_t& ps);
   };
 };

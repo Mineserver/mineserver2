@@ -28,7 +28,8 @@
 #ifndef MINESERVER_NETWORK_PARSER_H
 #define MINESERVER_NETWORK_PARSER_H
 
-#include <queue>
+#include <vector>
+#include <list>
 
 #include <mineserver/network/packet.h>
 
@@ -36,16 +37,15 @@ namespace Mineserver
 {
   class Network_Parser
   {
-  private:
-    std::queue<Mineserver::Network_Packet> m_incoming;
-    std::queue<Mineserver::Network_Packet> m_outgoing;
   public:
-    virtual void putBytes(uint8_t* data, size_t len) = 0;
-    virtual void process() = 0;
-    bool empty() { return m_incoming.empty(); }
-    Mineserver::Network_Packet& getPacket() { return m_incoming.front(); }
-    void popPacket() { m_incoming.pop(); }
-    void putPacket(Mineserver::Network_Packet packet) { m_outgoing.push(packet); }
+    enum {
+      STATE_MORE,
+      STATE_ERROR,
+      STATE_DONE
+    } states;
+
+  public:
+    virtual int read(std::vector<uint8_t>& bytes, std::list<Mineserver::Network_PacketAbstract>& packets) = 0;
   };
 }
 

@@ -54,7 +54,7 @@ int main()
       std::cerr << e.what() << std::endl;
     }
 
-    usleep(50000);
+    usleep(500000);
   }
 
   return 0;

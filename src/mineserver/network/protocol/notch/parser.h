@@ -33,8 +33,12 @@
 
 namespace Mineserver
 {
-  class Network_Protocol_Notch_Parser : public Network_Parser
+  class Network_Protocol_Notch_Parser : public Mineserver::Network_Parser
   {
+  private:
+    Mineserver::Network_Protocol_Notch_PacketStream m_packetStream;
+  public:
+    int read(std::vector<uint8_t>& bytes, std::list<Mineserver::Network_PacketAbstract>& packets);
   };
 }
 
