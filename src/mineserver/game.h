@@ -31,21 +31,28 @@
 #include <map>
 #include <list>
 
+#include <boost/shared_ptr.hpp>
+#include <boost/enable_shared_from_this.hpp>
+
 #include <mineserver/game/player.h>
 #include <mineserver/network/client.h>
 
 namespace Mineserver
 {
-  class Game
+  class Game : public boost::enable_shared_from_this<Mineserver::Game>
   {
+  public:
+    typedef boost::shared_ptr<Mineserver::Game_Player> pointer_t;
+
   private:
-    std::list<Mineserver::Game_Player*> m_players;
-    std::list<Mineserver::Network_Client*> m_clients;
-    std::map<Mineserver::Network_Client*,Mineserver::Game_Player*> m_clientMap;
+    std::list<Mineserver::Game_Player::pointer_t> m_players;
+    std::list<Mineserver::Network_Client::pointer_t> m_clients;
+    std::map<Mineserver::Network_Client::pointer_t,Mineserver::Game_Player::pointer_t> m_clientMap;
+
   public:
     void run();
 
-    void addClient(Mineserver::Network_Client* client)
+    void addClient(Mineserver::Network_Client::pointer_t client)
     {
       m_clients.push_back(client);
     }

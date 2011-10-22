@@ -27,6 +27,8 @@
 
 #include <iostream>
 
+#include <mineserver/game/player.h>
+
 void Mineserver::Game_Player::run()
 {
   std::cout << "Tick!" << std::endl;

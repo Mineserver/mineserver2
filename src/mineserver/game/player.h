@@ -28,14 +28,16 @@
 #ifndef MINESERVER_GAME_PLAYER_H
 #define MINESERVER_GAME_PLAYER_H
 
-#include <mineserver/game.h>
+#include <boost/shared_ptr.hpp>
+#include <boost/enable_shared_from_this.hpp>
 
 namespace Mineserver
 {
-  class Game_Player
+  class Game_Player : public boost::enable_shared_from_this<Mineserver::Game_Player>
   {
-  private:
-    Mineserver::Game game;
+  public:
+    typedef boost::shared_ptr<Mineserver::Game_Player> pointer_t;
+
   public:
     void run();
   };
