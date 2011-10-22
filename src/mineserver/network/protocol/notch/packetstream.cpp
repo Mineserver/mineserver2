@@ -277,13 +277,13 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
 
 Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_Notch_PacketStream::operator<<(const std::string& str)
 {
-  char *src, *src_c, *dst, *dst_c;
+  char *dst, *dst_c;
   size_t src_s, src_l, dst_s, dst_l;
 
   src_s = src_l = str.size();
   dst_s = dst_l = str.size()*2;
 
-  src = src_c = str.c_str();
+  char* src_c = const_cast<char*>(str.c_str());
   dst = dst_c = new char[dst_s];
 
   memset(dst, 0, dst_s);
@@ -329,13 +329,13 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
 
   if (haveData(len * 2))
   {
-    char *src, *src_c, *dst, *dst_c;
+    char *dst, *dst_c;
     size_t src_s, src_l, dst_s, dst_l;
 
     src_s = src_l = len * 2;
     dst_s = dst_l = src_l * 2;
 
-    src = src_c = reinterpret_cast<char*>(&(m_buffer[m_pos]));
+    char* src_c = reinterpret_cast<char*>(&(m_buffer[m_pos]));
     dst = dst_c = new char[dst_s];
 
     size_t rc = iconv(m_iconvUcsHandler, &src_c, &src_l, &dst_c, &dst_l);
