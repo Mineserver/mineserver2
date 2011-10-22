@@ -283,13 +283,10 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
   src_s = src_l = str.size();
   dst_s = dst_l = str.size()*2;
 
-  src = src_c = new char[src_s];
+  src = src_c = str.c_str();
   dst = dst_c = new char[dst_s];
 
-  memset(src, 0, src_s);
   memset(dst, 0, dst_s);
-
-  memcpy(src, str.c_str(), str.size());
 
   size_t rc = iconv(m_iconvUtfHandler, &src_c, &src_l, &dst_c, &dst_l);
 
@@ -315,8 +312,7 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
   append(reinterpret_cast<const uint8_t*>(&result_c), 2);
   append(reinterpret_cast<const uint8_t*>(dst), result_b);
 
-  delete src;
-  delete dst;
+  delete[] dst;
 
   return *this;
 }
@@ -360,7 +356,7 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
 
     str.assign(dst, dst_s);
 
-    delete dst;
+    delete[] dst;
   }
 
   return *this;
