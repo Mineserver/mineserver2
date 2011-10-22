@@ -25,8 +25,8 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _MINESERVER_NETWORK_PACKET_0x3D_H
-#define _MINESERVER_NETWORK_PACKET_0x3D_H
+#ifndef MINESERVER_NETWORK_PACKET_0x3D_H
+#define MINESERVER_NETWORK_PACKET_0x3D_H
 
 #include <mineserver/byteorder.h>
 #include <mineserver/network/packet.h>
