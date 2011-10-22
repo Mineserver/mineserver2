@@ -38,7 +38,7 @@
 void Mineserver::Network_Client::start()
 {
   m_socket.async_read_some(
-    boost::asio::buffer(m_buffer),
+    boost::asio::buffer(m_tmp),
     boost::bind(
       &Mineserver::Network_Client::handleRead,
       shared_from_this(),

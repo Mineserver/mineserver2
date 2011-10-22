@@ -28,6 +28,9 @@
 #ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PARSER_H
 #define MINESERVER_NETWORK_PROTOCOL_NOTCH_PARSER_H
 
+#include <boost/shared_ptr.hpp>
+#include <boost/enable_shared_from_this.hpp>
+
 #include <mineserver/network/packet.h>
 #include <mineserver/network/protocol/notch/packetstream.h>
 #include <mineserver/network/parser.h>
@@ -39,7 +42,7 @@ namespace Mineserver
   private:
     Mineserver::Network_Protocol_Notch_PacketStream m_packetStream;
   public:
-    int read(std::vector<uint8_t>& bytes, std::list<Mineserver::Network_PacketAbstract>& packets);
+    int read(std::vector<uint8_t>& bytes, std::list< boost::shared_ptr<Mineserver::Network_PacketAbstract> >& packets);
   };
 }
 

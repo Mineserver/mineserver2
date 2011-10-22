@@ -56,6 +56,7 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
   if (haveData(1))
   {
     val = ((*m_buffer)[m_pos++] != 0);
+    m_valid = true;
   }
   else
   {
@@ -77,6 +78,7 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
   if (haveData(1))
   {
     val = (*m_buffer)[m_pos++];
+    m_valid = true;
   }
   else
   {
@@ -98,6 +100,7 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
   if (haveData(1))
   {
     val = (*m_buffer)[m_pos++];
+    m_valid = true;
   }
   else
   {
@@ -122,6 +125,7 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
   {
     val = betoh16(*(reinterpret_cast<int16_t*>(&((*m_buffer)[m_pos]))));
     m_pos += 2;
+    m_valid = true;
   }
   else
   {
@@ -146,6 +150,7 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
   {
     val = betoh16(*(reinterpret_cast<uint16_t*>(&((*m_buffer)[m_pos]))));
     m_pos += 2;
+    m_valid = true;
   }
   else
   {
@@ -170,6 +175,7 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
   {
     val = betoh32(*(reinterpret_cast<int32_t*>(&((*m_buffer)[m_pos]))));
     m_pos += 4;
+    m_valid = true;
   }
   else
   {
@@ -194,6 +200,7 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
   {
     val = betoh32(*(reinterpret_cast<uint32_t*>(&((*m_buffer)[m_pos]))));
     m_pos += 4;
+    m_valid = true;
   }
   else
   {
@@ -218,6 +225,7 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
   {
     val = betoh64(*(reinterpret_cast<int64_t*>(&((*m_buffer)[m_pos]))));
     m_pos += 8;
+    m_valid = true;
   }
   else
   {
@@ -242,6 +250,7 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
   {
     val = betoh64(*(reinterpret_cast<uint64_t*>(&((*m_buffer)[m_pos]))));
     m_pos += 8;
+    m_valid = true;
   }
   else
   {
@@ -276,6 +285,8 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
 
     uint32_t ival = betoh32(res);
     memcpy(&val, &ival, 4);
+
+    m_valid = true;
   }
   else
   {
@@ -310,6 +321,8 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
 
     uint64_t ival = betoh64(res);
     memcpy(&val, &ival, 8);
+
+    m_valid = true;
   }
   else
   {
@@ -369,6 +382,7 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
   {
     len = betoh16(*(reinterpret_cast<int16_t*>(&((*m_buffer)[m_pos]))));
     m_pos += 2;
+    m_valid = true;
   }
   else
   {
@@ -405,6 +419,8 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
     str.assign(dst, dst_s);
 
     delete[] dst;
+
+    m_valid = true;
   }
   else
   {
