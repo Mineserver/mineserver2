@@ -25,34 +25,23 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <mineserver/byteorder.h>
-#include <mineserver/network/packet.h>
-#include <mineserver/network/protocol/notch/packetstream.h>
+#ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x17_H
+#define MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x17_H
+
+#include <mineserver/network/message/0x17.h>
 #include <mineserver/network/protocol/notch/packet.h>
-#include <mineserver/network/protocol/notch/packet/0x17.h>
 
-int Mineserver::Network_Protocol_Notch_Packet_0x17::read(packet_stream_t& ps)
+namespace Mineserver
 {
-  ps >> pid >> entityId >> type >> x >> y >> z >> throwerId;
+  struct Network_Protocol_Notch_Packet_0x17 : public Mineserver::Network_Protocol_Notch_Packet
+  {
+    Mineserver::Network_Message_0x17* message;
 
-  if (throwerId > 0) {
-    ps >> unknown1 >> unknown2 >> unknown3;
-  }
+    Network_Protocol_Notch_Packet_0x17() { message = new Mineserver::Network_Message_0x17; }
 
+    int read(packet_stream_t& ps);
+    void write(packet_stream_t& ps);
+  };
+};
 
-  if (ps.isValid()) {
-    ps.remove();
-    return STATE_MORE;
-  } else {
-    return STATE_NEEDMOREDATA;
-  }
-}
-
-void Mineserver::Network_Protocol_Notch_Packet_0x17::write(packet_stream_t& ps)
-{
-  ps << pid << entityId << type << x << y << z << throwerId;
-
-  if (throwerId > 0) {
-    ps << unknown1 << unknown2 << unknown3;
-  }
-}
+#endif

@@ -25,28 +25,23 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <mineserver/byteorder.h>
-#include <mineserver/network/packet.h>
-#include <mineserver/network/protocol/notch/packetstream.h>
+#ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x83_H
+#define MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x83_H
+
+#include <mineserver/network/message/0x83.h>
 #include <mineserver/network/protocol/notch/packet.h>
-#include <mineserver/network/protocol/notch/packet/0x83.h>
 
-int Mineserver::Network_Protocol_Notch_Packet_0x83::read(packet_stream_t& ps)
+namespace Mineserver
 {
-  ps >> pid >> type >> itemId >> len;
-  data.reserve(len);
-  ps.bytesTo(reinterpret_cast<uint8_t*>(&(data[0])), len);
+  struct Network_Protocol_Notch_Packet_0x83 : public Mineserver::Network_Protocol_Notch_Packet
+  {
+    Mineserver::Network_Message_0x83* message;
 
-  if (ps.isValid()) {
-    ps.remove();
-    return STATE_MORE;
-  } else {
-    return STATE_NEEDMOREDATA;
-  }
-}
+    Network_Protocol_Notch_Packet_0x83() { message = new Mineserver::Network_Message_0x83; }
 
-void Mineserver::Network_Protocol_Notch_Packet_0x83::write(packet_stream_t& ps)
-{
-  ps << pid << type << itemId << len;
-  ps.bytesFrom(reinterpret_cast<uint8_t*>(&(data[0])), len);
-}
+    int read(packet_stream_t& ps);
+    void write(packet_stream_t& ps);
+  };
+};
+
+#endif

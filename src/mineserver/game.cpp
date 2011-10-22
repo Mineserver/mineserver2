@@ -36,6 +36,6 @@ void Mineserver::Game::run()
   std::cout << "There are " << m_clients.size() << " clients connected!" << std::endl;
 
   for (std::list<Mineserver::Network_Client::pointer_t>::iterator it=m_clients.begin();it!=m_clients.end();++it) {
-    std::cout << (*it).incoming().size() << std::endl;
+    std::cout << (*it)->incoming().size() << std::endl;
   }
 }

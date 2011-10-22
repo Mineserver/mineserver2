@@ -28,19 +28,16 @@
 #ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x47_H
 #define MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x47_H
 
-#include <mineserver/byteorder.h>
-#include <mineserver/network/packet/0x47.h>
+#include <mineserver/network/message/0x47.h>
 #include <mineserver/network/protocol/notch/packet.h>
 
 namespace Mineserver
 {
-  struct Network_Protocol_Notch_Packet_0x47 : public Mineserver::Network_Protocol_Notch_Packet, public Mineserver::Network_Packet_0x47
+  struct Network_Protocol_Notch_Packet_0x47 : public Mineserver::Network_Protocol_Notch_Packet
   {
-    int32_t entityId;
-    bool unknown;
-    int32_t x;
-    int32_t y;
-    int32_t z;
+    Mineserver::Network_Message_0x47* message;
+
+    Network_Protocol_Notch_Packet_0x47() { message = new Mineserver::Network_Message_0x47; }
 
     int read(packet_stream_t& ps);
     void write(packet_stream_t& ps);

@@ -53,8 +53,8 @@ namespace Mineserver
     boost::array<uint8_t, 8192> m_tmp;
     std::vector<uint8_t> m_buffer;
     Mineserver::Network_Parser* m_parser;
-    std::list< boost::shared_ptr<Mineserver::Network_PacketAbstract> > m_incoming;
-    std::list< boost::shared_ptr<Mineserver::Network_PacketAbstract> > m_outgoing;
+    std::list< boost::shared_ptr<Mineserver::Network_Message> > m_incoming;
+    std::list< boost::shared_ptr<Mineserver::Network_Message> > m_outgoing;
 
   public:
     static pointer_t create(boost::asio::io_service& service, Mineserver::Network_Parser* parser)
@@ -72,8 +72,8 @@ namespace Mineserver
       return m_parser;
     }
 
-    std::list< boost::shared_ptr<Mineserver::Network_PacketAbstract> >& incoming() { return m_incoming; }
-    std::list< boost::shared_ptr<Mineserver::Network_PacketAbstract> >& outgoing() { return m_outgoing; }
+    std::list< boost::shared_ptr<Mineserver::Network_Message> >& incoming() { return m_incoming; }
+    std::list< boost::shared_ptr<Mineserver::Network_Message> >& outgoing() { return m_outgoing; }
 
     void start();
     void stop();

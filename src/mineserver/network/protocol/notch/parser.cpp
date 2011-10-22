@@ -30,7 +30,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include <mineserver/network/packet.h>
+#include <mineserver/network/message.h>
 #include <mineserver/network/parser.h>
 
 #include <mineserver/network/protocol/notch/packet.h>
@@ -100,7 +100,7 @@
 
 #include <mineserver/network/protocol/notch/parser.h>
 
-int Mineserver::Network_Protocol_Notch_Parser::read(std::vector<uint8_t>& bytes, std::list< boost::shared_ptr<Mineserver::Network_PacketAbstract> >& packets)
+int Mineserver::Network_Protocol_Notch_Parser::read(std::vector<uint8_t>& bytes, std::list< boost::shared_ptr<Mineserver::Network_Message> >& messages)
 {
   if (bytes.size() < 1) {
     return Mineserver::Network_Parser::STATE_DONE;
@@ -108,7 +108,8 @@ int Mineserver::Network_Protocol_Notch_Parser::read(std::vector<uint8_t>& bytes,
 
   uint8_t id = bytes[0];
 
-  Mineserver::Network_Protocol_Notch_Packet* packet = NULL;
+  boost::shared_ptr<Mineserver::Network_Message> message;
+  boost::shared_ptr<Mineserver::Network_Protocol_Notch_Packet> packet;
 
   m_packetStream.setBuffer(&bytes);
   m_packetStream.setPos(0);
@@ -125,7 +126,7 @@ int Mineserver::Network_Protocol_Notch_Parser::read(std::vector<uint8_t>& bytes,
   }
 
   if (packetState == Mineserver::Network_Protocol_Notch_Packet::STATE_MORE) {
-    packets.push_back(packet);
+    messages.push_back(boost::shared_ptr<Mineserver::Network_Message>(packet->message));
     m_packetStream.remove();
     state = Mineserver::Network_Parser::STATE_MORE;
   } else if (packetState == Mineserver::Network_Protocol_Notch_Packet::STATE_NEEDMOREDATA) {

@@ -28,14 +28,17 @@
 #ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x17_H
 #define MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x17_H
 
-#include <mineserver/byteorder.h>
-#include <mineserver/network/packet/0x17.h>
+#include <mineserver/network/message/0x17.h>
 #include <mineserver/network/protocol/notch/packet.h>
 
 namespace Mineserver
 {
-  struct Network_Protocol_Notch_Packet_0x17 : public Mineserver::Network_Protocol_Notch_Packet, public Mineserver::Network_Packet_0x17
+  struct Network_Protocol_Notch_Packet_0x17 : public Mineserver::Network_Protocol_Notch_Packet
   {
+    Mineserver::Network_Message_0x17* message;
+
+    Network_Protocol_Notch_Packet_0x17() { message = new Mineserver::Network_Message_0x17; }
+
     int read(packet_stream_t& ps);
     void write(packet_stream_t& ps);
   };

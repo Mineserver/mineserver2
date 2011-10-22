@@ -25,28 +25,23 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <mineserver/byteorder.h>
-#include <mineserver/network/packet.h>
-#include <mineserver/network/protocol/notch/packetstream.h>
+#ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x33_H
+#define MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x33_H
+
+#include <mineserver/network/message/0x33.h>
 #include <mineserver/network/protocol/notch/packet.h>
-#include <mineserver/network/protocol/notch/packet/0x33.h>
 
-int Mineserver::Network_Protocol_Notch_Packet_0x33::read(packet_stream_t& ps)
+namespace Mineserver
 {
-  ps >> pid >> posX >> posY >> posZ >> sizeX >> sizeY >> sizeZ >> bytes;
-  data.reserve(bytes);
-  ps.bytesTo(reinterpret_cast<uint8_t*>(&(data[0])), bytes);
+  struct Network_Protocol_Notch_Packet_0x33 : public Mineserver::Network_Protocol_Notch_Packet
+  {
+    Mineserver::Network_Message_0x33* message;
 
-  if (ps.isValid()) {
-    ps.remove();
-    return STATE_MORE;
-  } else {
-    return STATE_NEEDMOREDATA;
-  }
-}
+    Network_Protocol_Notch_Packet_0x33() { message = new Mineserver::Network_Message_0x33; }
 
-void Mineserver::Network_Protocol_Notch_Packet_0x33::write(packet_stream_t& ps)
-{
-  ps << pid << posX << posY << posZ << sizeX << sizeY << sizeZ << bytes;
-  ps.bytesFrom(reinterpret_cast<uint8_t*>(&(data[0])), bytes);
-}
+    int read(packet_stream_t& ps);
+    void write(packet_stream_t& ps);
+  };
+};
+
+#endif

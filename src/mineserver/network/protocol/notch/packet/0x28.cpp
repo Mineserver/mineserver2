@@ -25,43 +25,23 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <mineserver/byteorder.h>
-#include <mineserver/network/packet.h>
-#include <mineserver/network/protocol/notch/packetstream.h>
+#ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x28_H
+#define MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x28_H
+
+#include <mineserver/network/message/0x28.h>
 #include <mineserver/network/protocol/notch/packet.h>
-#include <mineserver/network/protocol/notch/packet/0x28.h>
 
-int Mineserver::Network_Protocol_Notch_Packet_0x28::read(packet_stream_t& ps)
+namespace Mineserver
 {
-  ps >> pid >> entityId;
+  struct Network_Protocol_Notch_Packet_0x28 : public Mineserver::Network_Protocol_Notch_Packet
+  {
+    Mineserver::Network_Message_0x28* message;
 
-  int8_t tmp;
-  while (true) {
-    ps >> tmp;
+    Network_Protocol_Notch_Packet_0x28() { message = new Mineserver::Network_Message_0x28; }
 
-    if (tmp == 0x7F) {
-      break;
-    } else {
-      data.push_back(tmp);
-    }
-  }
+    int read(packet_stream_t& ps);
+    void write(packet_stream_t& ps);
+  };
+};
 
-
-  if (ps.isValid()) {
-    ps.remove();
-    return STATE_MORE;
-  } else {
-    return STATE_NEEDMOREDATA;
-  }
-}
-
-void Mineserver::Network_Protocol_Notch_Packet_0x28::write(packet_stream_t& ps)
-{
-  ps << pid << entityId;
-
-  for (std::vector<int8_t>::const_iterator it=data.begin();it!=data.end();++it) {
-    ps << *it;
-  }
-
-  ps << static_cast<int8_t>(0x7F);
-}
+#endif

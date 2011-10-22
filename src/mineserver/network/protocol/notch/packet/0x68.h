@@ -28,17 +28,16 @@
 #ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x68_H
 #define MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x68_H
 
-#include <mineserver/byteorder.h>
-#include <mineserver/network/packet/0x68.h>
+#include <mineserver/network/message/0x68.h>
 #include <mineserver/network/protocol/notch/packet.h>
 
 namespace Mineserver
 {
-  struct Network_Protocol_Notch_Packet_0x68 : public Mineserver::Network_Protocol_Notch_Packet, public Mineserver::Network_Packet_0x68
+  struct Network_Protocol_Notch_Packet_0x68 : public Mineserver::Network_Protocol_Notch_Packet
   {
-    int8_t windowId;
-    int16_t count;
-    std::vector< std::pair< int16_t, std::pair< int8_t, int16_t > > > slots;
+    Mineserver::Network_Message_0x68* message;
+
+    Network_Protocol_Notch_Packet_0x68() { message = new Mineserver::Network_Message_0x68; }
 
     int read(packet_stream_t& ps);
     void write(packet_stream_t& ps);

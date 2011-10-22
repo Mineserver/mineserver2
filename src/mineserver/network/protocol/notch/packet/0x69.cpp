@@ -25,25 +25,23 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <mineserver/byteorder.h>
-#include <mineserver/network/packet.h>
-#include <mineserver/network/protocol/notch/packetstream.h>
+#ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x69_H
+#define MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x69_H
+
+#include <mineserver/network/message/0x69.h>
 #include <mineserver/network/protocol/notch/packet.h>
-#include <mineserver/network/protocol/notch/packet/0x69.h>
 
-int Mineserver::Network_Protocol_Notch_Packet_0x69::read(packet_stream_t& ps)
+namespace Mineserver
 {
-  ps >> pid >> windowId >> progressBarId >> value;
+  struct Network_Protocol_Notch_Packet_0x69 : public Mineserver::Network_Protocol_Notch_Packet
+  {
+    Mineserver::Network_Message_0x69* message;
 
-  if (ps.isValid()) {
-    ps.remove();
-    return STATE_MORE;
-  } else {
-    return STATE_NEEDMOREDATA;
-  }
-}
+    Network_Protocol_Notch_Packet_0x69() { message = new Mineserver::Network_Message_0x69; }
 
-void Mineserver::Network_Protocol_Notch_Packet_0x69::write(packet_stream_t& ps)
-{
-  ps << pid << windowId << progressBarId << value;
-}
+    int read(packet_stream_t& ps);
+    void write(packet_stream_t& ps);
+  };
+};
+
+#endif

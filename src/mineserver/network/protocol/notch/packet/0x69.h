@@ -28,17 +28,16 @@
 #ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x69_H
 #define MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x69_H
 
-#include <mineserver/byteorder.h>
-#include <mineserver/network/packet/0x69.h>
+#include <mineserver/network/message/0x69.h>
 #include <mineserver/network/protocol/notch/packet.h>
 
 namespace Mineserver
 {
-  struct Network_Protocol_Notch_Packet_0x69 : public Mineserver::Network_Protocol_Notch_Packet, public Mineserver::Network_Packet_0x69
+  struct Network_Protocol_Notch_Packet_0x69 : public Mineserver::Network_Protocol_Notch_Packet
   {
-    int8_t windowId;
-    int16_t progressBarId;
-    int16_t value;
+    Mineserver::Network_Message_0x69* message;
+
+    Network_Protocol_Notch_Packet_0x69() { message = new Mineserver::Network_Message_0x69; }
 
     int read(packet_stream_t& ps);
     void write(packet_stream_t& ps);

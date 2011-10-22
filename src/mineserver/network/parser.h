@@ -33,7 +33,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include <mineserver/network/packet.h>
+#include <mineserver/network/message.h>
 
 namespace Mineserver
 {
@@ -47,7 +47,7 @@ namespace Mineserver
     } states;
 
   public:
-    virtual int read(std::vector<uint8_t>& bytes, std::list< boost::shared_ptr<Mineserver::Network_PacketAbstract> >& packets) = 0;
+    virtual int read(std::vector<uint8_t>& bytes, std::list< boost::shared_ptr<Mineserver::Network_Message> >& messages) = 0;
   };
 }
 

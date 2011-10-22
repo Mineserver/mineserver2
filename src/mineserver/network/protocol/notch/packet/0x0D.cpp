@@ -25,25 +25,23 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <mineserver/byteorder.h>
-#include <mineserver/network/packet.h>
-#include <mineserver/network/protocol/notch/packetstream.h>
+#ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x0D_H
+#define MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x0D_H
+
+#include <mineserver/network/message/0x0D.h>
 #include <mineserver/network/protocol/notch/packet.h>
-#include <mineserver/network/protocol/notch/packet/0x0D.h>
 
-int Mineserver::Network_Protocol_Notch_Packet_0x0D::read(packet_stream_t& ps)
+namespace Mineserver
 {
-  ps >> pid >> x >> y >> stance >> z >> yaw >> pitch >> onGround;
+  struct Network_Protocol_Notch_Packet_0x0D : public Mineserver::Network_Protocol_Notch_Packet
+  {
+    Mineserver::Network_Message_0x0D* message;
 
-  if (ps.isValid()) {
-    ps.remove();
-    return STATE_MORE;
-  } else {
-    return STATE_NEEDMOREDATA;
-  }
-}
+    Network_Protocol_Notch_Packet_0x0D() { message = new Mineserver::Network_Message_0x0D; }
 
-void Mineserver::Network_Protocol_Notch_Packet_0x0D::write(packet_stream_t& ps)
-{
-  ps << pid << x << y << stance << z << yaw << pitch << onGround;
-}
+    int read(packet_stream_t& ps);
+    void write(packet_stream_t& ps);
+  };
+};
+
+#endif

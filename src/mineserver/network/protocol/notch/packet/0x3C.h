@@ -28,20 +28,16 @@
 #ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x3C_H
 #define MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0x3C_H
 
-#include <mineserver/byteorder.h>
-#include <mineserver/network/packet/0x3C.h>
+#include <mineserver/network/message/0x3C.h>
 #include <mineserver/network/protocol/notch/packet.h>
 
 namespace Mineserver
 {
-  struct Network_Protocol_Notch_Packet_0x3C : public Mineserver::Network_Protocol_Notch_Packet, public Mineserver::Network_Packet_0x3C
+  struct Network_Protocol_Notch_Packet_0x3C : public Mineserver::Network_Protocol_Notch_Packet
   {
-    double x;
-    double y;
-    double z;
-    float unknown;
-    int32_t count;
-    std::vector<uint8_t> data;
+    Mineserver::Network_Message_0x3C* message;
+
+    Network_Protocol_Notch_Packet_0x3C() { message = new Mineserver::Network_Message_0x3C; }
 
     int read(packet_stream_t& ps);
     void write(packet_stream_t& ps);

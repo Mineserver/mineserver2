@@ -28,12 +28,12 @@
 #ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_H
 #define MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_H
 
-#include <mineserver/network/packetabstract.h>
+#include <mineserver/network/message.h>
 #include <mineserver/network/protocol/notch/packetstream.h>
 
 namespace Mineserver
 {
-  struct Network_Protocol_Notch_Packet : public Network_PacketAbstract
+  struct Network_Protocol_Notch_Packet
   {
     enum {
       STATE_MORE,
@@ -42,6 +42,8 @@ namespace Mineserver
     } states;
 
     typedef Mineserver::Network_Protocol_Notch_PacketStream packet_stream_t;
+
+    Mineserver::Network_Message* message;
 
     virtual int read(packet_stream_t& ps) = 0;
     virtual void write(packet_stream_t& ps) = 0;
