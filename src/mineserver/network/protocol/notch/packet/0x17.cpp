@@ -33,10 +33,10 @@
 
 int Mineserver::Network_Protocol_Notch_Packet_0x17::read(packet_stream_t& ps)
 {
-  ps >> message->mid >> message->entityId >> message->type >> message->x >> message->y >> message->z >> message->throwerId;
+  ps >> m->mid >> m->entityId >> m->type >> m->x >> m->y >> m->z >> m->throwerId;
 
-  if (message->throwerId > 0) {
-    ps >> message->unknown1 >> message->unknown2 >> message->unknown3;
+  if (m->throwerId > 0) {
+    ps >> m->unknown1 >> m->unknown2 >> m->unknown3;
   }
 
   if (ps.isValid()) {
@@ -49,9 +49,9 @@ int Mineserver::Network_Protocol_Notch_Packet_0x17::read(packet_stream_t& ps)
 
 void Mineserver::Network_Protocol_Notch_Packet_0x17::write(packet_stream_t& ps)
 {
-  ps << message->mid << message->entityId << message->type << message->x << message->y << message->z << message->throwerId;
+  ps << m->mid << m->entityId << m->type << m->x << m->y << m->z << m->throwerId;
 
-  if (message->throwerId > 0) {
-    ps << message->unknown1 << message->unknown2 << message->unknown3;
+  if (m->throwerId > 0) {
+    ps << m->unknown1 << m->unknown2 << m->unknown3;
   }
 }

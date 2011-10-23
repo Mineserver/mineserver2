@@ -33,9 +33,9 @@
 
 int Mineserver::Network_Protocol_Notch_Packet_0x83::read(packet_stream_t& ps)
 {
-  ps >> message->mid >> message->type >> message->itemId >> message->len;
-  message->data.reserve(message->len);
-  ps.bytesTo(reinterpret_cast<uint8_t*>(&(message->data[0])), message->len);
+  ps >> m->mid >> m->type >> m->itemId >> m->len;
+  m->data.reserve(m->len);
+  ps.bytesTo(reinterpret_cast<uint8_t*>(&(m->data[0])), m->len);
 
   if (ps.isValid()) {
     ps.remove();
@@ -47,6 +47,6 @@ int Mineserver::Network_Protocol_Notch_Packet_0x83::read(packet_stream_t& ps)
 
 void Mineserver::Network_Protocol_Notch_Packet_0x83::write(packet_stream_t& ps)
 {
-  ps << message->mid << message->type << message->itemId << message->len;
-  ps.bytesFrom(reinterpret_cast<uint8_t*>(&(message->data[0])), message->len);
+  ps << m->mid << m->type << m->itemId << m->len;
+  ps.bytesFrom(reinterpret_cast<uint8_t*>(&(m->data[0])), m->len);
 }

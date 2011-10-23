@@ -33,7 +33,7 @@
 
 int Mineserver::Network_Protocol_Notch_Packet_0x16::read(packet_stream_t& ps)
 {
-  ps >> message->mid >> message->collectedId >> message->collectorId;
+  ps >> m->mid >> m->collectedId >> m->collectorId;
 
   if (ps.isValid()) {
     ps.remove();
@@ -45,5 +45,5 @@ int Mineserver::Network_Protocol_Notch_Packet_0x16::read(packet_stream_t& ps)
 
 void Mineserver::Network_Protocol_Notch_Packet_0x16::write(packet_stream_t& ps)
 {
-  ps << message->mid << message->collectedId << message->collectorId;
+  ps << m->mid << m->collectedId << m->collectorId;
 }

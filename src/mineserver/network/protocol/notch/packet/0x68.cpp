@@ -33,7 +33,7 @@
 
 int Mineserver::Network_Protocol_Notch_Packet_0x68::read(packet_stream_t& ps)
 {
-  ps >> message->mid >> message->windowId >> message->count;
+  ps >> m->mid >> m->windowId >> m->count;
 
   int16_t itemId, uses;
   int8_t count;
@@ -47,7 +47,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x68::read(packet_stream_t& ps)
       ps >> count >> uses;
     }
 
-    message->slots.push_back(std::pair<int16_t, std::pair<int8_t, int16_t> >(itemId, std::pair<int8_t, int16_t>(count, uses)));
+    m->slots.push_back(std::pair<int16_t, std::pair<int8_t, int16_t> >(itemId, std::pair<int8_t, int16_t>(count, uses)));
   }
 
 
@@ -61,12 +61,12 @@ int Mineserver::Network_Protocol_Notch_Packet_0x68::read(packet_stream_t& ps)
 
 void Mineserver::Network_Protocol_Notch_Packet_0x68::write(packet_stream_t& ps)
 {
-  ps << message->mid << message->windowId << message->count;
+  ps << m->mid << m->windowId << m->count;
 
   int16_t itemId, uses;
   int8_t count;
 
-  for (std::vector<std::pair<int16_t, std::pair<int8_t, int16_t> > >::const_iterator it=message->slots.begin();it!=message->slots.end();++it) {
+  for (std::vector<std::pair<int16_t, std::pair<int8_t, int16_t> > >::const_iterator it=m->slots.begin();it!=m->slots.end();++it) {
     ps << it->first;
 
     if (it->first != -1) {

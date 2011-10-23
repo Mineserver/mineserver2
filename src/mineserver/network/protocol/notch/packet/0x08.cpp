@@ -33,7 +33,7 @@
 
 int Mineserver::Network_Protocol_Notch_Packet_0x08::read(packet_stream_t& ps)
 {
-  ps >> message->mid >> message->health >> message->food >> message->foodSaturation;
+  ps >> m->mid >> m->health >> m->food >> m->foodSaturation;
 
   if (ps.isValid()) {
     ps.remove();
@@ -45,5 +45,5 @@ int Mineserver::Network_Protocol_Notch_Packet_0x08::read(packet_stream_t& ps)
 
 void Mineserver::Network_Protocol_Notch_Packet_0x08::write(packet_stream_t& ps)
 {
-  ps << message->mid << message->health << message->food << message->foodSaturation;
+  ps << m->mid << m->health << m->food << m->foodSaturation;
 }

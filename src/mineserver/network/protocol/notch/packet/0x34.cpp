@@ -33,13 +33,13 @@
 
 int Mineserver::Network_Protocol_Notch_Packet_0x34::read(packet_stream_t& ps)
 {
-  ps >> message->mid >> message->x >> message->z >> message->num;
-  message->coordinate.reserve(message->num*2);
-  ps.bytesTo(reinterpret_cast<uint8_t*>(&(message->coordinate[0])), message->num*2);
-  message->type.reserve(message->num);
-  ps.bytesTo(reinterpret_cast<uint8_t*>(&(message->type[0])), message->num);
-  message->meta.reserve(message->num);
-  ps.bytesTo(reinterpret_cast<uint8_t*>(&(message->meta[0])), message->num);
+  ps >> m->mid >> m->x >> m->z >> m->num;
+  m->coordinate.reserve(m->num*2);
+  ps.bytesTo(reinterpret_cast<uint8_t*>(&(m->coordinate[0])), m->num*2);
+  m->type.reserve(m->num);
+  ps.bytesTo(reinterpret_cast<uint8_t*>(&(m->type[0])), m->num);
+  m->meta.reserve(m->num);
+  ps.bytesTo(reinterpret_cast<uint8_t*>(&(m->meta[0])), m->num);
 
   if (ps.isValid()) {
     ps.remove();
@@ -51,8 +51,8 @@ int Mineserver::Network_Protocol_Notch_Packet_0x34::read(packet_stream_t& ps)
 
 void Mineserver::Network_Protocol_Notch_Packet_0x34::write(packet_stream_t& ps)
 {
-  ps << message->mid << message->x << message->z << message->num;
-  ps.bytesFrom(reinterpret_cast<uint8_t*>(&(message->coordinate[0])), message->num*2);
-  ps.bytesFrom(reinterpret_cast<uint8_t*>(&(message->type[0])), message->num);
-  ps.bytesFrom(reinterpret_cast<uint8_t*>(&(message->meta[0])), message->num);
+  ps << m->mid << m->x << m->z << m->num;
+  ps.bytesFrom(reinterpret_cast<uint8_t*>(&(m->coordinate[0])), m->num*2);
+  ps.bytesFrom(reinterpret_cast<uint8_t*>(&(m->type[0])), m->num);
+  ps.bytesFrom(reinterpret_cast<uint8_t*>(&(m->meta[0])), m->num);
 }

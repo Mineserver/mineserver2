@@ -33,6 +33,7 @@
 
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include <boost/signal.hpp>
 
 #include <mineserver/game/player.h>
 #include <mineserver/network/client.h>
@@ -48,6 +49,7 @@ namespace Mineserver
     std::list<Mineserver::Game_Player::pointer_t> m_players;
     std::list<Mineserver::Network_Client::pointer_t> m_clients;
     std::map<Mineserver::Network_Client::pointer_t,Mineserver::Game_Player::pointer_t> m_clientMap;
+    boost::signal<void (Mineserver::Game&,Mineserver::Game_Player&,Mineserver::Network_Message&)> m_messageWatchers[256];
 
   public:
     void run();

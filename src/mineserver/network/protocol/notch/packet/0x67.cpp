@@ -33,10 +33,10 @@
 
 int Mineserver::Network_Protocol_Notch_Packet_0x67::read(packet_stream_t& ps)
 {
-  ps >> message->mid >> message->windowId >> message->slot >> message->itemId;
+  ps >> m->mid >> m->windowId >> m->slot >> m->itemId;
 
-  if (message->itemId != -1) {
-    ps >> message->count >> message->uses;
+  if (m->itemId != -1) {
+    ps >> m->count >> m->uses;
   }
 
   if (ps.isValid()) {
@@ -49,9 +49,9 @@ int Mineserver::Network_Protocol_Notch_Packet_0x67::read(packet_stream_t& ps)
 
 void Mineserver::Network_Protocol_Notch_Packet_0x67::write(packet_stream_t& ps)
 {
-  ps << message->mid << message->windowId << message->slot << message->itemId;
+  ps << m->mid << m->windowId << m->slot << m->itemId;
 
-  if (message->itemId != -1) {
-    ps << message->count << message->uses;
+  if (m->itemId != -1) {
+    ps << m->count << m->uses;
   }
 }

@@ -33,9 +33,9 @@
 
 int Mineserver::Network_Protocol_Notch_Packet_0x3C::read(packet_stream_t& ps)
 {
-  ps >> message->mid >> message->x >> message->y >> message->z >> message->unknown >> message->count;
-  message->data.reserve(message->count*3);
-  ps.bytesTo(reinterpret_cast<uint8_t*>(&(message->data[0])), message->count*3);
+  ps >> m->mid >> m->x >> m->y >> m->z >> m->unknown >> m->count;
+  m->data.reserve(m->count*3);
+  ps.bytesTo(reinterpret_cast<uint8_t*>(&(m->data[0])), m->count*3);
 
   if (ps.isValid()) {
     ps.remove();
@@ -47,6 +47,6 @@ int Mineserver::Network_Protocol_Notch_Packet_0x3C::read(packet_stream_t& ps)
 
 void Mineserver::Network_Protocol_Notch_Packet_0x3C::write(packet_stream_t& ps)
 {
-  ps << message->mid << message->x << message->y << message->z << message->unknown << message->count;
-  ps.bytesFrom(reinterpret_cast<uint8_t*>(&(message->data[0])), message->count*3);
+  ps << m->mid << m->x << m->y << m->z << m->unknown << m->count;
+  ps.bytesFrom(reinterpret_cast<uint8_t*>(&(m->data[0])), m->count*3);
 }

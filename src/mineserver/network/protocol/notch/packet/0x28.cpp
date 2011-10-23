@@ -33,7 +33,7 @@
 
 int Mineserver::Network_Protocol_Notch_Packet_0x28::read(packet_stream_t& ps)
 {
-  ps >> message->mid >> message->entityId;
+  ps >> m->mid >> m->entityId;
 
   int8_t tmp;
   while (true) {
@@ -42,7 +42,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x28::read(packet_stream_t& ps)
     if (tmp == 0x7F) {
       break;
     } else {
-      message->data.push_back(tmp);
+      m->data.push_back(tmp);
     }
   }
 
@@ -57,9 +57,9 @@ int Mineserver::Network_Protocol_Notch_Packet_0x28::read(packet_stream_t& ps)
 
 void Mineserver::Network_Protocol_Notch_Packet_0x28::write(packet_stream_t& ps)
 {
-  ps << message->mid << message->entityId;
+  ps << m->mid << m->entityId;
 
-  for (std::vector<int8_t>::const_iterator it=message->data.begin();it!=message->data.end();++it) {
+  for (std::vector<int8_t>::const_iterator it=m->data.begin();it!=m->data.end();++it) {
     ps << *it;
   }
 

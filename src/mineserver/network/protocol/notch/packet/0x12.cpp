@@ -33,7 +33,7 @@
 
 int Mineserver::Network_Protocol_Notch_Packet_0x12::read(packet_stream_t& ps)
 {
-  ps >> message->mid >> message->entityId >> message->animation;
+  ps >> m->mid >> m->entityId >> m->animation;
 
   if (ps.isValid()) {
     ps.remove();
@@ -45,5 +45,5 @@ int Mineserver::Network_Protocol_Notch_Packet_0x12::read(packet_stream_t& ps)
 
 void Mineserver::Network_Protocol_Notch_Packet_0x12::write(packet_stream_t& ps)
 {
-  ps << message->mid << message->entityId << message->animation;
+  ps << m->mid << m->entityId << m->animation;
 }

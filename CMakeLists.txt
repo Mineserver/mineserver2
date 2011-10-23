@@ -49,7 +49,7 @@ IF(MSVC_IDE)
   SET(CMAKE_CXX_FLAGS_RELEASE "/MT /D_SECURE_SCL=0")
 ENDIF(MSVC_IDE)
 
-FIND_PACKAGE(Boost COMPONENTS system filesystem REQUIRED)
+FIND_PACKAGE(Boost COMPONENTS system filesystem signals REQUIRED)
 
 SET(mineserver_source
   src/app.cpp
@@ -137,4 +137,5 @@ ADD_EXECUTABLE(${TARGET} ${${TARGET}_source})
 TARGET_LINK_LIBRARIES(mineserver
   ${Boost_FILESYSTEM_LIBRARY}
   ${Boost_SYSTEM_LIBRARY}
+  ${Boost_SIGNALS_LIBRARY}
 )

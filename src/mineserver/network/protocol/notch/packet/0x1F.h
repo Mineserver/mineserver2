@@ -35,9 +35,10 @@ namespace Mineserver
 {
   struct Network_Protocol_Notch_Packet_0x1F : public Mineserver::Network_Protocol_Notch_Packet
   {
-    Mineserver::Network_Message_0x1F* message;
 
-    Network_Protocol_Notch_Packet_0x1F() { message = new Mineserver::Network_Message_0x1F; }
+
+    Mineserver::Network_Message_0x1F* m;
+    Network_Protocol_Notch_Packet_0x1F() : m(new Mineserver::Network_Message_0x1F) { message = Mineserver::Network_Message::pointer_t(m); }
 
     int read(packet_stream_t& ps);
     void write(packet_stream_t& ps);

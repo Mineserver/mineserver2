@@ -53,8 +53,9 @@ namespace Mineserver
     boost::array<uint8_t, 8192> m_tmp;
     std::vector<uint8_t> m_buffer;
     Mineserver::Network_Parser* m_parser;
-    std::list< boost::shared_ptr<Mineserver::Network_Message> > m_incoming;
-    std::list< boost::shared_ptr<Mineserver::Network_Message> > m_outgoing;
+    std::list<Mineserver::Network_Message::pointer_t> m_incoming;
+    std::list<Mineserver::Network_Message::pointer_t> m_outgoing;
+    bool m_alive;
 
   public:
     static pointer_t create(boost::asio::io_service& service, Mineserver::Network_Parser* parser)
@@ -72,14 +73,14 @@ namespace Mineserver
       return m_parser;
     }
 
-    std::list< boost::shared_ptr<Mineserver::Network_Message> >& incoming() { return m_incoming; }
-    std::list< boost::shared_ptr<Mineserver::Network_Message> >& outgoing() { return m_outgoing; }
+    std::list<Mineserver::Network_Message::pointer_t>& incoming() { return m_incoming; }
+    std::list<Mineserver::Network_Message::pointer_t>& outgoing() { return m_outgoing; }
 
     void start();
     void stop();
 
   private:
-    Network_Client(boost::asio::io_service& service, Mineserver::Network_Parser* parser) : m_socket(service),m_parser(parser)
+    Network_Client(boost::asio::io_service& service, Mineserver::Network_Parser* parser) : m_socket(service),m_parser(parser),m_alive(true)
     {
     }
 

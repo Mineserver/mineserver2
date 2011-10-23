@@ -100,7 +100,7 @@
 
 #include <mineserver/network/protocol/notch/parser.h>
 
-int Mineserver::Network_Protocol_Notch_Parser::read(std::vector<uint8_t>& bytes, std::list< boost::shared_ptr<Mineserver::Network_Message> >& messages)
+int Mineserver::Network_Protocol_Notch_Parser::read(std::vector<uint8_t>& bytes, std::list<Mineserver::Network_Message::pointer_t>& messages)
 {
   if (bytes.size() < 1) {
     return Mineserver::Network_Parser::STATE_DONE;
@@ -108,8 +108,8 @@ int Mineserver::Network_Protocol_Notch_Parser::read(std::vector<uint8_t>& bytes,
 
   uint8_t id = bytes[0];
 
-  boost::shared_ptr<Mineserver::Network_Message> message;
-  boost::shared_ptr<Mineserver::Network_Protocol_Notch_Packet> packet;
+  Mineserver::Network_Message::pointer_t message;
+  Mineserver::Network_Protocol_Notch_Packet* packet;
 
   m_packetStream.setBuffer(&bytes);
   m_packetStream.setPos(0);
@@ -119,14 +119,262 @@ int Mineserver::Network_Protocol_Notch_Parser::read(std::vector<uint8_t>& bytes,
 
   switch (id)
   {
+  case 0x00:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x00;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x01:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x01;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x02:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x02;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x03:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x03;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x04:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x04;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x05:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x05;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x06:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x06;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x07:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x07;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x08:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x08;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x09:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x09;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x0A:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x0A;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x0B:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x0B;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x0C:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x0C;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x0D:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x0D;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x0E:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x0E;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x0F:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x0F;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x10:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x10;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x11:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x11;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x12:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x12;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x13:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x13;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x14:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x14;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x15:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x15;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x16:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x16;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x17:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x17;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x18:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x18;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x19:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x19;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x1A:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x1A;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x1C:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x1C;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x1D:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x1D;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x1E:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x1E;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x1F:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x1F;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x20:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x20;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x21:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x21;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x22:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x22;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x26:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x26;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x27:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x27;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x28:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x28;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x29:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x29;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x2A:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x2A;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x2B:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x2B;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x32:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x32;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x33:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x33;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x34:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x34;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x35:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x35;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x36:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x36;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x3C:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x3C;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x3D:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x3D;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x46:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x46;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x47:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x47;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x64:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x64;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x65:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x65;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x66:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x66;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x67:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x67;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x68:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x68;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x69:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x69;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x6A:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x6A;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x6B:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x6B;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x82:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x82;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0x83:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0x83;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0xC8:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0xC8;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0xC9:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0xC9;
+    packetState = packet->read(m_packetStream);
+    break;
   case 0xFE:
-    packet = boost::shared_ptr<Mineserver::Network_Protocol_Notch_Packet_0xFE>(new Mineserver::Network_Protocol_Notch_Packet_0xFE);
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0xFE;
+    packetState = packet->read(m_packetStream);
+    break;
+  case 0xFF:
+    packet = new Mineserver::Network_Protocol_Notch_Packet_0xFF;
     packetState = packet->read(m_packetStream);
     break;
   }
 
   if (packetState == Mineserver::Network_Protocol_Notch_Packet::STATE_MORE) {
-    messages.push_back(boost::shared_ptr<Mineserver::Network_Message>(packet->message));
+    messages.push_back(Mineserver::Network_Message::pointer_t(packet->message));
     m_packetStream.remove();
     state = Mineserver::Network_Parser::STATE_MORE;
   } else if (packetState == Mineserver::Network_Protocol_Notch_Packet::STATE_NEEDMOREDATA) {

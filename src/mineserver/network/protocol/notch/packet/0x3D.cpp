@@ -33,7 +33,7 @@
 
 int Mineserver::Network_Protocol_Notch_Packet_0x3D::read(packet_stream_t& ps)
 {
-  ps >> message->mid >> message->effectId >> message->x >> message->y >> message->z >> message->data;
+  ps >> m->mid >> m->effectId >> m->x >> m->y >> m->z >> m->data;
 
   if (ps.isValid()) {
     ps.remove();
@@ -45,5 +45,5 @@ int Mineserver::Network_Protocol_Notch_Packet_0x3D::read(packet_stream_t& ps)
 
 void Mineserver::Network_Protocol_Notch_Packet_0x3D::write(packet_stream_t& ps)
 {
-  ps << message->mid << message->effectId << message->x << message->y << message->z << message->data;
+  ps << m->mid << m->effectId << m->x << m->y << m->z << m->data;
 }

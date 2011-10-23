@@ -33,7 +33,7 @@
 
 int Mineserver::Network_Protocol_Notch_Packet_0x2B::read(packet_stream_t& ps)
 {
-  ps >> message->mid >> message->currentExperience >> message->level >> message->totalExperience;
+  ps >> m->mid >> m->currentExperience >> m->level >> m->totalExperience;
 
   if (ps.isValid()) {
     ps.remove();
@@ -45,5 +45,5 @@ int Mineserver::Network_Protocol_Notch_Packet_0x2B::read(packet_stream_t& ps)
 
 void Mineserver::Network_Protocol_Notch_Packet_0x2B::write(packet_stream_t& ps)
 {
-  ps << message->mid << message->currentExperience << message->level << message->totalExperience;
+  ps << m->mid << m->currentExperience << m->level << m->totalExperience;
 }

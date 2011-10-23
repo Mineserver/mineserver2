@@ -51,6 +51,7 @@ void Mineserver::Network_Client::start()
 void Mineserver::Network_Client::stop()
 {
   m_socket.close();
+  m_alive = false;
 }
 
 void Mineserver::Network_Client::handleRead(const boost::system::error_code& e, size_t n)

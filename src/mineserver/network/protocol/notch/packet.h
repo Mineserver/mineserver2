@@ -43,7 +43,7 @@ namespace Mineserver
 
     typedef Mineserver::Network_Protocol_Notch_PacketStream packet_stream_t;
 
-    Mineserver::Network_Message* message;
+    Mineserver::Network_Message::pointer_t message;
 
     virtual int read(packet_stream_t& ps) = 0;
     virtual void write(packet_stream_t& ps) = 0;

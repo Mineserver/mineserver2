@@ -33,7 +33,7 @@
 
 int Mineserver::Network_Protocol_Notch_Packet_0x02::read(packet_stream_t& ps)
 {
-  ps >> message->mid >> message->username;
+  ps >> m->mid >> m->username;
 
   if (ps.isValid()) {
     ps.remove();
@@ -45,5 +45,5 @@ int Mineserver::Network_Protocol_Notch_Packet_0x02::read(packet_stream_t& ps)
 
 void Mineserver::Network_Protocol_Notch_Packet_0x02::write(packet_stream_t& ps)
 {
-  ps << message->mid << message->username;
+  ps << m->mid << m->username;
 }

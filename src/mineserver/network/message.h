@@ -28,6 +28,8 @@
 #ifndef MINESERVER_NETWORK_MESSAGE_H
 #define MINESERVER_NETWORK_MESSAGE_H
 
+#include <boost/shared_ptr.hpp>
+
 #include <mineserver/byteorder.h>
 
 namespace Mineserver
@@ -105,6 +107,9 @@ namespace Mineserver
 
   class Network_Message
   {
+  public:
+    typedef boost::shared_ptr<Mineserver::Network_Message> pointer_t;
+
   public:
     uint8_t mid;
   };

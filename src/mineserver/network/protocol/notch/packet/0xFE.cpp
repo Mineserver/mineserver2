@@ -33,7 +33,7 @@
 
 int Mineserver::Network_Protocol_Notch_Packet_0xFE::read(packet_stream_t& ps)
 {
-  ps >> message->mid;
+  ps >> m->mid;
 
   if (ps.isValid()) {
     ps.remove();
@@ -45,5 +45,5 @@ int Mineserver::Network_Protocol_Notch_Packet_0xFE::read(packet_stream_t& ps)
 
 void Mineserver::Network_Protocol_Notch_Packet_0xFE::write(packet_stream_t& ps)
 {
-  ps << message->mid;
+  ps << m->mid;
 }

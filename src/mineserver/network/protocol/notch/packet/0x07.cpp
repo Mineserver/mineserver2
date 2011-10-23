@@ -33,7 +33,7 @@
 
 int Mineserver::Network_Protocol_Notch_Packet_0x07::read(packet_stream_t& ps)
 {
-  ps >> message->mid >> message->user >> message->target >> message->leftClick;
+  ps >> m->mid >> m->user >> m->target >> m->leftClick;
 
   if (ps.isValid()) {
     ps.remove();
@@ -45,5 +45,5 @@ int Mineserver::Network_Protocol_Notch_Packet_0x07::read(packet_stream_t& ps)
 
 void Mineserver::Network_Protocol_Notch_Packet_0x07::write(packet_stream_t& ps)
 {
-  ps << message->mid << message->user << message->target << message->leftClick;
+  ps << m->mid << m->user << m->target << m->leftClick;
 }

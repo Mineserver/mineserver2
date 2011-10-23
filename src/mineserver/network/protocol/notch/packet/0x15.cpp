@@ -33,7 +33,7 @@
 
 int Mineserver::Network_Protocol_Notch_Packet_0x15::read(packet_stream_t& ps)
 {
-  ps >> message->mid >> message->entityId >> message->itemId >> message->count >> message->data >> message->x >> message->y >> message->z >> message->rotation >> message->pitch >> message->currentItem;
+  ps >> m->mid >> m->entityId >> m->itemId >> m->count >> m->data >> m->x >> m->y >> m->z >> m->rotation >> m->pitch >> m->currentItem;
 
   if (ps.isValid()) {
     ps.remove();
@@ -45,5 +45,5 @@ int Mineserver::Network_Protocol_Notch_Packet_0x15::read(packet_stream_t& ps)
 
 void Mineserver::Network_Protocol_Notch_Packet_0x15::write(packet_stream_t& ps)
 {
-  ps << message->mid << message->entityId << message->itemId << message->count << message->data << message->x << message->y << message->z << message->rotation << message->pitch << message->currentItem;
+  ps << m->mid << m->entityId << m->itemId << m->count << m->data << m->x << m->y << m->z << m->rotation << m->pitch << m->currentItem;
 }

@@ -26,6 +26,7 @@
 */
 
 #include <iostream>
+#include <cstdio>
 
 #include <mineserver/network/client.h>
 #include <mineserver/game.h>
@@ -36,6 +37,10 @@ void Mineserver::Game::run()
   std::cout << "There are " << m_clients.size() << " clients connected!" << std::endl;
 
   for (std::list<Mineserver::Network_Client::pointer_t>::iterator it=m_clients.begin();it!=m_clients.end();++it) {
-    std::cout << (*it)->incoming().size() << std::endl;
+    std::cout << "There are " << (*it)->incoming().size() << " messages." << std::endl;
+
+    for (std::list<Mineserver::Network_Message::pointer_t>::iterator m=(*it)->incoming().begin();m!=(*it)->incoming().end();++m) {
+      printf("Message ID: %d\n", (*m)->mid);
+    }
   }
 }
