@@ -1,11 +1,19 @@
 Mineserver 2.0
 ==============
 
+![Mineserver 2.0 Preview](http://i.imgur.com/1cwmH.png)
+
+[Forum Announcement](https://mineserver.be/forums/index.php?topic=470)
+
 Overview
 --------
 
-This is an effort to rewrite the core of Mineserver, keeping all the cool
-stuff and getting rid of the not-so-cool stuff.
+We've learnt a lot from writing the first version of Mineserver. One of those
+lessons was that to maintain a large application, it's necessary to design the
+application with the right concepts in mind from the very start. This was one of
+the driving forces behind the rewrite for 2.0. To that end, we've tried breaking
+up the new codebase into smaller, self contained pieces, while maintaining the
+speed and efficiency Mineserver is known for.
 
 NOTE
 ----
@@ -13,13 +21,28 @@ NOTE
 This is very much a work in progress! I'll be slowly pulling in bits of code
 from the original Mineserver repository to make this functional.
 
-Goals
------
+Planned features
+----------------
 
-1. Clean up the code structure (this is important).
-2. Use a state machine approach to manage game mechanics.
-3. Implement a proper (first class) plugin system.
-4. Use ZeroMQ to distribute various tasks, such as chunk generation, lighting,
-   Mob AI, physics, etc. Anything CPU-heavy basically.
-5. Implement some form of absolute clustering to enable players to be spread
-   over multiple nodes.
+* **Cleaner code** - cohesive, isolated modules make hacking on Mineserver a breeze!
+* **Better design** - many advanced features that were all but impossible before are now simple!
+* **Neater installation** - getting started with Mineserver has never been easier!
+* **Virtual hosting** - host more than one server on the same IP and port!
+* **Distributed hosting** - spread the load of your game over multiple cores or even physical machines!
+* **Plugin repository** - find all the best plugins in one convenient place!
+* **Multiple protocols** - use any Minecraft client!
+* **Game hibernation** - no resources used while no players are connected!
+* **Remote API** - interact with Mineserver from any application that can speak JSON!
+* **Rich administrative tools** - delegate administration of your games over multiple admin tiers!
+
+Contact
+-------
+
+Any feedback would be greatly appreciated and new contributors are always
+welcome. We can be contacted in any of the following ways:
+
+IRC - #mineserver on freenode
+Forums - reply to this thread (or start your own! Be a man!)
+Email - developers@mineserver.be
+GitHub - https://github.com/Mineserver/mineserver2
+Virtual Stalk* - google any of the developers, none of us are too hard to find!
