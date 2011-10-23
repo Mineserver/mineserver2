@@ -1,7 +1,14 @@
-PROJECT(mineserver)
-
+#
+# CMake config
+#
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 CMAKE_POLICY(SET CMP0014 OLD)
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+
+#
+# Project name
+#
+PROJECT(mineserver)
 
 #
 # Project version
@@ -36,7 +43,7 @@ SET(LIBRARY_OUTPUT_PATH bin)
 
 # g++
 IF(CMAKE_COMPILER_IS_GNUCXX)
-  SET(CMAKE_CXX_FLAGS "-Werror -W -Wall -Wno-unused -pedantic")
+  SET(CMAKE_CXX_FLAGS "-W -Wall -Wno-unused")
   SET(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG -O0 -g")
   SET(CMAKE_CXX_FLAGS_PROFILE "-DDEBUG -g -pg")
   SET(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O3 -s")
@@ -50,6 +57,7 @@ IF(MSVC_IDE)
 ENDIF(MSVC_IDE)
 
 FIND_PACKAGE(Boost COMPONENTS system filesystem signals REQUIRED)
+FIND_PACKAGE(LibSigCXX2 REQUIRED)
 
 SET(mineserver_source
   src/app.cpp
@@ -126,7 +134,7 @@ SET(mineserver_source
 SOURCE_GROUP(${PROJECT_NAME} FILES ${mineserver_source})
 
 INCLUDE_DIRECTORIES(src)
-INCLUDE_DIRECTORIES(vendor)
+INCLUDE_DIRECTORIES(${LIBSIGCXX2_INCLUDE_DIRS})
 
 ADD_SUBDIRECTORY(src)
 
@@ -138,4 +146,5 @@ TARGET_LINK_LIBRARIES(mineserver
   ${Boost_FILESYSTEM_LIBRARY}
   ${Boost_SYSTEM_LIBRARY}
   ${Boost_SIGNALS_LIBRARY}
+  ${LIBSIGCXX2_LIBRARIES}
 )
