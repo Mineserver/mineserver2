@@ -41,8 +41,8 @@ Contact
 Any feedback would be greatly appreciated and new contributors are always
 welcome. We can be contacted in any of the following ways:
 
-IRC - #mineserver on freenode
-Forums - reply to this thread (or start your own! Be a man!)
-Email - developers@mineserver.be
-GitHub - https://github.com/Mineserver/mineserver2
-Virtual Stalk* - google any of the developers, none of us are too hard to find!
+* **IRC** - [#mineserver](irc://irc.freenode.net/mineserver) on freenode
+* **Forums** - reply to [this](https://mineserver.be/forums/index.php?topic=470) thread (or start your own! Be a man!)
+* **Email** - [developers@mineserver.be](mailto:developers@mineserver.be)
+* **GitHub** - [https://github.com/Mineserver/mineserver2](https://github.com/Mineserver/mineserver2)
+* **Virtual Stalk** - google any of the developers, none of us are too hard to find!
