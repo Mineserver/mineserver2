@@ -52,8 +52,8 @@ namespace Mineserver
   private:
     boost::asio::ip::tcp::socket m_socket;
     boost::array<uint8_t, 8192> m_tmp;
-    std::vector<uint8_t> m_buffer;
     Mineserver::Network_Protocol* m_protocol;
+    std::vector<uint8_t> m_incomingBuffer;
     std::list<Mineserver::Network_Message::pointer_t> m_incoming;
     std::list<Mineserver::Network_Message::pointer_t> m_outgoing;
     bool m_alive;
@@ -91,8 +91,8 @@ namespace Mineserver
     {
     }
 
-    void handleRead(const boost::system::error_code& error, size_t transferred);
-    void handleWrite(const boost::system::error_code& error);
+    void handleRead(const boost::system::error_code& e, size_t n);
+    void handleWrite(const boost::system::error_code& e, size_t n);
   };
 }
 

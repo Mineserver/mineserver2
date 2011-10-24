@@ -57,26 +57,41 @@ void Mineserver::Network_Client::stop()
 
 void Mineserver::Network_Client::send()
 {
-  std::vector<uint8_t> buffer;
+  boost::shared_ptr< std::vector<uint8_t> > buffer(new std::vector<uint8_t>);
 
   for (std::list<Mineserver::Network_Message::pointer_t>::iterator it=m_outgoing.begin();it!=m_outgoing.end();++it) {
     printf("Trying to send message ID %02x\n", (*it)->mid);
-    m_protocol->compose(buffer, **it);
+    m_protocol->compose(*buffer, **it);
   }
 
-  printf("We want to send %d bytes\n", buffer.size());
+  m_outgoing.clear();
+
+  printf("We want to send %d bytes\n", buffer->size());
+
+  if (buffer->size() > 0)
+  {
+    m_socket.async_write_some(
+      boost::asio::buffer(*buffer),
+      boost::bind(
+        &Mineserver::Network_Client::handleWrite,
+        shared_from_this(),
+        boost::asio::placeholders::error,
+        boost::asio::placeholders::bytes_transferred
+      )
+    );
+  }
 }
 
 void Mineserver::Network_Client::handleRead(const boost::system::error_code& e, size_t n)
 {
   if (!e) {
-    m_buffer.insert(m_buffer.end(), m_tmp.begin(), m_tmp.begin() + n);
+    m_incomingBuffer.insert(m_incomingBuffer.end(), m_tmp.begin(), m_tmp.begin() + n);
 
     int state;
     do {
       Mineserver::Network_Message* message = NULL;
 
-      state = m_protocol->parse(m_buffer, &message);
+      state = m_protocol->parse(m_incomingBuffer, &message);
 
       if (state == Mineserver::Network_Protocol::STATE_GOOD) {
         m_incoming.push_back(Mineserver::Network_Message::pointer_t(message));
@@ -87,6 +102,7 @@ void Mineserver::Network_Client::handleRead(const boost::system::error_code& e, 
   }
 }
 
-void Mineserver::Network_Client::handleWrite(const boost::system::error_code& e)
+void Mineserver::Network_Client::handleWrite(const boost::system::error_code& e, size_t n)
 {
+  printf("Wrote %d bytes\n", n);
 }
