@@ -29,7 +29,6 @@
 #include <mineserver/network/message/0xFF.h>
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0xFF.h>
-#include <cstdio>
 
 int Mineserver::Network_Protocol_Notch_Packet_0xFF::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
 {
@@ -44,9 +43,6 @@ int Mineserver::Network_Protocol_Notch_Packet_0xFF::_read(Mineserver::Network_Pr
 int Mineserver::Network_Protocol_Notch_Packet_0xFF::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
 {
   const Mineserver::Network_Message_0xFF* msg = static_cast<const Mineserver::Network_Message_0xFF*>(&message);
-
-  printf("Trying to write message type %02x\n", msg->mid);
-  printf("String value is %s\n", msg->reason.c_str());
 
   ps << msg->mid << msg->reason;
 

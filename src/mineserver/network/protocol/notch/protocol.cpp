@@ -26,7 +26,6 @@
 */
 
 #include <vector>
-#include <cstdio>
 
 #include <mineserver/byteorder.h>
 #include <mineserver/network/message.h>
@@ -518,7 +517,8 @@ int Mineserver::Network_Protocol_Notch_Protocol::parse(std::vector<uint8_t>& byt
 
 int Mineserver::Network_Protocol_Notch_Protocol::compose(std::vector<uint8_t>& bytes, const Mineserver::Network_Message& message)
 {
-  printf("Got message type: %02x\n", message.mid);
+  m_packetStream.setBuffer(&bytes);
+  m_packetStream.setPos(0);
 
   switch (message.mid)
   {
@@ -901,6 +901,9 @@ int Mineserver::Network_Protocol_Notch_Protocol::compose(std::vector<uint8_t>& b
       break;
     }
   }
+
+  m_packetStream.setBuffer(NULL);
+  m_packetStream.setPos(0);
 
   return STATE_GOOD;
 }
