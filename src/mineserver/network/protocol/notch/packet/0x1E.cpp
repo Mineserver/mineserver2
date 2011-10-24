@@ -26,24 +26,25 @@
 */
 
 #include <mineserver/byteorder.h>
-#include <mineserver/network/message.h>
-#include <mineserver/network/protocol/notch/packetstream.h>
+#include <mineserver/network/message/0x1E.h>
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x1E.h>
 
-int Mineserver::Network_Protocol_Notch_Packet_0x1E::read(packet_stream_t& ps)
+int Mineserver::Network_Protocol_Notch_Packet_0x1E::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
 {
-  ps >> m->mid >> m->entityId;
+  Mineserver::Network_Message_0x1E* msg = new Mineserver::Network_Message_0x1E;
+  *message = msg;
 
-  if (ps.isValid()) {
-    ps.remove();
-    return STATE_MORE;
-  } else {
-    return STATE_NEEDMOREDATA;
-  }
+  ps >> msg->mid >> msg->entityId;
+
+  return STATE_GOOD;
 }
 
-void Mineserver::Network_Protocol_Notch_Packet_0x1E::write(packet_stream_t& ps)
+int Mineserver::Network_Protocol_Notch_Packet_0x1E::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
 {
-  ps << m->mid << m->entityId;
+  const Mineserver::Network_Message_0x1E* msg = static_cast<const Mineserver::Network_Message_0x1E*>(&message);
+
+  ps << msg->mid << msg->entityId;
+
+  return STATE_GOOD;
 }

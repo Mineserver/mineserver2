@@ -25,26 +25,31 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <mineserver/byteorder.h>
-#include <mineserver/network/message/0x16.h>
-#include <mineserver/network/protocol/notch/packet.h>
-#include <mineserver/network/protocol/notch/packet/0x16.h>
+#ifndef MINESERVER_WATCHERTEST_H
+#define MINESERVER_WATCHERTEST_H
 
-int Mineserver::Network_Protocol_Notch_Packet_0x16::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
+#include <boost/shared_ptr.hpp>
+
+#include <mineserver/game.h>
+#include <mineserver/network/client.h>
+#include <mineserver/network/message.h>
+#include <mineserver/network/message/0xFE.h>
+#include <mineserver/network/message/0xFF.h>
+
+namespace Mineserver
 {
-  Mineserver::Network_Message_0x16* msg = new Mineserver::Network_Message_0x16;
-  *message = msg;
+  struct WatcherTest
+  {
+    void operator()(Mineserver::Game& game, Mineserver::Network_Client& client, Mineserver::Network_Message& message) const
+    {
+      std::cout << "Watcher called!" << std::endl;
 
-  ps >> msg->mid >> msg->collectedId >> msg->collectorId;
-
-  return STATE_GOOD;
+      boost::shared_ptr<Mineserver::Network_Message_0xFF> response(new Mineserver::Network_Message_0xFF);
+      response->mid = 0xFF;
+      response->reason = "this is a server";
+      client.outgoing().push_back(response);
+    }
+  };
 }
 
-int Mineserver::Network_Protocol_Notch_Packet_0x16::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
-{
-  const Mineserver::Network_Message_0x16* msg = static_cast<const Mineserver::Network_Message_0x16*>(&message);
-
-  ps << msg->mid << msg->collectedId << msg->collectorId;
-
-  return STATE_GOOD;
-}
+#endif

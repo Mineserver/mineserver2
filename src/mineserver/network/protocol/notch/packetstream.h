@@ -110,7 +110,7 @@ namespace Mineserver
       return (m_buffer->size() - m_pos) >= n;
     }
 
-    void bytesFrom(uint8_t* dst, size_t n);
+    void bytesFrom(const uint8_t* dst, size_t n);
     void bytesTo(uint8_t* dst, size_t n);
 
     Mineserver::Network_Protocol_Notch_PacketStream& operator<<(bool val);

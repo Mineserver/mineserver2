@@ -28,20 +28,16 @@
 #ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0xFF_H
 #define MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_0xFF_H
 
-#include <mineserver/network/message/0xFF.h>
+#include <mineserver/network/message.h>
 #include <mineserver/network/protocol/notch/packet.h>
+#include <mineserver/network/protocol/notch/packetstream.h>
 
 namespace Mineserver
 {
   struct Network_Protocol_Notch_Packet_0xFF : public Mineserver::Network_Protocol_Notch_Packet
   {
-
-
-    Mineserver::Network_Message_0xFF* m;
-    Network_Protocol_Notch_Packet_0xFF() : m(new Mineserver::Network_Message_0xFF) { message = Mineserver::Network_Message::pointer_t(m); }
-
-    int read(packet_stream_t& ps);
-    void write(packet_stream_t& ps);
+    int _read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message);
+    int _write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message);
   };
 }
 

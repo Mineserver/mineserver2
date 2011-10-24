@@ -26,13 +26,14 @@
 */
 
 #include <string>
+#include <vector>
 #include <iostream>
 
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
 
+#include <mineserver/byteorder.h>
 #include <mineserver/network/client.h>
 
 void Mineserver::Network_Client::start()
@@ -54,6 +55,18 @@ void Mineserver::Network_Client::stop()
   m_alive = false;
 }
 
+void Mineserver::Network_Client::send()
+{
+  std::vector<uint8_t> buffer;
+
+  for (std::list<Mineserver::Network_Message::pointer_t>::iterator it=m_outgoing.begin();it!=m_outgoing.end();++it) {
+    printf("Trying to send message ID %02x\n", (*it)->mid);
+    m_protocol->compose(buffer, **it);
+  }
+
+  printf("We want to send %d bytes\n", buffer.size());
+}
+
 void Mineserver::Network_Client::handleRead(const boost::system::error_code& e, size_t n)
 {
   if (!e) {
@@ -61,8 +74,14 @@ void Mineserver::Network_Client::handleRead(const boost::system::error_code& e, 
 
     int state;
     do {
-      state = m_parser->read(m_buffer, m_incoming);
-    } while (state == Mineserver::Network_Parser::STATE_MORE);
+      Mineserver::Network_Message* message = NULL;
+
+      state = m_protocol->parse(m_buffer, &message);
+
+      if (state == Mineserver::Network_Protocol::STATE_GOOD) {
+        m_incoming.push_back(Mineserver::Network_Message::pointer_t(message));
+      }
+    } while (state == Mineserver::Network_Protocol::STATE_GOOD);
   } else if (e != boost::asio::error::operation_aborted) {
     stop();
   }

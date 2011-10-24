@@ -26,14 +26,16 @@
 */
 
 #include <mineserver/byteorder.h>
-#include <mineserver/network/message.h>
-#include <mineserver/network/protocol/notch/packetstream.h>
+#include <mineserver/network/message/0x68.h>
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x68.h>
 
-int Mineserver::Network_Protocol_Notch_Packet_0x68::read(packet_stream_t& ps)
+int Mineserver::Network_Protocol_Notch_Packet_0x68::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
 {
-  ps >> m->mid >> m->windowId >> m->count;
+  Mineserver::Network_Message_0x68* msg = new Mineserver::Network_Message_0x68;
+  *message = msg;
+
+  ps >> msg->mid >> msg->windowId >> msg->count;
 
   int16_t itemId, uses;
   int8_t count;
@@ -47,30 +49,28 @@ int Mineserver::Network_Protocol_Notch_Packet_0x68::read(packet_stream_t& ps)
       ps >> count >> uses;
     }
 
-    m->slots.push_back(std::pair<int16_t, std::pair<int8_t, int16_t> >(itemId, std::pair<int8_t, int16_t>(count, uses)));
+    msg->slots.push_back(std::pair<int16_t, std::pair<int8_t, int16_t> >(itemId, std::pair<int8_t, int16_t>(count, uses)));
   }
 
-
-  if (ps.isValid()) {
-    ps.remove();
-    return STATE_MORE;
-  } else {
-    return STATE_NEEDMOREDATA;
-  }
+  return STATE_GOOD;
 }
 
-void Mineserver::Network_Protocol_Notch_Packet_0x68::write(packet_stream_t& ps)
+int Mineserver::Network_Protocol_Notch_Packet_0x68::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
 {
-  ps << m->mid << m->windowId << m->count;
+  const Mineserver::Network_Message_0x68* msg = static_cast<const Mineserver::Network_Message_0x68*>(&message);
+
+  ps << msg->mid << msg->windowId << msg->count;
 
   int16_t itemId, uses;
   int8_t count;
 
-  for (std::vector<std::pair<int16_t, std::pair<int8_t, int16_t> > >::const_iterator it=m->slots.begin();it!=m->slots.end();++it) {
+  for (std::vector<std::pair<int16_t, std::pair<int8_t, int16_t> > >::const_iterator it=msg->slots.begin();it!=msg->slots.end();++it) {
     ps << it->first;
 
     if (it->first != -1) {
       ps << it->second.first << it->second.second;
     }
   }
+
+  return STATE_GOOD;
 }

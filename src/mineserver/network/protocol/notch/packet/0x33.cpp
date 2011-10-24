@@ -26,27 +26,28 @@
 */
 
 #include <mineserver/byteorder.h>
-#include <mineserver/network/message.h>
-#include <mineserver/network/protocol/notch/packetstream.h>
+#include <mineserver/network/message/0x33.h>
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x33.h>
 
-int Mineserver::Network_Protocol_Notch_Packet_0x33::read(packet_stream_t& ps)
+int Mineserver::Network_Protocol_Notch_Packet_0x33::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
 {
-  ps >> m->mid >> m->posX >> m->posY >> m->posZ >> m->sizeX >> m->sizeY >> m->sizeZ >> m->bytes;
-  m->data.reserve(m->bytes);
-  ps.bytesTo(reinterpret_cast<uint8_t*>(&(m->data[0])), m->bytes);
+  Mineserver::Network_Message_0x33* msg = new Mineserver::Network_Message_0x33;
+  *message = msg;
 
-  if (ps.isValid()) {
-    ps.remove();
-    return STATE_MORE;
-  } else {
-    return STATE_NEEDMOREDATA;
-  }
+  ps >> msg->mid >> msg->posX >> msg->posY >> msg->posZ >> msg->sizeX >> msg->sizeY >> msg->sizeZ >> msg->bytes;
+  msg->data.reserve(msg->bytes);
+  ps.bytesTo(reinterpret_cast<uint8_t*>(&(msg->data[0])), msg->bytes);
+
+  return STATE_GOOD;
 }
 
-void Mineserver::Network_Protocol_Notch_Packet_0x33::write(packet_stream_t& ps)
+int Mineserver::Network_Protocol_Notch_Packet_0x33::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
 {
-  ps << m->mid << m->posX << m->posY << m->posZ << m->sizeX << m->sizeY << m->sizeZ << m->bytes;
-  ps.bytesFrom(reinterpret_cast<uint8_t*>(&(m->data[0])), m->bytes);
+  const Mineserver::Network_Message_0x33* msg = static_cast<const Mineserver::Network_Message_0x33*>(&message);
+
+  ps << msg->mid << msg->posX << msg->posY << msg->posZ << msg->sizeX << msg->sizeY << msg->sizeZ << msg->bytes;
+  ps.bytesFrom(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(&(msg->data[0]))), msg->bytes);
+
+  return STATE_GOOD;
 }

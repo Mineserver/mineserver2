@@ -26,24 +26,25 @@
 */
 
 #include <mineserver/byteorder.h>
-#include <mineserver/network/message.h>
-#include <mineserver/network/protocol/notch/packetstream.h>
+#include <mineserver/network/message/0x3D.h>
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x3D.h>
 
-int Mineserver::Network_Protocol_Notch_Packet_0x3D::read(packet_stream_t& ps)
+int Mineserver::Network_Protocol_Notch_Packet_0x3D::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
 {
-  ps >> m->mid >> m->effectId >> m->x >> m->y >> m->z >> m->data;
+  Mineserver::Network_Message_0x3D* msg = new Mineserver::Network_Message_0x3D;
+  *message = msg;
 
-  if (ps.isValid()) {
-    ps.remove();
-    return STATE_MORE;
-  } else {
-    return STATE_NEEDMOREDATA;
-  }
+  ps >> msg->mid >> msg->effectId >> msg->x >> msg->y >> msg->z >> msg->data;
+
+  return STATE_GOOD;
 }
 
-void Mineserver::Network_Protocol_Notch_Packet_0x3D::write(packet_stream_t& ps)
+int Mineserver::Network_Protocol_Notch_Packet_0x3D::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
 {
-  ps << m->mid << m->effectId << m->x << m->y << m->z << m->data;
+  const Mineserver::Network_Message_0x3D* msg = static_cast<const Mineserver::Network_Message_0x3D*>(&message);
+
+  ps << msg->mid << msg->effectId << msg->x << msg->y << msg->z << msg->data;
+
+  return STATE_GOOD;
 }

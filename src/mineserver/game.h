@@ -33,9 +33,10 @@
 
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
-#include <boost/signal.hpp>
+#include <boost/signals2.hpp>
 
 #include <mineserver/game/player.h>
+#include <mineserver/network/message.h>
 #include <mineserver/network/client.h>
 
 namespace Mineserver
@@ -44,15 +45,22 @@ namespace Mineserver
   {
   public:
     typedef boost::shared_ptr<Mineserver::Game> pointer_t;
+    typedef boost::signals2::signal<void (Mineserver::Game&, Mineserver::Network_Client&, Mineserver::Network_Message&)> messageWatcher_t;
+    typedef messageWatcher_t::slot_type messageWatcherSlot_t;
 
   private:
     std::list<Mineserver::Game_Player::pointer_t> m_players;
     std::list<Mineserver::Network_Client::pointer_t> m_clients;
     std::map<Mineserver::Network_Client::pointer_t,Mineserver::Game_Player::pointer_t> m_clientMap;
-    boost::signal<void (Mineserver::Game&,Mineserver::Game_Player&,Mineserver::Network_Message&)> m_messageWatchers[256];
+    messageWatcher_t m_messageWatchers[256];
 
   public:
     void run();
+
+    boost::signals2::connection addWatcher(uint8_t messageId, const messageWatcherSlot_t& slot)
+    {
+      return m_messageWatchers[messageId].connect(slot);
+    }
 
     void addClient(Mineserver::Network_Client::pointer_t client)
     {

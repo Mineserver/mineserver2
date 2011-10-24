@@ -32,17 +32,22 @@
 #include <boost/asio.hpp>
 
 #include <mineserver/game.h>
-#include <mineserver/network/protocol/notch/parser.h>
+#include <mineserver/network/protocol/notch/protocol.h>
 #include <mineserver/network/server.h>
+#include <mineserver/watchertest.h>
 
 int main()
 {
   boost::asio::io_service service;
 
   Mineserver::Game game;
-  Mineserver::Network_Protocol_Notch_Parser parser;
+  Mineserver::Network_Protocol_Notch_Protocol protocol;
 
-  Mineserver::Network_Server server(game, parser, service);
+  Mineserver::Network_Server server(game, protocol, service);
+
+  Mineserver::WatcherTest watcher;
+
+  game.addWatcher(0xFE, watcher);
 
   while (true) {
     try {

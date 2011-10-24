@@ -29,24 +29,33 @@
 #define MINESERVER_NETWORK_PROTOCOL_NOTCH_PACKET_H
 
 #include <mineserver/network/message.h>
+
 #include <mineserver/network/protocol/notch/packetstream.h>
 
 namespace Mineserver
 {
   struct Network_Protocol_Notch_Packet
   {
+  public:
     enum {
-      STATE_MORE,
-      STATE_NEEDMOREDATA,
+      STATE_GOOD,
+      STATE_STOP,
       STATE_ERROR
-    } states;
+    };
 
-    typedef Mineserver::Network_Protocol_Notch_PacketStream packet_stream_t;
+    int read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
+    {
+      return (_read(ps, message) == STATE_ERROR) ? STATE_ERROR : (ps.isValid() ? STATE_GOOD : STATE_STOP);
+    }
 
-    Mineserver::Network_Message::pointer_t message;
+    int write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
+    {
+      return (_write(ps, message) == STATE_ERROR) ? STATE_ERROR : STATE_GOOD;
+    }
 
-    virtual int read(packet_stream_t& ps) = 0;
-    virtual void write(packet_stream_t& ps) = 0;
+  private:
+    virtual int _read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message) = 0;
+    virtual int _write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message) = 0;
   };
 }
 

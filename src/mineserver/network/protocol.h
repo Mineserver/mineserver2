@@ -25,29 +25,28 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_NETWORK_PARSER_H
-#define MINESERVER_NETWORK_PARSER_H
+#ifndef MINESERVER_NETWORK_PROTOCOL_H
+#define MINESERVER_NETWORK_PROTOCOL_H
 
 #include <vector>
-#include <list>
 
-#include <boost/shared_ptr.hpp>
-
-#include <mineserver/network/message.h>
+#include <mineserver/byteorder.h>
 
 namespace Mineserver
 {
-  class Network_Parser
+  class Network_Message;
+
+  class Network_Protocol
   {
   public:
     enum {
-      STATE_MORE,
-      STATE_ERROR,
-      STATE_DONE
-    } states;
+      STATE_GOOD,
+      STATE_STOP,
+      STATE_ERROR
+    };
 
-  public:
-    virtual int read(std::vector<uint8_t>& bytes, std::list< boost::shared_ptr<Mineserver::Network_Message> >& messages) = 0;
+    virtual int parse(std::vector<uint8_t>& bytes, Mineserver::Network_Message** message) = 0;
+    virtual int compose(std::vector<uint8_t>& bytes, const Mineserver::Network_Message& message) = 0;
   };
 }
 

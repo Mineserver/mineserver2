@@ -45,11 +45,11 @@ namespace Mineserver
   {
   private:
     Mineserver::Game& m_game;
-    Mineserver::Network_Parser& m_parser;
+    Mineserver::Network_Protocol& m_protocol;
     boost::asio::ip::tcp::acceptor m_socket;
 
   public:
-    Network_Server(Mineserver::Game& game, Mineserver::Network_Parser& parser, boost::asio::io_service& service) : m_game(game),m_parser(parser),m_socket(service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 7777))
+    Network_Server(Mineserver::Game& game, Mineserver::Network_Protocol& protocol, boost::asio::io_service& service) : m_game(game),m_protocol(protocol),m_socket(service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 7777))
     {
       startAccept();
     }

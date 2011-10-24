@@ -57,7 +57,6 @@ IF(MSVC_IDE)
 ENDIF(MSVC_IDE)
 
 FIND_PACKAGE(Boost COMPONENTS system filesystem signals REQUIRED)
-FIND_PACKAGE(LibSigCXX2 REQUIRED)
 
 SET(mineserver_source
   src/app.cpp
@@ -65,7 +64,7 @@ SET(mineserver_source
   src/mineserver/game/player.cpp
   src/mineserver/network/server.cpp
   src/mineserver/network/client.cpp
-  src/mineserver/network/protocol/notch/parser.cpp
+  src/mineserver/network/protocol/notch/protocol.cpp
   src/mineserver/network/protocol/notch/packetstream.cpp
   src/mineserver/network/protocol/notch/packet/0x00.cpp
   src/mineserver/network/protocol/notch/packet/0x01.cpp
@@ -134,7 +133,9 @@ SET(mineserver_source
 SOURCE_GROUP(${PROJECT_NAME} FILES ${mineserver_source})
 
 INCLUDE_DIRECTORIES(src)
-INCLUDE_DIRECTORIES(${LIBSIGCXX2_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+
+LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
 ADD_SUBDIRECTORY(src)
 
@@ -143,8 +144,7 @@ MESSAGE(STATUS "Target: ${TARGET}")
 ADD_EXECUTABLE(${TARGET} ${${TARGET}_source})
 
 TARGET_LINK_LIBRARIES(mineserver
-  ${Boost_FILESYSTEM_LIBRARY}
   ${Boost_SYSTEM_LIBRARY}
+  ${Boost_FILESYSTEM_LIBRARY}
   ${Boost_SIGNALS_LIBRARY}
-  ${LIBSIGCXX2_LIBRARIES}
 )

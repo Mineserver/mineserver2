@@ -32,10 +32,10 @@
 #include <mineserver/byteorder.h>
 #include <mineserver/network/protocol/notch/packetstream.h>
 
-void Mineserver::Network_Protocol_Notch_PacketStream::bytesFrom(uint8_t* src, size_t n)
+void Mineserver::Network_Protocol_Notch_PacketStream::bytesFrom(const uint8_t* src, size_t n)
 {
   m_buffer->reserve(n);
-  memcpy(reinterpret_cast<uint8_t*>(&((*m_buffer)[0])), src, n);
+  memcpy(reinterpret_cast<uint8_t*>(&((*m_buffer)[0])), const_cast<uint8_t*>(src), n);
 }
 
 void Mineserver::Network_Protocol_Notch_PacketStream::bytesTo(uint8_t* dst, size_t n)

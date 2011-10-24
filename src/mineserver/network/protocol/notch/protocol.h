@@ -25,24 +25,26 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PARSER_H
-#define MINESERVER_NETWORK_PROTOCOL_NOTCH_PARSER_H
+#ifndef MINESERVER_NETWORK_PROTOCOL_NOTCH_PROTOCOL_H
+#define MINESERVER_NETWORK_PROTOCOL_NOTCH_PROTOCOL_H
 
-#include <boost/shared_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
+#include <vector>
 
+#include <mineserver/byteorder.h>
+#include <mineserver/network/protocol.h>
 #include <mineserver/network/message.h>
+
 #include <mineserver/network/protocol/notch/packetstream.h>
-#include <mineserver/network/parser.h>
 
 namespace Mineserver
 {
-  class Network_Protocol_Notch_Parser : public Mineserver::Network_Parser
+  class Network_Protocol_Notch_Protocol : public Mineserver::Network_Protocol
   {
+  public:
+    int parse(std::vector<uint8_t>& bytes, Mineserver::Network_Message** message);
+    int compose(std::vector<uint8_t>& bytes, const Mineserver::Network_Message& message);
   private:
     Mineserver::Network_Protocol_Notch_PacketStream m_packetStream;
-  public:
-    int read(std::vector<uint8_t>& bytes, std::list< boost::shared_ptr<Mineserver::Network_Message> >& packets);
   };
 }
 

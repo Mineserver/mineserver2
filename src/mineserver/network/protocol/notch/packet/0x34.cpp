@@ -26,33 +26,34 @@
 */
 
 #include <mineserver/byteorder.h>
-#include <mineserver/network/message.h>
-#include <mineserver/network/protocol/notch/packetstream.h>
+#include <mineserver/network/message/0x34.h>
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x34.h>
 
-int Mineserver::Network_Protocol_Notch_Packet_0x34::read(packet_stream_t& ps)
+int Mineserver::Network_Protocol_Notch_Packet_0x34::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
 {
-  ps >> m->mid >> m->x >> m->z >> m->num;
-  m->coordinate.reserve(m->num*2);
-  ps.bytesTo(reinterpret_cast<uint8_t*>(&(m->coordinate[0])), m->num*2);
-  m->type.reserve(m->num);
-  ps.bytesTo(reinterpret_cast<uint8_t*>(&(m->type[0])), m->num);
-  m->meta.reserve(m->num);
-  ps.bytesTo(reinterpret_cast<uint8_t*>(&(m->meta[0])), m->num);
+  Mineserver::Network_Message_0x34* msg = new Mineserver::Network_Message_0x34;
+  *message = msg;
 
-  if (ps.isValid()) {
-    ps.remove();
-    return STATE_MORE;
-  } else {
-    return STATE_NEEDMOREDATA;
-  }
+  ps >> msg->mid >> msg->x >> msg->z >> msg->num;
+  msg->coordinate.reserve(msg->num*2);
+  ps.bytesTo(reinterpret_cast<uint8_t*>(&(msg->coordinate[0])), msg->num*2);
+  msg->type.reserve(msg->num);
+  ps.bytesTo(reinterpret_cast<uint8_t*>(&(msg->type[0])), msg->num);
+  msg->meta.reserve(msg->num);
+  ps.bytesTo(reinterpret_cast<uint8_t*>(&(msg->meta[0])), msg->num);
+
+  return STATE_GOOD;
 }
 
-void Mineserver::Network_Protocol_Notch_Packet_0x34::write(packet_stream_t& ps)
+int Mineserver::Network_Protocol_Notch_Packet_0x34::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
 {
-  ps << m->mid << m->x << m->z << m->num;
-  ps.bytesFrom(reinterpret_cast<uint8_t*>(&(m->coordinate[0])), m->num*2);
-  ps.bytesFrom(reinterpret_cast<uint8_t*>(&(m->type[0])), m->num);
-  ps.bytesFrom(reinterpret_cast<uint8_t*>(&(m->meta[0])), m->num);
+  const Mineserver::Network_Message_0x34* msg = static_cast<const Mineserver::Network_Message_0x34*>(&message);
+
+  ps << msg->mid << msg->x << msg->z << msg->num;
+  ps.bytesFrom(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(&(msg->coordinate[0]))), msg->num*2);
+  ps.bytesFrom(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(&(msg->type[0]))), msg->num);
+  ps.bytesFrom(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(&(msg->meta[0]))), msg->num);
+
+  return STATE_GOOD;
 }
