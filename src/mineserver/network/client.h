@@ -84,7 +84,8 @@ namespace Mineserver
 
     void start();
     void stop();
-    void send();
+    void read();
+    void write();
 
   private:
     Network_Client(boost::asio::io_service& service, Mineserver::Network_Protocol* protocol) : m_socket(service),m_protocol(protocol),m_alive(true)

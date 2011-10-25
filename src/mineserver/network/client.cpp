@@ -38,6 +38,17 @@
 
 void Mineserver::Network_Client::start()
 {
+  read();
+}
+
+void Mineserver::Network_Client::stop()
+{
+  m_socket.close();
+  m_alive = false;
+}
+
+void Mineserver::Network_Client::read()
+{
   m_socket.async_read_some(
     boost::asio::buffer(m_tmp),
     boost::bind(
@@ -49,13 +60,7 @@ void Mineserver::Network_Client::start()
   );
 }
 
-void Mineserver::Network_Client::stop()
-{
-  m_socket.close();
-  m_alive = false;
-}
-
-void Mineserver::Network_Client::send()
+void Mineserver::Network_Client::write()
 {
   boost::shared_ptr< std::vector<uint8_t> > buffer(new std::vector<uint8_t>);
 
@@ -103,6 +108,8 @@ void Mineserver::Network_Client::handleRead(const boost::system::error_code& e, 
         m_incoming.push_back(Mineserver::Network_Message::pointer_t(message));
       }
     } while (state == Mineserver::Network_Protocol::STATE_GOOD);
+
+    read();
   } else if (e != boost::asio::error::operation_aborted) {
     stop();
   }
