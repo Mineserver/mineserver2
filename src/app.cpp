@@ -45,7 +45,9 @@ int main()
 
   Mineserver::Game game;
 
-  Mineserver::Network_Server server(game, Mineserver::Network_Protocol_Notch_Protocol(), service);
+  Mineserver::Network_Protocol_Notch_Protocol protocol;
+
+  Mineserver::Network_Server server(game, protocol, service);
 
   game.addWatcher(0x01, Mineserver::Watcher_Login());
   game.addWatcher(0x02, Mineserver::Watcher_Handshake());
