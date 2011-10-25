@@ -30,7 +30,6 @@
 
 #include <string>
 #include <iostream>
-#include <list>
 #include <vector>
 
 #include <boost/bind.hpp>
@@ -54,8 +53,8 @@ namespace Mineserver
     boost::array<uint8_t, 8192> m_tmp;
     Mineserver::Network_Protocol* m_protocol;
     std::vector<uint8_t> m_incomingBuffer;
-    std::list<Mineserver::Network_Message::pointer_t> m_incoming;
-    std::list<Mineserver::Network_Message::pointer_t> m_outgoing;
+    std::vector<Mineserver::Network_Message::pointer_t> m_incoming;
+    std::vector<Mineserver::Network_Message::pointer_t> m_outgoing;
     bool m_alive;
 
   public:
@@ -79,8 +78,8 @@ namespace Mineserver
       return m_alive;
     }
 
-    std::list<Mineserver::Network_Message::pointer_t>& incoming() { return m_incoming; }
-    std::list<Mineserver::Network_Message::pointer_t>& outgoing() { return m_outgoing; }
+    std::vector<Mineserver::Network_Message::pointer_t>& incoming() { return m_incoming; }
+    std::vector<Mineserver::Network_Message::pointer_t>& outgoing() { return m_outgoing; }
 
     void start();
     void stop();

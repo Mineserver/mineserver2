@@ -64,7 +64,7 @@ void Mineserver::Network_Client::write()
 {
   boost::shared_ptr< std::vector<uint8_t> > buffer(new std::vector<uint8_t>);
 
-  for (std::list<Mineserver::Network_Message::pointer_t>::iterator it=m_outgoing.begin();it!=m_outgoing.end();++it) {
+  for (std::vector<Mineserver::Network_Message::pointer_t>::iterator it=m_outgoing.begin();it!=m_outgoing.end();++it) {
     printf("Trying to send message ID: %02x\n", (*it)->mid);
     m_protocol->compose(*buffer, **it);
   }

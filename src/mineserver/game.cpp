@@ -26,25 +26,30 @@
 */
 
 #include <iostream>
+#include <vector>
+#include <algorithm>
 
 #include <mineserver/network/client.h>
 #include <mineserver/game.h>
+
+bool is_dead(Mineserver::Network_Client::pointer_t client) {
+  return client->alive() == false;
+}
 
 void Mineserver::Game::run()
 {
   std::cout << "Tick!" << std::endl;
   std::cout << "There are " << m_clients.size() << " clients connected!" << std::endl;
 
-  for (std::list<Mineserver::Network_Client::pointer_t>::iterator it=m_clients.begin();it!=m_clients.end();++it) {
+  for (std::vector<Mineserver::Network_Client::pointer_t>::iterator it=m_clients.begin();it!=m_clients.end();++it) {
     // This crashes when you disconnect...
-    if ((*it)->alive() == false) {
-      m_clients.erase(it);
+    if (!(*it) || (*it)->alive() == false) {
       continue;
     }
 
     std::cout << "There are " << (*it)->incoming().size() << " messages." << std::endl;
 
-    for (std::list<Mineserver::Network_Message::pointer_t>::iterator m=(*it)->incoming().begin();m!=(*it)->incoming().end();++m) {
+    for (std::vector<Mineserver::Network_Message::pointer_t>::iterator m=(*it)->incoming().begin();m!=(*it)->incoming().end();++m) {
       m_messageWatchers[(*m)->mid](*this, *(*it), *(*m));
     }
 
@@ -52,4 +57,6 @@ void Mineserver::Game::run()
 
     (*it)->write();
   }
+
+  m_clients.erase(remove_if(m_clients.begin(), m_clients.end(), is_dead), m_clients.end());
 }

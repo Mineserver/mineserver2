@@ -29,7 +29,7 @@
 #define MINESERVER_GAME_H
 
 #include <map>
-#include <list>
+#include <vector>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
@@ -49,8 +49,8 @@ namespace Mineserver
     typedef messageWatcher_t::slot_type messageWatcherSlot_t;
 
   private:
-    std::list<Mineserver::Game_Player::pointer_t> m_players;
-    std::list<Mineserver::Network_Client::pointer_t> m_clients;
+    std::vector<Mineserver::Game_Player::pointer_t> m_players;
+    std::vector<Mineserver::Network_Client::pointer_t> m_clients;
     std::map<Mineserver::Network_Client::pointer_t,Mineserver::Game_Player::pointer_t> m_clientMap;
     messageWatcher_t m_messageWatchers[256];
 
