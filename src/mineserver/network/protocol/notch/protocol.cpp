@@ -26,6 +26,7 @@
 */
 
 #include <vector>
+#include <cstdio>
 
 #include <mineserver/byteorder.h>
 #include <mineserver/network/message.h>
@@ -106,8 +107,11 @@ int Mineserver::Network_Protocol_Notch_Protocol::parse(std::vector<uint8_t>& byt
 
   uint8_t id = bytes[0];
 
+  printf("Found packet: %02x\n", id);
+
   m_packetStream.setBuffer(&bytes);
   m_packetStream.setPos(0);
+  m_packetStream.setValid(true);
 
   Mineserver::Network_Protocol_Notch_Packet* packet;
   Mineserver::Network_Message* message;
@@ -509,8 +513,7 @@ int Mineserver::Network_Protocol_Notch_Protocol::parse(std::vector<uint8_t>& byt
     delete message;
   }
 
-  m_packetStream.setBuffer(NULL);
-  m_packetStream.setPos(0);
+  m_packetStream.reset();
 
   return state;
 }

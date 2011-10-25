@@ -60,7 +60,7 @@ void Mineserver::Network_Client::send()
   boost::shared_ptr< std::vector<uint8_t> > buffer(new std::vector<uint8_t>);
 
   for (std::list<Mineserver::Network_Message::pointer_t>::iterator it=m_outgoing.begin();it!=m_outgoing.end();++it) {
-    printf("Trying to send message ID %02x\n", (*it)->mid);
+    printf("Trying to send message ID: %02x\n", (*it)->mid);
     m_protocol->compose(*buffer, **it);
   }
 
@@ -86,6 +86,12 @@ void Mineserver::Network_Client::handleRead(const boost::system::error_code& e, 
 {
   if (!e) {
     m_incomingBuffer.insert(m_incomingBuffer.end(), m_tmp.begin(), m_tmp.begin() + n);
+
+    printf("Got bytes: ");
+    for (boost::array<uint8_t, 8192>::iterator it=m_tmp.begin();it!=m_tmp.begin()+n;++it) {
+      printf("%02x", *it);
+    }
+    printf("\n");
 
     int state;
     do {

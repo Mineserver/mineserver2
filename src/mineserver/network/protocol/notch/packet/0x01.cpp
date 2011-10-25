@@ -35,7 +35,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x01::_read(Mineserver::Network_Pr
   Mineserver::Network_Message_0x01* msg = new Mineserver::Network_Message_0x01;
   *message = msg;
 
-  ps >> msg->mid >> msg->version >> msg->username >> msg->junk_a >> msg->junk_b >> msg->junk_c >> msg->junk_d >> msg->junk_e >> msg->junk_f;
+  ps >> msg->mid >> msg->version >> msg->username >> msg->seed >> msg->mode >> msg->dimension >> msg->difficulty >> msg->worldHeight >> msg->maxPlayers;
 
   return STATE_GOOD;
 }
@@ -44,7 +44,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x01::_write(Mineserver::Network_P
 {
   const Mineserver::Network_Message_0x01* msg = static_cast<const Mineserver::Network_Message_0x01*>(&message);
 
-  ps << msg->mid << msg->version << msg->username << msg->junk_a << msg->junk_b << msg->junk_c << msg->junk_d << msg->junk_e << msg->junk_f;
+  ps << msg->mid << msg->version << msg->username << msg->seed << msg->mode << msg->dimension << msg->difficulty << msg->worldHeight << msg->maxPlayers;
 
   return STATE_GOOD;
 }

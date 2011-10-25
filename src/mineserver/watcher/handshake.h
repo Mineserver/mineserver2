@@ -25,28 +25,27 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_WATCHERTEST_H
-#define MINESERVER_WATCHERTEST_H
+#ifndef MINESERVER_WATCHER_HANDSHAKE_H
+#define MINESERVER_WATCHER_HANDSHAKE_H
 
 #include <boost/shared_ptr.hpp>
 
 #include <mineserver/game.h>
 #include <mineserver/network/client.h>
 #include <mineserver/network/message.h>
-#include <mineserver/network/message/0xFE.h>
-#include <mineserver/network/message/0xFF.h>
+#include <mineserver/network/message/0x02.h>
 
 namespace Mineserver
 {
-  struct WatcherTest
+  struct Watcher_Handshake
   {
     void operator()(Mineserver::Game& game, Mineserver::Network_Client& client, Mineserver::Network_Message& message) const
     {
-      std::cout << "Watcher called!" << std::endl;
+      std::cout << "Handshake watcher called!" << std::endl;
 
-      boost::shared_ptr<Mineserver::Network_Message_0xFF> response(new Mineserver::Network_Message_0xFF);
-      response->mid = 0xFF;
-      response->reason = "this is a server";
+      boost::shared_ptr<Mineserver::Network_Message_0x02> response(new Mineserver::Network_Message_0x02);
+      response->mid = 0x02;
+      response->username = "2e66f1dc032ab5f0";
       client.outgoing().push_back(response);
     }
   };

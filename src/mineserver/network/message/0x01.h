@@ -39,12 +39,12 @@ namespace Mineserver
   {
     int32_t version;
     std::string username;
-    int64_t junk_a;
-    int32_t junk_b;
-    int8_t junk_c;
-    int8_t junk_d;
-    uint8_t junk_e;
-    uint8_t junk_f;
+    int64_t seed;
+    int32_t mode;
+    int8_t dimension;
+    int8_t difficulty;
+    uint8_t worldHeight;
+    uint8_t maxPlayers;
   };
 }
 

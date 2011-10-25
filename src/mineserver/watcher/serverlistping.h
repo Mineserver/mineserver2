@@ -25,17 +25,30 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_NETWORK_PACKET_0x00_H
-#define MINESERVER_NETWORK_PACKET_0x00_H
+#ifndef MINESERVER_WATCHER_SERVERLISTPING_H
+#define MINESERVER_WATCHER_SERVERLISTPING_H
 
-#include <mineserver/byteorder.h>
+#include <boost/shared_ptr.hpp>
+
+#include <mineserver/game.h>
+#include <mineserver/network/client.h>
 #include <mineserver/network/message.h>
+#include <mineserver/network/message/0xFE.h>
+#include <mineserver/network/message/0xFF.h>
 
 namespace Mineserver
 {
-  struct Network_Message_0x00 : public Mineserver::Network_Message
+  struct Watcher_ServerListPing
   {
-    int32_t id;
+    void operator()(Mineserver::Game& game, Mineserver::Network_Client& client, Mineserver::Network_Message& message) const
+    {
+      std::cout << "Server list ping watcher called!" << std::endl;
+
+      boost::shared_ptr<Mineserver::Network_Message_0xFF> response(new Mineserver::Network_Message_0xFF);
+      response->mid = 0xFF;
+      response->reason = "this is a server";
+      client.outgoing().push_back(response);
+    }
   };
 }
 
