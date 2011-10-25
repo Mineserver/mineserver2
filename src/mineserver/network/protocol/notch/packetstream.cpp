@@ -420,6 +420,8 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
 
     delete[] dst;
 
+    m_pos += len * 2;
+
     m_valid = true;
   }
   else

@@ -103,11 +103,13 @@ namespace Mineserver
     inline void reset()
     {
       m_pos = 0;
+      m_buffer = NULL;
+      m_valid = false;
     }
 
     inline bool haveData(size_t n)
     {
-      return (m_buffer->size() - m_pos) >= n;
+      return m_valid && (m_buffer->size() - m_pos) >= n;
     }
 
     void bytesFrom(const uint8_t* dst, size_t n);
