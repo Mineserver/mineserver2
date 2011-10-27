@@ -25,48 +25,30 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_GAME_H
-#define MINESERVER_GAME_H
-
-#include <map>
-#include <vector>
+#ifndef MINESERVER_GAME_WORLD_CHUNK_H
+#define MINESERVER_GAME_WORLD_CHUNK_H
 
 #include <boost/shared_ptr.hpp>
-#include <boost/signals2.hpp>
-
-#include <mineserver/game/player.h>
-#include <mineserver/game/world.h>
-#include <mineserver/network/message.h>
-#include <mineserver/network/client.h>
 
 namespace Mineserver
 {
-  class Game
+  struct Game_World_Chunk
   {
-  public:
-    typedef boost::shared_ptr<Mineserver::Game> pointer_t;
-    typedef boost::signals2::signal<void (Mineserver::Game&, Mineserver::Network_Client&, Mineserver::Network_Message&)> messageWatcher_t;
-    typedef messageWatcher_t::slot_type messageWatcherSlot_t;
+    typedef boost::shared_ptr<Mineserver::Game_World_Chunk> pointer_t;
 
-  private:
-    std::vector<Mineserver::Game_Player::pointer_t> m_players;
-    std::vector<Mineserver::Network_Client::pointer_t> m_clients;
-    std::map<Mineserver::Network_Client::pointer_t,Mineserver::Game_Player::pointer_t> m_clientMap;
-    std::vector<Mineserver::Game_World::pointer_t> m_worlds;
-    messageWatcher_t m_messageWatchers[256];
+    uint8_t m_blockType[16*16*128];
+    uint8_t m_blockMeta[16*16*128];
+    uint8_t m_lightSky[16*16*128];
+    uint8_t m_lightBlock[16*16*128];
 
-  public:
-    void run();
-
-    boost::signals2::connection addWatcher(uint8_t messageId, const messageWatcherSlot_t& slot)
-    {
-      return m_messageWatchers[messageId].connect(slot);
-    }
-
-    void addClient(Mineserver::Network_Client::pointer_t client)
-    {
-      m_clients.push_back(client);
-    }
+    uint8_t getBlockType(uint8_t x, uint8_t y, uint8_t z) { return m_blockType[x + (y << 8) + (z << 16)]; }
+    void setBlockType(uint8_t x, uint8_t y, uint8_t z, uint8_t blockType) { m_blockType[x + (y << 8) + (z << 16)] = blockType; }
+    uint8_t getBlockMeta(uint8_t x, uint8_t y, uint8_t z) { return m_blockMeta[x + (y << 8) + (z << 16)]; }
+    void setBlockMeta(uint8_t x, uint8_t y, uint8_t z, uint8_t blockMeta) { m_blockMeta[x + (y << 8) + (z << 16)] = blockMeta; }
+    uint8_t getLightSky(uint8_t x, uint8_t y, uint8_t z) { return m_lightSky[x + (y << 8) + (z << 16)]; }
+    void setLightSky(uint8_t x, uint8_t y, uint8_t z, uint8_t lightSky) { m_lightSky[x + (y << 8) + (z << 16)] = lightSky; }
+    uint8_t getLightBlock(uint8_t x, uint8_t y, uint8_t z) { return m_lightBlock[x + (y << 8) + (z << 16)]; }
+    void setLightBlock(uint8_t x, uint8_t y, uint8_t z, uint8_t lightBlock) { m_lightBlock[x + (y << 8) + (z << 16)] = lightBlock; }
   };
 }
 

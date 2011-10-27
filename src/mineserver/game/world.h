@@ -25,47 +25,27 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_GAME_H
-#define MINESERVER_GAME_H
-
-#include <map>
-#include <vector>
+#ifndef MINESERVER_GAME_WORLD_H
+#define MINESERVER_GAME_WORLD_H
 
 #include <boost/shared_ptr.hpp>
-#include <boost/signals2.hpp>
 
-#include <mineserver/game/player.h>
-#include <mineserver/game/world.h>
-#include <mineserver/network/message.h>
-#include <mineserver/network/client.h>
+#include <mineserver/game/world/chunk.h>
 
 namespace Mineserver
 {
-  class Game
+  struct Game_World
   {
   public:
-    typedef boost::shared_ptr<Mineserver::Game> pointer_t;
-    typedef boost::signals2::signal<void (Mineserver::Game&, Mineserver::Network_Client&, Mineserver::Network_Message&)> messageWatcher_t;
-    typedef messageWatcher_t::slot_type messageWatcherSlot_t;
+    typedef boost::shared_ptr<Mineserver::Game_World> pointer_t;
 
   private:
-    std::vector<Mineserver::Game_Player::pointer_t> m_players;
-    std::vector<Mineserver::Network_Client::pointer_t> m_clients;
-    std::map<Mineserver::Network_Client::pointer_t,Mineserver::Game_Player::pointer_t> m_clientMap;
-    std::vector<Mineserver::Game_World::pointer_t> m_worlds;
-    messageWatcher_t m_messageWatchers[256];
+    std::map<std::pair<uint32_t,uint32_t>, Mineserver::Game_World_Chunk> m_chunks;
 
   public:
-    void run();
-
-    boost::signals2::connection addWatcher(uint8_t messageId, const messageWatcherSlot_t& slot)
+    Mineserver::Game_World_Chunk::pointer_t getChunk(uint32_t x, uint32_t z)
     {
-      return m_messageWatchers[messageId].connect(slot);
-    }
-
-    void addClient(Mineserver::Network_Client::pointer_t client)
-    {
-      m_clients.push_back(client);
+      return Mineserver::Game_World_Chunk::pointer_t(&m_chunks[std::pair<uint32_t,uint32_t>(x,z)]);
     }
   };
 }
