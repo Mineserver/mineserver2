@@ -49,9 +49,9 @@ int main()
 
   Mineserver::Network_Server server(game, protocol, service);
 
-  game.addWatcher(0x01, Mineserver::Watcher_Login());
-  game.addWatcher(0x02, Mineserver::Watcher_Handshake());
-  game.addWatcher(0xFE, Mineserver::Watcher_ServerListPing());
+  game.addMessageWatcher(0x01, Mineserver::Watcher_Login());
+  game.addMessageWatcher(0x02, Mineserver::Watcher_Handshake());
+  game.addMessageWatcher(0xFE, Mineserver::Watcher_ServerListPing());
 
   while (true) {
     try {

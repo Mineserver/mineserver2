@@ -46,7 +46,7 @@ namespace Mineserver
   public:
     typedef boost::shared_ptr<Mineserver::Game> pointer_t;
     typedef boost::signals2::signal<void (Mineserver::Game&, Mineserver::Network_Client&, Mineserver::Network_Message&)> messageWatcher_t;
-    typedef messageWatcher_t::slot_type messageWatcherSlot_t;
+    typedef boost::signals2::signal<void (Mineserver::Game&, Mineserver::Network_Client&, Mineserver::Game_World&, Mineserver::Game_World_Chunk&, uint8_t x, uint8_t y, uint8_t z)> blockWatcher_t;
 
   private:
     std::vector<Mineserver::Game_Player::pointer_t> m_players;
@@ -54,13 +54,19 @@ namespace Mineserver
     std::map<Mineserver::Network_Client::pointer_t,Mineserver::Game_Player::pointer_t> m_clientMap;
     std::vector<Mineserver::Game_World::pointer_t> m_worlds;
     messageWatcher_t m_messageWatchers[256];
+    blockWatcher_t m_blockWatchers;
 
   public:
     void run();
 
-    boost::signals2::connection addWatcher(uint8_t messageId, const messageWatcherSlot_t& slot)
+    boost::signals2::connection addMessageWatcher(uint8_t messageId, const messageWatcher_t::slot_type& slot)
     {
       return m_messageWatchers[messageId].connect(slot);
+    }
+
+    boost::signals2::connection addBlockWatcher(const blockWatcher_t::slot_type& slot)
+    {
+      return m_blockWatchers.connect(slot);
     }
 
     void addClient(Mineserver::Network_Client::pointer_t client)
