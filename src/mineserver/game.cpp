@@ -53,8 +53,10 @@ void Mineserver::Game::run()
 
     for (std::vector<Mineserver::Network_Message::pointer_t>::iterator message_it=client->incoming().begin();message_it!=client->incoming().end();++message_it) {
       Mineserver::Network_Message::pointer_t message = *message_it;
-      m_messageWatchers[message->mid](pointer_t(this), client, message);
+      m_messageWatchers[message->mid](shared_from_this(), client, message);
     }
+
+    std::cout << "Watchers done." << std::endl;
 
     client->incoming().clear();
 
