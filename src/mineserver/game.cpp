@@ -42,8 +42,9 @@ void Mineserver::Game::run()
   std::cout << "There are " << m_clients.size() << " clients connected!" << std::endl;
 
   for (std::vector<Mineserver::Network_Client::pointer_t>::iterator it=m_clients.begin();it!=m_clients.end();++it) {
-    // This crashes when you disconnect...
-    if (!(*it) || (*it)->alive() == false) {
+    // This crashes when you disconnect... -deoxxa
+    // It shouldn't now. -Jailout2000
+    if (!(*it) || ((*it) && (*it)->alive() == false)) {
       continue;
     }
 
