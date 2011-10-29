@@ -48,7 +48,7 @@ int main()
 
   Mineserver::Game::pointer_t game = boost::make_shared<Mineserver::Game>();
   Mineserver::Network_Protocol::pointer_t protocol = boost::make_shared<Mineserver::Network_Protocol_Notch_Protocol>();
-  Mineserver::Network_Server::pointer_t server = boost::make_shared<Mineserver::Network_Server>(game, protocol, service);
+  Mineserver::Network_Server::pointer_t server = boost::make_shared<Mineserver::Network_Server>(game, protocol, &service);
 
   game->addMessageWatcher(0x01, Mineserver::Watcher_Login());
   game->addMessageWatcher(0x02, Mineserver::Watcher_Handshake());

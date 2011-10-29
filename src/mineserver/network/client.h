@@ -58,7 +58,7 @@ namespace Mineserver
     bool m_alive;
 
   public:
-    Network_Client(boost::asio::io_service& service, Mineserver::Network_Protocol::pointer_t protocol) : m_socket(service),m_protocol(protocol),m_alive(true)
+    Network_Client(boost::asio::io_service* service, Mineserver::Network_Protocol::pointer_t protocol) : m_socket(*service),m_protocol(protocol),m_alive(true)
     {
     }
 

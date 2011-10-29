@@ -42,7 +42,7 @@ void Mineserver::Network_Server::startAccept()
   // TODO:
   // This protocol argument is manually set right now just to facilitate a test build!
   // It needs to be instantiated based on config options somehow.
-  Mineserver::Network_Client::pointer_t client = boost::make_shared<Mineserver::Network_Client>(m_socket.get_io_service(), m_protocol);
+  Mineserver::Network_Client::pointer_t client = boost::make_shared<Mineserver::Network_Client>(&(m_socket.get_io_service()), m_protocol);
 
   m_socket.async_accept(
     client->socket(),

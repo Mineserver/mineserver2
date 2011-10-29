@@ -42,7 +42,7 @@ void Mineserver::Game::run()
   std::cout << "There are " << m_clients.size() << " clients connected!" << std::endl;
 
   for (std::vector<Mineserver::Network_Client::pointer_t>::iterator client_it=m_clients.begin();client_it!=m_clients.end();++client_it) {
-    Mineserver::Network_Client::pointer_t client = *client_it;
+    Mineserver::Network_Client::pointer_t client(*client_it);
 
     if (!client || client->alive() == false) {
       std::cout << "Found a dead client..?" << std::endl;
