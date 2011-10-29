@@ -32,6 +32,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/asio.hpp>
+#include <boost/thread.hpp>
 
 #include <mineserver/game.h>
 #include <mineserver/network/protocol/notch/protocol.h>
@@ -66,7 +67,7 @@ int main()
       std::cerr << e.what() << std::endl;
     }
 
-    usleep(500000);
+    boost::this_thread::sleep(boost::posix_time::milliseconds(500));
   }
 
   return 0;
