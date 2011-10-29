@@ -32,6 +32,8 @@
 #include <vector>
 
 #include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/enable_shared_from_this.hpp>
 #include <boost/signals2.hpp>
 
 #include <mineserver/game/player.h>
@@ -41,18 +43,18 @@
 
 namespace Mineserver
 {
-  class Game
+  class Game : public boost::enable_shared_from_this<Mineserver::Game>
   {
   public:
     typedef boost::shared_ptr<Mineserver::Game> pointer_t;
-    typedef boost::signals2::signal<void (Mineserver::Game&, Mineserver::Network_Client&, Mineserver::Network_Message&)> messageWatcher_t;
-    typedef boost::signals2::signal<void (Mineserver::Game&, Mineserver::Network_Client&, Mineserver::Game_World&, Mineserver::Game_World_Chunk&, uint8_t x, uint8_t y, uint8_t z)> blockWatcher_t;
+    typedef boost::signals2::signal<void (Mineserver::Game::pointer_t, Mineserver::Network_Client::pointer_t, Mineserver::Network_Message::pointer_t)> messageWatcher_t;
+    typedef boost::signals2::signal<void (Mineserver::Game::pointer_t, Mineserver::Network_Client::pointer_t, Mineserver::Game_World::pointer_t, Mineserver::Game_World_Chunk::pointer_t, uint8_t x, uint8_t y, uint8_t z)> blockWatcher_t;
 
   private:
-    std::vector<Mineserver::Game_Player::pointer_t> m_players;
+    std::map<std::string,Mineserver::Game_Player::pointer_t> m_players;
     std::vector<Mineserver::Network_Client::pointer_t> m_clients;
     std::map<Mineserver::Network_Client::pointer_t,Mineserver::Game_Player::pointer_t> m_clientMap;
-    std::vector<Mineserver::Game_World::pointer_t> m_worlds;
+    std::map<int,Mineserver::Game_World::pointer_t> m_worlds;
     messageWatcher_t m_messageWatchers[256];
     blockWatcher_t m_blockWatchers;
 
@@ -69,9 +71,28 @@ namespace Mineserver
       return m_blockWatchers.connect(slot);
     }
 
+    void addPlayer(Mineserver::Game_Player::pointer_t player)
+    {
+      m_players[player->getName()] = player;
+    }
+
     void addClient(Mineserver::Network_Client::pointer_t client)
     {
       m_clients.push_back(client);
+    }
+
+    void associateClient(Mineserver::Network_Client::pointer_t client, Mineserver::Game_Player::pointer_t player)
+    {
+      m_clientMap[client] = player;
+    }
+
+    Mineserver::Game_World::pointer_t getWorld(int n)
+    {
+      if (m_worlds.find(n) == m_worlds.end()) {
+        m_worlds[n] = boost::make_shared<Mineserver::Game_World>();
+      }
+
+      return m_worlds[n];
     }
   };
 }

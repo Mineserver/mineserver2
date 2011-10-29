@@ -40,14 +40,14 @@ namespace Mineserver
 {
   struct Watcher_ServerListPing
   {
-    void operator()(Mineserver::Game& game, Mineserver::Network_Client& client, Mineserver::Network_Message& message) const
+    void operator()(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message) const
     {
       std::cout << "Server list ping watcher called!" << std::endl;
 
       boost::shared_ptr<Mineserver::Network_Message_0xFF> response(new Mineserver::Network_Message_0xFF);
       response->mid = 0xFF;
       response->reason = "this is a server";
-      client.outgoing().push_back(response);
+      client->outgoing().push_back(response);
     }
   };
 }

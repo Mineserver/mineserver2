@@ -33,20 +33,44 @@
 #include <mineserver/game.h>
 #include <mineserver/network/client.h>
 #include <mineserver/network/message.h>
-#include <mineserver/network/message/0xFF.h>
+#include <mineserver/network/message/0x01.h>
+#include <mineserver/network/message/0x32.h>
+#include <mineserver/network/message/0x33.h>
 
 namespace Mineserver
 {
   struct Watcher_Login
   {
-    void operator()(Mineserver::Game& game, Mineserver::Network_Client& client, Mineserver::Network_Message& message) const
+    void operator()(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message) const
     {
       std::cout << "Login watcher called!" << std::endl;
 
-      boost::shared_ptr<Mineserver::Network_Message_0xFF> response(new Mineserver::Network_Message_0xFF);
-      response->mid = 0xFF;
-      response->reason = "nope.jpg";
-      client.outgoing().push_back(response);
+      Mineserver::Game_Player::pointer_t player(new Mineserver::Game_Player);
+      player->setName("test");
+
+      game->addPlayer(player);
+      game->associateClient(client, player);
+
+      boost::shared_ptr<Mineserver::Network_Message_0x01> responseMessage(new Mineserver::Network_Message_0x01);
+      responseMessage->mid = 0x01;
+      responseMessage->username = "";
+      responseMessage->seed = 1;
+      responseMessage->mode = 0;
+      responseMessage->dimension = 0;
+      responseMessage->difficulty = 0;
+      responseMessage->worldHeight = 128;
+      responseMessage->maxPlayers = 32;
+      client->outgoing().push_back(responseMessage);
+
+      for (int x=0;x<11;++x) {
+        for (int z=0;z<11;++z) {
+          boost::shared_ptr<Mineserver::Network_Message_0x32> prechunkMessage(new Mineserver::Network_Message_0x32);
+          prechunkMessage->x = x-5;
+          prechunkMessage->z = z-5;
+          prechunkMessage->mode = true;
+          client->outgoing().push_back(prechunkMessage);
+        }
+      }
     }
   };
 }

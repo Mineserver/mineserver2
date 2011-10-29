@@ -40,12 +40,25 @@ namespace Mineserver
     typedef boost::shared_ptr<Mineserver::Game_World> pointer_t;
 
   private:
-    std::map<std::pair<uint32_t,uint32_t>, Mineserver::Game_World_Chunk> m_chunks;
+    std::map<std::pair<uint32_t,uint32_t>, Mineserver::Game_World_Chunk::pointer_t> m_chunks;
 
   public:
+    bool hasChunk(uint32_t x, uint32_t z)
+    {
+      std::pair<uint32_t,uint32_t> coord(x,z);
+      return Mineserver::Game_World_Chunk::pointer_t(m_chunks[coord]);
+    }
+
     Mineserver::Game_World_Chunk::pointer_t getChunk(uint32_t x, uint32_t z)
     {
-      return Mineserver::Game_World_Chunk::pointer_t(&m_chunks[std::pair<uint32_t,uint32_t>(x,z)]);
+      std::pair<uint32_t,uint32_t> coord(x,z);
+      return Mineserver::Game_World_Chunk::pointer_t(m_chunks[coord]);
+    }
+
+    void setChunk(uint32_t x, uint32_t z, Mineserver::Game_World_Chunk::pointer_t chunk)
+    {
+      std::pair<uint32_t,uint32_t> coord(x,z);
+      m_chunks[coord] = chunk;
     }
   };
 }

@@ -39,14 +39,14 @@ namespace Mineserver
 {
   struct Watcher_Handshake
   {
-    void operator()(Mineserver::Game& game, Mineserver::Network_Client& client, Mineserver::Network_Message& message) const
+    void operator()(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message) const
     {
       std::cout << "Handshake watcher called!" << std::endl;
 
       boost::shared_ptr<Mineserver::Network_Message_0x02> response(new Mineserver::Network_Message_0x02);
       response->mid = 0x02;
-      response->username = "2e66f1dc032ab5f0";
-      client.outgoing().push_back(response);
+      response->username = "-";
+      client->outgoing().push_back(response);
     }
   };
 }

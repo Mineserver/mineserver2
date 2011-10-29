@@ -51,16 +51,15 @@ namespace Mineserver
   private:
     boost::asio::ip::tcp::socket m_socket;
     boost::array<uint8_t, 8192> m_tmp;
-    Mineserver::Network_Protocol* m_protocol;
+    Mineserver::Network_Protocol::pointer_t m_protocol;
     std::vector<uint8_t> m_incomingBuffer;
     std::vector<Mineserver::Network_Message::pointer_t> m_incoming;
     std::vector<Mineserver::Network_Message::pointer_t> m_outgoing;
     bool m_alive;
 
   public:
-    static pointer_t create(boost::asio::io_service& service, Mineserver::Network_Protocol* protocol)
+    Network_Client(boost::asio::io_service& service, Mineserver::Network_Protocol::pointer_t protocol) : m_socket(service),m_protocol(protocol),m_alive(true)
     {
-      return pointer_t(new Mineserver::Network_Client(service, protocol));
     }
 
     boost::asio::ip::tcp::socket& socket()
@@ -68,7 +67,7 @@ namespace Mineserver
       return m_socket;
     }
 
-    Mineserver::Network_Protocol* protocol()
+    Mineserver::Network_Protocol::pointer_t protocol()
     {
       return m_protocol;
     }
@@ -87,10 +86,6 @@ namespace Mineserver
     void write();
 
   private:
-    Network_Client(boost::asio::io_service& service, Mineserver::Network_Protocol* protocol) : m_socket(service),m_protocol(protocol),m_alive(true)
-    {
-    }
-
     void handleRead(const boost::system::error_code& e, size_t n);
     void handleWrite(const boost::system::error_code& e, size_t n);
   };

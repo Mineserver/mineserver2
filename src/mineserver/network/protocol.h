@@ -30,6 +30,9 @@
 
 #include <vector>
 
+#include <boost/shared_ptr.hpp>
+#include <boost/enable_shared_from_this.hpp>
+
 #include <mineserver/byteorder.h>
 
 namespace Mineserver
@@ -39,6 +42,8 @@ namespace Mineserver
   class Network_Protocol
   {
   public:
+    typedef boost::shared_ptr<Mineserver::Network_Protocol> pointer_t;
+
     enum {
       STATE_GOOD,
       STATE_STOP,

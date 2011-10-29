@@ -31,6 +31,7 @@
 
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <boost/asio.hpp>
 
 #include <mineserver/byteorder.h>
@@ -62,7 +63,7 @@ void Mineserver::Network_Client::read()
 
 void Mineserver::Network_Client::write()
 {
-  boost::shared_ptr< std::vector<uint8_t> > buffer(new std::vector<uint8_t>);
+  boost::shared_ptr< std::vector<uint8_t> > buffer = boost::make_shared< std::vector<uint8_t> >();
 
   for (std::vector<Mineserver::Network_Message::pointer_t>::iterator it=m_outgoing.begin();it!=m_outgoing.end();++it) {
     printf("Trying to send message ID: %02x\n", (*it)->mid);

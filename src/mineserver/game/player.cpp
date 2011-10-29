@@ -31,5 +31,5 @@
 
 void Mineserver::Game_Player::run()
 {
-  std::cout << "Tick!" << std::endl;
+  std::cout << "Player tick: " << m_name << std::endl;
 }

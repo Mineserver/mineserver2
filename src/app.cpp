@@ -29,6 +29,8 @@
 #include <iostream>
 #include <cstdio>
 
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <boost/asio.hpp>
 
 #include <mineserver/game.h>
@@ -43,15 +45,13 @@ int main()
 {
   boost::asio::io_service service;
 
-  Mineserver::Game game;
+  Mineserver::Game::pointer_t game = boost::make_shared<Mineserver::Game>();
+  Mineserver::Network_Protocol::pointer_t protocol = boost::make_shared<Mineserver::Network_Protocol_Notch_Protocol>();
+  Mineserver::Network_Server::pointer_t server = boost::make_shared<Mineserver::Network_Server>(game, protocol, service);
 
-  Mineserver::Network_Protocol_Notch_Protocol protocol;
-
-  Mineserver::Network_Server server(game, protocol, service);
-
-  game.addMessageWatcher(0x01, Mineserver::Watcher_Login());
-  game.addMessageWatcher(0x02, Mineserver::Watcher_Handshake());
-  game.addMessageWatcher(0xFE, Mineserver::Watcher_ServerListPing());
+  game->addMessageWatcher(0x01, Mineserver::Watcher_Login());
+  game->addMessageWatcher(0x02, Mineserver::Watcher_Handshake());
+  game->addMessageWatcher(0xFE, Mineserver::Watcher_ServerListPing());
 
   while (true) {
     try {
@@ -61,7 +61,7 @@ int main()
     }
 
     try {
-      game.run();
+      game->run();
     } catch (std::exception& e) {
       std::cerr << e.what() << std::endl;
     }
