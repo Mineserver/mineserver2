@@ -26,13 +26,13 @@
 */
 
 #include <mineserver/byteorder.h>
-#include <mineserver/network/message/0xFE.h>
+#include <mineserver/network/message/serverlistping.h>
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0xFE.h>
 
 int Mineserver::Network_Protocol_Notch_Packet_0xFE::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
 {
-  Mineserver::Network_Message_0xFE* msg = new Mineserver::Network_Message_0xFE;
+  Mineserver::Network_Message_ServerListPing* msg = new Mineserver::Network_Message_ServerListPing;
   *message = msg;
 
   ps >> msg->mid;
@@ -42,7 +42,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0xFE::_read(Mineserver::Network_Pr
 
 int Mineserver::Network_Protocol_Notch_Packet_0xFE::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
 {
-  const Mineserver::Network_Message_0xFE* msg = static_cast<const Mineserver::Network_Message_0xFE*>(&message);
+  const Mineserver::Network_Message_ServerListPing* msg = static_cast<const Mineserver::Network_Message_ServerListPing*>(&message);
 
   ps << msg->mid;
 

@@ -26,13 +26,13 @@
 */
 
 #include <mineserver/byteorder.h>
-#include <mineserver/network/message/0x01.h>
+#include <mineserver/network/message/login.h>
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x01.h>
 
 int Mineserver::Network_Protocol_Notch_Packet_0x01::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
 {
-  Mineserver::Network_Message_0x01* msg = new Mineserver::Network_Message_0x01;
+  Mineserver::Network_Message_Login* msg = new Mineserver::Network_Message_Login;
   *message = msg;
 
   ps >> msg->mid >> msg->version >> msg->username >> msg->seed >> msg->mode >> msg->dimension >> msg->difficulty >> msg->worldHeight >> msg->maxPlayers;
@@ -42,7 +42,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x01::_read(Mineserver::Network_Pr
 
 int Mineserver::Network_Protocol_Notch_Packet_0x01::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
 {
-  const Mineserver::Network_Message_0x01* msg = static_cast<const Mineserver::Network_Message_0x01*>(&message);
+  const Mineserver::Network_Message_Login* msg = static_cast<const Mineserver::Network_Message_Login*>(&message);
 
   ps << msg->mid << msg->version << msg->username << msg->seed << msg->mode << msg->dimension << msg->difficulty << msg->worldHeight << msg->maxPlayers;
 

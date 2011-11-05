@@ -26,13 +26,13 @@
 */
 
 #include <mineserver/byteorder.h>
-#include <mineserver/network/message/0x02.h>
+#include <mineserver/network/message/handshake.h>
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x02.h>
 
 int Mineserver::Network_Protocol_Notch_Packet_0x02::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
 {
-  Mineserver::Network_Message_0x02* msg = new Mineserver::Network_Message_0x02;
+  Mineserver::Network_Message_Handshake* msg = new Mineserver::Network_Message_Handshake;
   *message = msg;
 
   ps >> msg->mid >> msg->username;
@@ -42,7 +42,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x02::_read(Mineserver::Network_Pr
 
 int Mineserver::Network_Protocol_Notch_Packet_0x02::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
 {
-  const Mineserver::Network_Message_0x02* msg = static_cast<const Mineserver::Network_Message_0x02*>(&message);
+  const Mineserver::Network_Message_Handshake* msg = static_cast<const Mineserver::Network_Message_Handshake*>(&message);
 
   ps << msg->mid << msg->username;
 

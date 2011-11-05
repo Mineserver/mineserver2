@@ -28,6 +28,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <cstdio>
 
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
@@ -108,6 +109,8 @@ void Mineserver::Network_Client::handleRead(const boost::system::error_code& e, 
       if (state == Mineserver::Network_Protocol::STATE_GOOD) {
         m_incoming.push_back(Mineserver::Network_Message::pointer_t(message));
       }
+
+      printf("State is: %d\n", state);
     } while (state == Mineserver::Network_Protocol::STATE_GOOD);
 
     read();

@@ -33,8 +33,7 @@
 #include <mineserver/game.h>
 #include <mineserver/network/client.h>
 #include <mineserver/network/message.h>
-#include <mineserver/network/message/0xFE.h>
-#include <mineserver/network/message/0xFF.h>
+#include <mineserver/network/message/kick.h>
 
 namespace Mineserver
 {
@@ -44,7 +43,7 @@ namespace Mineserver
     {
       std::cout << "Server list ping watcher called!" << std::endl;
 
-      boost::shared_ptr<Mineserver::Network_Message_0xFF> response(new Mineserver::Network_Message_0xFF);
+      boost::shared_ptr<Mineserver::Network_Message_Kick> response(new Mineserver::Network_Message_Kick);
       response->mid = 0xFF;
       response->reason = "this is a server";
       client->outgoing().push_back(response);

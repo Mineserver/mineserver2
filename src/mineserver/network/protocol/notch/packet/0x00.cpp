@@ -26,13 +26,13 @@
 */
 
 #include <mineserver/byteorder.h>
-#include <mineserver/network/message/0x00.h>
+#include <mineserver/network/message/ping.h>
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x00.h>
 
 int Mineserver::Network_Protocol_Notch_Packet_0x00::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
 {
-  Mineserver::Network_Message_0x00* msg = new Mineserver::Network_Message_0x00;
+  Mineserver::Network_Message_Ping* msg = new Mineserver::Network_Message_Ping;
   *message = msg;
 
   ps >> msg->mid >> msg->id;
@@ -42,7 +42,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x00::_read(Mineserver::Network_Pr
 
 int Mineserver::Network_Protocol_Notch_Packet_0x00::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
 {
-  const Mineserver::Network_Message_0x00* msg = static_cast<const Mineserver::Network_Message_0x00*>(&message);
+  const Mineserver::Network_Message_Ping* msg = static_cast<const Mineserver::Network_Message_Ping*>(&message);
 
   ps << msg->mid << msg->id;
 

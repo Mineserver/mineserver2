@@ -25,36 +25,26 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_WATCHER_LOGIN_H
-#define MINESERVER_WATCHER_LOGIN_H
+#ifndef MINESERVER_NETWORK_PACKET_LOGIN_H
+#define MINESERVER_NETWORK_PACKET_LOGIN_H
 
-#include <boost/shared_ptr.hpp>
+#include <string>
 
-#include <mineserver/game.h>
-#include <mineserver/network/client.h>
+#include <mineserver/byteorder.h>
 #include <mineserver/network/message.h>
-#include <mineserver/network/message/login.h>
-#include <mineserver/network/message/kick.h>
 
 namespace Mineserver
 {
-  struct Watcher_Login
+  struct Network_Message_Login : public Mineserver::Network_Message
   {
-    void operator()(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message) const
-    {
-      std::cout << "Login watcher called!" << std::endl;
-
-      Mineserver::Game_Player::pointer_t player(new Mineserver::Game_Player);
-      player->setName("test");
-
-      game->addPlayer(player);
-      game->associateClient(client, player);
-
-      boost::shared_ptr<Mineserver::Network_Message_Kick> responseMessage(new Mineserver::Network_Message_Kick);
-      responseMessage->mid = 0xFF;
-      responseMessage->reason = "go away";
-      client->outgoing().push_back(responseMessage);
-    }
+    int32_t version;
+    std::string username;
+    int64_t seed;
+    int32_t mode;
+    int8_t dimension;
+    int8_t difficulty;
+    uint8_t worldHeight;
+    uint8_t maxPlayers;
   };
 }
 
