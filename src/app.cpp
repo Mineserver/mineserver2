@@ -56,7 +56,7 @@ int main()
 
   while (true) {
     try {
-      service.poll_one();
+      service.poll();
     } catch (std::exception& e) {
       std::cerr << e.what() << std::endl;
     }
