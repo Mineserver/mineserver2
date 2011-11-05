@@ -38,8 +38,8 @@ bool is_dead(Mineserver::Network_Client::pointer_t client) {
 
 void Mineserver::Game::run()
 {
-  std::cout << "Tick!" << std::endl;
-  std::cout << "There are " << m_clients.size() << " clients connected!" << std::endl;
+  //std::cout << "Tick!" << std::endl;
+  //std::cout << "There are " << m_clients.size() << " clients connected!" << std::endl;
 
   for (std::vector<Mineserver::Network_Client::pointer_t>::iterator client_it=m_clients.begin();client_it!=m_clients.end();++client_it) {
     Mineserver::Network_Client::pointer_t client(*client_it);
