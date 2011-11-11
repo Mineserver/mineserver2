@@ -45,7 +45,7 @@ namespace Mineserver
 
       boost::shared_ptr<Mineserver::Network_Message_Kick> response(new Mineserver::Network_Message_Kick);
       response->mid = 0xFF;
-      response->reason = "this is a server";
+      response->reason = "Mineserver 2.0§0§0"; // description, current users: 0, max users: 0
       client->outgoing().push_back(response);
     }
   };
