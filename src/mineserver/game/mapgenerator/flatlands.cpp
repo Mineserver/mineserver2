@@ -33,9 +33,21 @@ bool Mineserver::Game_MapGenerator_Flatlands::processChunk(Mineserver::Game_Worl
   uint8_t blockType;
 
   for (uint8_t y=0;y<127;++y) {
-    if (y == 0)  { blockType = 0x07; }
-    if (y == 1)  { blockType = 0x03; }
-    if (y == 60) { blockType = 0x00; }
+    switch (y)
+    {
+      case 0:
+        blockType = 0x07;
+        break;
+      case 1:
+        blockType = 0x03;
+        break;
+      case 59:
+        blockType = 0x02;
+        break;
+      case 60:
+        blockType = 0x00;
+        break;
+    }
 
     for (uint8_t x=0;x<15;++x) {
       for (uint8_t z=0;z<15;++z) {
