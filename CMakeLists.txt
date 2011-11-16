@@ -62,6 +62,7 @@ SET(mineserver_source
   src/app.cpp
   src/mineserver/game.cpp
   src/mineserver/game/player.cpp
+  src/mineserver/game/mapgenerator/flatlands.cpp
   src/mineserver/network/server.cpp
   src/mineserver/network/client.cpp
   src/mineserver/network/protocol/notch/protocol.cpp

@@ -25,32 +25,22 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_GAME_WORLD_CHUNK_H
-#define MINESERVER_GAME_WORLD_CHUNK_H
+#ifndef MINESERVER_GAME_MAPGENERATOR_H
+#define MINESERVER_GAME_MAPGENERATOR_H
 
 #include <boost/shared_ptr.hpp>
 
-#include <mineserver/byteorder.h>
+#include <mineserver/game/world/chunk.h>
 
 namespace Mineserver
 {
-  struct Game_World_Chunk
+  struct Game_MapGenerator
   {
-    typedef boost::shared_ptr<Mineserver::Game_World_Chunk> pointer_t;
+  public:
+    typedef boost::shared_ptr<Mineserver::Game_MapGenerator> pointer_t;
 
-    uint8_t m_blockType[16*16*128];
-    uint8_t m_blockMeta[16*16*128];
-    uint8_t m_lightSky[16*16*128];
-    uint8_t m_lightBlock[16*16*128];
-
-    uint8_t getBlockType(uint8_t x, uint8_t y, uint8_t z) { return m_blockType[x + (y << 8) + (z << 16)]; }
-    void setBlockType(uint8_t x, uint8_t y, uint8_t z, uint8_t blockType) { m_blockType[x + (y << 8) + (z << 16)] = blockType; }
-    uint8_t getBlockMeta(uint8_t x, uint8_t y, uint8_t z) { return m_blockMeta[x + (y << 8) + (z << 16)]; }
-    void setBlockMeta(uint8_t x, uint8_t y, uint8_t z, uint8_t blockMeta) { m_blockMeta[x + (y << 8) + (z << 16)] = blockMeta; }
-    uint8_t getLightSky(uint8_t x, uint8_t y, uint8_t z) { return m_lightSky[x + (y << 8) + (z << 16)]; }
-    void setLightSky(uint8_t x, uint8_t y, uint8_t z, uint8_t lightSky) { m_lightSky[x + (y << 8) + (z << 16)] = lightSky; }
-    uint8_t getLightBlock(uint8_t x, uint8_t y, uint8_t z) { return m_lightBlock[x + (y << 8) + (z << 16)]; }
-    void setLightBlock(uint8_t x, uint8_t y, uint8_t z, uint8_t lightBlock) { m_lightBlock[x + (y << 8) + (z << 16)] = lightBlock; }
+  public:
+    virtual bool processChunk(Mineserver::Game_World_Chunk::pointer_t chunk) = 0;
   };
 }
 

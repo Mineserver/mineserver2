@@ -25,33 +25,25 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_GAME_WORLD_CHUNK_H
-#define MINESERVER_GAME_WORLD_CHUNK_H
+#include <mineserver/game/world/chunk.h>
+#include <mineserver/game/mapgenerator/flatlands.h>
 
-#include <boost/shared_ptr.hpp>
-
-#include <mineserver/byteorder.h>
-
-namespace Mineserver
+bool Mineserver::Game_MapGenerator_Flatlands::processChunk(Mineserver::Game_World_Chunk::pointer_t chunk)
 {
-  struct Game_World_Chunk
-  {
-    typedef boost::shared_ptr<Mineserver::Game_World_Chunk> pointer_t;
+  uint8_t blockType;
 
-    uint8_t m_blockType[16*16*128];
-    uint8_t m_blockMeta[16*16*128];
-    uint8_t m_lightSky[16*16*128];
-    uint8_t m_lightBlock[16*16*128];
+  for (uint8_t y=0;y<127;++y) {
+    if (y == 0)  { blockType = 0x07; }
+    if (y == 1)  { blockType = 0x03; }
+    if (y == 60) { blockType = 0x00; }
 
-    uint8_t getBlockType(uint8_t x, uint8_t y, uint8_t z) { return m_blockType[x + (y << 8) + (z << 16)]; }
-    void setBlockType(uint8_t x, uint8_t y, uint8_t z, uint8_t blockType) { m_blockType[x + (y << 8) + (z << 16)] = blockType; }
-    uint8_t getBlockMeta(uint8_t x, uint8_t y, uint8_t z) { return m_blockMeta[x + (y << 8) + (z << 16)]; }
-    void setBlockMeta(uint8_t x, uint8_t y, uint8_t z, uint8_t blockMeta) { m_blockMeta[x + (y << 8) + (z << 16)] = blockMeta; }
-    uint8_t getLightSky(uint8_t x, uint8_t y, uint8_t z) { return m_lightSky[x + (y << 8) + (z << 16)]; }
-    void setLightSky(uint8_t x, uint8_t y, uint8_t z, uint8_t lightSky) { m_lightSky[x + (y << 8) + (z << 16)] = lightSky; }
-    uint8_t getLightBlock(uint8_t x, uint8_t y, uint8_t z) { return m_lightBlock[x + (y << 8) + (z << 16)]; }
-    void setLightBlock(uint8_t x, uint8_t y, uint8_t z, uint8_t lightBlock) { m_lightBlock[x + (y << 8) + (z << 16)] = lightBlock; }
-  };
+    for (uint8_t x=0;x<15;++x) {
+      for (uint8_t z=0;z<15;++z) {
+        chunk->setBlockType(x, y, z, blockType);
+        chunk->setBlockMeta(x, y, z, 0);
+      }
+    }
+  }
+
+  return true;
 }
-
-#endif
