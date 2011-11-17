@@ -56,10 +56,12 @@ namespace Mineserver
     std::vector<Mineserver::Network_Message::pointer_t> m_incoming;
     std::vector<Mineserver::Network_Message::pointer_t> m_outgoing;
     bool m_alive;
+    int m_inactiveTicks;
 
   public:
     Network_Client(boost::asio::io_service* service, Mineserver::Network_Protocol::pointer_t protocol) : m_socket(*service),m_protocol(protocol),m_alive(true)
     {
+      m_inactiveTicks = 0;
     }
 
     boost::asio::ip::tcp::socket& socket()
@@ -77,12 +79,20 @@ namespace Mineserver
       return m_alive;
     }
 
+    int inactiveTicks()
+    {
+      return m_inactiveTicks;
+    }
+
     std::vector<Mineserver::Network_Message::pointer_t>& incoming() { return m_incoming; }
     std::vector<Mineserver::Network_Message::pointer_t>& outgoing() { return m_outgoing; }
 
+    void read();
+    void resetInactiveTicks();
+    void run();
     void start();
     void stop();
-    void read();
+    void timedOut();
     void write();
 
   private:

@@ -35,7 +35,7 @@ namespace Mineserver
 {
   struct Network_Message_0x00 : public Mineserver::Network_Message
   {
-    int32_t id;
+    int32_t keepalive_id;
   };
 }
 

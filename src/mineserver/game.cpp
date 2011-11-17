@@ -49,6 +49,15 @@ void Mineserver::Game::run()
       continue;
     }
 
+    // 1200 in-game ticks = timed out, inactive ticks = ticks past since last keep-alive:
+    if (client->inactiveTicks() > 1200) {
+      std::cout << "Client timed-out." << std::endl;
+      client->timedOut();
+      if (!client || client->alive() == false) {
+        continue;
+      }
+    }
+
     std::cout << "There are " << client->incoming().size() << " messages." << std::endl;
 
     for (std::vector<Mineserver::Network_Message::pointer_t>::iterator message_it=client->incoming().begin();message_it!=client->incoming().end();++message_it) {
@@ -59,6 +68,10 @@ void Mineserver::Game::run()
     std::cout << "Watchers done." << std::endl;
 
     client->incoming().clear();
+
+    // +1 in-game tick, and anything else:
+    // possibly send keep-alive?
+    client->run();
 
     client->write();
   }
