@@ -61,7 +61,7 @@ FIND_PACKAGE(ZLIB)
 
 SET(mineserver_source
   src/app.cpp
-  src/mineserver/nbt/nbt.cpp
+  src/mineserver/nbt.cpp
   src/mineserver/game.cpp
   src/mineserver/game/player.cpp
   src/mineserver/game/mapgenerator/flatlands.cpp
