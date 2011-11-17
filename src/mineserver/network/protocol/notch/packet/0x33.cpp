@@ -25,29 +25,82 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <vector>
+
 #include <mineserver/byteorder.h>
-#include <mineserver/network/message/0x33.h>
+#include <mineserver/network/message/chunk.h>
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x33.h>
 
+#include <mineserver/nbt.h>
+#include <mineserver/game/world/chunk.h>
+
 int Mineserver::Network_Protocol_Notch_Packet_0x33::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
 {
-  Mineserver::Network_Message_0x33* msg = new Mineserver::Network_Message_0x33;
+  Mineserver::Network_Message_Chunk* msg = new Mineserver::Network_Message_Chunk;
   *message = msg;
 
-  ps >> msg->mid >> msg->posX >> msg->posY >> msg->posZ >> msg->sizeX >> msg->sizeY >> msg->sizeZ >> msg->bytes;
-  msg->data.reserve(msg->bytes);
-  ps.bytesTo(reinterpret_cast<uint8_t*>(&(msg->data[0])), msg->bytes);
+  int16_t bytes;
+  std::vector<uint8_t> data;
+
+  ps >> msg->mid >> msg->posX >> msg->posY >> msg->posZ >> msg->sizeX >> msg->sizeY >> msg->sizeZ >> bytes;
+  data.reserve(bytes);
+  ps.bytesTo(reinterpret_cast<uint8_t*>(&(data[0])), bytes);
 
   return STATE_GOOD;
 }
 
 int Mineserver::Network_Protocol_Notch_Packet_0x33::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
 {
-  const Mineserver::Network_Message_0x33* msg = static_cast<const Mineserver::Network_Message_0x33*>(&message);
+  const Mineserver::Network_Message_Chunk* msg = static_cast<const Mineserver::Network_Message_Chunk*>(&message);
 
-  ps << msg->mid << msg->posX << msg->posY << msg->posZ << msg->sizeX << msg->sizeY << msg->sizeZ << msg->bytes;
-  ps.bytesFrom(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(&(msg->data[0]))), msg->bytes);
+  int16_t bytes;
+  std::vector<uint8_t> data;
+
+  Mineserver::NBT nbt(Mineserver::NBT::TAG_COMPOUND);
+
+  nbt.Insert("Blocks", new Mineserver::NBT(Mineserver::NBT::TAG_BYTE_ARRAY));
+  nbt.Insert("Data", new Mineserver::NBT(Mineserver::NBT::TAG_BYTE_ARRAY));
+  nbt.Insert("SkyLight", new Mineserver::NBT(Mineserver::NBT::TAG_BYTE_ARRAY));
+  nbt.Insert("BlockLight", new Mineserver::NBT(Mineserver::NBT::TAG_BYTE_ARRAY));
+  nbt.Insert("HeightMap", new Mineserver::NBT(Mineserver::NBT::TAG_BYTE_ARRAY));
+  nbt.Insert("Entities", new Mineserver::NBT(Mineserver::NBT::TAG_LIST, Mineserver::NBT::TAG_COMPOUND));
+  nbt.Insert("TileEntities", new Mineserver::NBT(Mineserver::NBT::TAG_LIST, Mineserver::NBT::TAG_COMPOUND));
+  nbt.Insert("LastUpdate", new Mineserver::NBT(Mineserver::NBT::TAG_LONG));
+  nbt.Insert("xPos", new Mineserver::NBT(Mineserver::NBT::TAG_INT));
+  nbt.Insert("zPos", new Mineserver::NBT(Mineserver::NBT::TAG_INT));
+  nbt.Insert("TerrainPopulated", new Mineserver::NBT(Mineserver::NBT::TAG_BYTE));
+
+  *nbt["xPos"] = static_cast<int32_t>(msg->chunk->x);
+  *nbt["zPos"] = static_cast<int32_t>(msg->chunk->z);
+
+  std::vector<uint8_t>* blockType = nbt["Blocks"]->GetByteArray();
+  std::vector<uint8_t>* blockMeta = nbt["Data"]->GetByteArray();
+  std::vector<uint8_t>* lightSky = nbt["SkyLight"]->GetByteArray();
+  std::vector<uint8_t>* lightBlock = nbt["BlockLight"]->GetByteArray();
+
+  blockType->resize(128*16*16);
+  blockMeta->resize(128*16*8);
+  lightSky->resize(128*16*8);
+  lightBlock->resize(128*16*8);
+
+  for (int y = 0; y < 128; ++y) {
+    for (int z = 0; z < 16; ++z) {
+      for (int x = 0; x < 8; ++x) {
+        (*blockType)[y+(z*128)+(x*128*16)] = msg->chunk->getBlockType(x, y, z);
+        (*blockType)[y+(z*128)+(x*128*16)+1] = msg->chunk->getBlockType(x+1, y, z);
+        (*blockMeta)[y+(z*128)+(x*128*8)] = (msg->chunk->getBlockMeta(x, y, z) << 4) + msg->chunk->getBlockMeta(x+1, y, z);
+        (*lightSky)[y+(z*128)+(x*128*8)] = (msg->chunk->getLightSky(x, y, z) << 4) + msg->chunk->getLightSky(x+1, y, z);
+        (*lightBlock)[y+(z*128)+(x*128*8)] = (msg->chunk->getLightBlock(x, y, z) << 4) + msg->chunk->getLightBlock(x+1, y, z);
+      }
+    }
+  }
+
+  nbt.Write(data);
+  bytes = data.size();
+
+  ps << msg->mid << msg->posX << msg->posY << msg->posZ << msg->sizeX << msg->sizeY << msg->sizeZ << bytes;
+  ps.bytesFrom(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(&(data[0]))), bytes);
 
   return STATE_GOOD;
 }
