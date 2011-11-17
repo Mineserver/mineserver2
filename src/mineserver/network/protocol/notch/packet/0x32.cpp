@@ -26,13 +26,13 @@
 */
 
 #include <mineserver/byteorder.h>
-#include <mineserver/network/message/0x32.h>
+#include <mineserver/network/message/chunkprepare.h>
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x32.h>
 
 int Mineserver::Network_Protocol_Notch_Packet_0x32::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
 {
-  Mineserver::Network_Message_0x32* msg = new Mineserver::Network_Message_0x32;
+  Mineserver::Network_Message_ChunkPrepare* msg = new Mineserver::Network_Message_ChunkPrepare;
   *message = msg;
 
   ps >> msg->mid >> msg->x >> msg->z >> msg->mode;
@@ -42,7 +42,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x32::_read(Mineserver::Network_Pr
 
 int Mineserver::Network_Protocol_Notch_Packet_0x32::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
 {
-  const Mineserver::Network_Message_0x32* msg = static_cast<const Mineserver::Network_Message_0x32*>(&message);
+  const Mineserver::Network_Message_ChunkPrepare* msg = static_cast<const Mineserver::Network_Message_ChunkPrepare*>(&message);
 
   ps << msg->mid << msg->x << msg->z << msg->mode;
 
