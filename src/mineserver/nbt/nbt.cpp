@@ -25,6 +25,7 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <sstream>
 #include <iostream>
 #include <fstream>
 #include <cstring>
@@ -33,14 +34,19 @@
 #include <winsock2.h>
 #endif
 
-#include "nbt.h"
-#include "tools.h"
-#include "logger.h"
-#include "mineserver.h"
-#include "constants.h"
+#include <mineserver/nbt/nbt.h>
+
+#define ALLOCATE_NBTFILE 1024*1024
 
 //NBT level file reading
 //More info: http://www.minecraft.net/docs/NBT.txt
+
+std::string dtos(double n)
+{
+  std::ostringstream result;
+  result << n;
+  return result.str();
+}
 
 NBT_Value::NBT_Value(eTAG_Type type, eTAG_Type listType) : m_type(type)
 {
@@ -112,7 +118,7 @@ NBT_Value::NBT_Value(eTAG_Type type, uint8_t** buf, int& remaining) : m_type(typ
     remaining -= 2;
     if (remaining >= 0)
     {
-      m_value.shortVal = getSint16(*buf);
+      m_value.shortVal = **reinterpret_cast<int16_t**>(buf);
       *buf += 2;
     }
     break;
@@ -120,7 +126,7 @@ NBT_Value::NBT_Value(eTAG_Type type, uint8_t** buf, int& remaining) : m_type(typ
     remaining -= 4;
     if (remaining >= 0)
     {
-      m_value.intVal = getSint32(*buf);
+      m_value.intVal = **reinterpret_cast<int32_t**>(buf);
       *buf += 4;
     }
     break;
@@ -128,7 +134,7 @@ NBT_Value::NBT_Value(eTAG_Type type, uint8_t** buf, int& remaining) : m_type(typ
     remaining -= 8;
     if (remaining >= 0)
     {
-      m_value.longVal = getSint64(*buf);
+      m_value.longVal = **reinterpret_cast<int64_t**>(buf);
       *buf += 8;
     }
     break;
@@ -136,7 +142,7 @@ NBT_Value::NBT_Value(eTAG_Type type, uint8_t** buf, int& remaining) : m_type(typ
     remaining -= 4;
     if (remaining >= 0)
     {
-      m_value.floatVal = getFloat(*buf);
+      m_value.floatVal = **reinterpret_cast<float**>(buf);
       *buf += 4;
     }
     break;
@@ -144,7 +150,7 @@ NBT_Value::NBT_Value(eTAG_Type type, uint8_t** buf, int& remaining) : m_type(typ
     remaining -= 8;
     if (remaining >= 0)
     {
-      m_value.doubleVal = getDouble(*buf);
+      m_value.doubleVal = **reinterpret_cast<double**>(buf);
       *buf += 8;
     }
     break;
@@ -152,7 +158,7 @@ NBT_Value::NBT_Value(eTAG_Type type, uint8_t** buf, int& remaining) : m_type(typ
     remaining -= 4;
     if (remaining >= 0)
     {
-      int32_t bufLen = getSint32(*buf);
+      int32_t bufLen = **reinterpret_cast<int32_t**>(buf);
       remaining -= bufLen;
       *buf += 4;
       if (remaining >= 0)
@@ -167,7 +173,7 @@ NBT_Value::NBT_Value(eTAG_Type type, uint8_t** buf, int& remaining) : m_type(typ
     remaining -= 2;
     if (remaining >= 0)
     {
-      int16_t stringLen = getSint16(*buf);
+      int16_t stringLen = **reinterpret_cast<int16_t**>(buf);
       remaining -= stringLen;
       *buf += 2;
       if (remaining >= 0)
@@ -184,7 +190,7 @@ NBT_Value::NBT_Value(eTAG_Type type, uint8_t** buf, int& remaining) : m_type(typ
       int8_t type = **buf;
       (*buf)++;
       m_value.listVal.type = (eTAG_Type)type;
-      int32_t count = getSint32(*buf);
+      int32_t count = **reinterpret_cast<int32_t**>(buf);
       *buf += 4;
       m_value.listVal.data = new std::vector<NBT_Value*>();
       if (count)
@@ -216,7 +222,7 @@ NBT_Value::NBT_Value(eTAG_Type type, uint8_t** buf, int& remaining) : m_type(typ
         break;
       }
 
-      int16_t stringLen = getSint16(*buf);
+      int16_t stringLen = **reinterpret_cast<int16_t**>(buf);
       *buf += 2;
 
       remaining -= stringLen;
@@ -537,7 +543,7 @@ NBT_Value* NBT_Value::LoadFromFile(const std::string& filename)
 
   if (uncompressedSize == 0)
   {
-    LOG2(WARNING, "Unable to determine uncompressed size of " + filename);
+//    LOG2(WARNING, "Unable to determine uncompressed size of " + filename);
     uncompressedSize = ALLOCATE_NBTFILE * 10;
   }
 
@@ -658,29 +664,29 @@ void NBT_Value::Write(std::vector<uint8_t> &buffer)
     break;
   case TAG_SHORT:
     buffer.resize(storeAt + 2);
-    putSint16(&buffer[storeAt], m_value.shortVal);
+    *reinterpret_cast<int16_t*>(&buffer[storeAt]) = m_value.shortVal;
     break;
   case TAG_INT:
     buffer.resize(storeAt + 4);
-    putSint32(&buffer[storeAt], m_value.intVal);
+    *reinterpret_cast<int32_t*>(&buffer[storeAt]) = m_value.intVal;
     break;
   case TAG_LONG:
     buffer.resize(storeAt + 8);
-    putSint64(&buffer[storeAt], m_value.longVal);
+    *reinterpret_cast<int64_t*>(&buffer[storeAt]) = m_value.longVal;
     break;
   case TAG_FLOAT:
     buffer.resize(storeAt + 4);
-    putFloat(&buffer[storeAt], m_value.floatVal);
+    *reinterpret_cast<float*>(&buffer[storeAt]) = m_value.floatVal;
     break;
   case TAG_DOUBLE:
     buffer.resize(storeAt + 8);
-    putDouble(&buffer[storeAt], m_value.doubleVal);
+    *reinterpret_cast<double*>(&buffer[storeAt]) = m_value.doubleVal;
     break;
   case TAG_BYTE_ARRAY:
   {
     int arraySize = m_value.byteArrayVal ? m_value.byteArrayVal->size() : 0;
     buffer.resize(storeAt + 4 + arraySize);
-    putSint32(&buffer[storeAt], arraySize);
+    *reinterpret_cast<int32_t*>(&buffer[storeAt]) = arraySize;
     storeAt += 4;
     if (arraySize)
     {
@@ -692,7 +698,7 @@ void NBT_Value::Write(std::vector<uint8_t> &buffer)
   {
     int stringLen = m_value.stringVal ? m_value.stringVal->size() : 0;
     buffer.resize(storeAt + 2 + stringLen);
-    putSint16(&buffer[storeAt], (int16_t)stringLen);
+    *reinterpret_cast<int16_t*>(&buffer[storeAt]) = (int16_t)stringLen;
     storeAt += 2;
     if (stringLen > 0)
     {
@@ -706,7 +712,7 @@ void NBT_Value::Write(std::vector<uint8_t> &buffer)
     int listCount = m_value.listVal.data ? m_value.listVal.data->size() : 0;
     buffer[storeAt] = m_value.listVal.type;
     storeAt++;
-    putSint32(&buffer[storeAt], listCount);
+    *reinterpret_cast<int32_t*>(&buffer[storeAt]) = listCount;
     for (int i = 0; i < listCount; i++)
     {
       (*m_value.listVal.data)[i]->Write(buffer);
@@ -728,7 +734,7 @@ void NBT_Value::Write(std::vector<uint8_t> &buffer)
         buffer.resize(curPos + 3 + keySize);
         buffer[curPos] = (uint8_t)val->GetType();
         curPos++;
-        putSint16(&buffer[curPos], keySize);
+        *reinterpret_cast<int16_t*>(&buffer[curPos]) = keySize;
         curPos += 2;
         if (keySize)
         {
