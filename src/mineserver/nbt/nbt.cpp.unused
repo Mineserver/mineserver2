@@ -38,6 +38,7 @@
 #include "logger.h"
 #include "mineserver.h"
 #include "constants.h"
+#include "localization.h"
 
 //NBT level file reading
 //More info: http://www.minecraft.net/docs/NBT.txt

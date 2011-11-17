@@ -25,30 +25,28 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_WATCHER_HANDSHAKE_H
-#define MINESERVER_WATCHER_HANDSHAKE_H
+#ifndef MINESERVER_LOCALIZATION_H
+#define MINESERVER_LOCALIZATION_H
 
 #include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/enable_shared_from_this.hpp>
+#include <boost/signals2.hpp>
 
-#include <mineserver/localization.h>
-#include <mineserver/game.h>
-#include <mineserver/network/client.h>
-#include <mineserver/network/message.h>
-#include <mineserver/network/message/0x02.h>
+// TODO:
+// Plan out how to do localization. I have already added this file to the
+// files that will probably (or will) use this. Any new files that will
+// display text to stdio or over notch's protocol will need to include
+// this file when it's ready.
 
 namespace Mineserver
 {
-  struct Watcher_Handshake
+  class Localization : public boost::enable_shared_from_this<Mineserver::Localization>
   {
-    void operator()(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message) const
-    {
-      std::cout << "Handshake watcher called!" << std::endl;
+  public:
 
-      boost::shared_ptr<Mineserver::Network_Message_0x02> response(new Mineserver::Network_Message_0x02);
-      response->mid = 0x02;
-      response->username = "-";
-      client->outgoing().push_back(response);
-    }
+  private:
+
   };
 }
 

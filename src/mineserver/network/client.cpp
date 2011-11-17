@@ -36,6 +36,7 @@
 #include <boost/asio.hpp>
 
 #include <mineserver/byteorder.h>
+#include <mineserver/localization.h>
 #include <mineserver/network/client.h>
 #include <mineserver/network/message/kick.h>
 

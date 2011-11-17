@@ -29,6 +29,7 @@
 #include <vector>
 #include <algorithm>
 
+#include <mineserver/localization.h>
 #include <mineserver/network/client.h>
 #include <mineserver/game.h>
 
