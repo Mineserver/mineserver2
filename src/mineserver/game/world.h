@@ -43,15 +43,15 @@ namespace Mineserver
     // If these enums stay, plugins will need access to them. (TODO)
     enum GameMode
     {
-      survival, creative
+      survival = 0, creative = 1
     };
     enum Dimension
     {
-      nether = -1, overWorld, theEnd
+      nether = -1, overWorld = 0, theEnd = 1
     };
     enum Difficulty
     {
-      peaceful, easy, normal, hard
+      peaceful = 0, easy = 1, normal = 2, hard = 3
     };
 
     static const uint8_t defaultWorldHeight = 127;
