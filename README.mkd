@@ -18,7 +18,7 @@ speed and efficiency Mineserver is known for.
 NOTE
 ----
 
-This is very much a work in progress! I'll be slowly pulling in bits of code
+This is very much a work in progress! We'll be slowly pulling in bits of code
 from the original Mineserver repository to make this functional.
 
 Planned features
