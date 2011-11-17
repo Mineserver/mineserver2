@@ -57,9 +57,11 @@ IF(MSVC_IDE)
 ENDIF(MSVC_IDE)
 
 FIND_PACKAGE(Boost COMPONENTS system filesystem signals thread REQUIRED)
+FIND_PACKAGE(ZLIB)
 
 SET(mineserver_source
   src/app.cpp
+  src/mineserver/nbt/nbt.cpp
   src/mineserver/game.cpp
   src/mineserver/game/player.cpp
   src/mineserver/game/mapgenerator/flatlands.cpp
@@ -135,6 +137,7 @@ SOURCE_GROUP(${PROJECT_NAME} FILES ${mineserver_source})
 
 INCLUDE_DIRECTORIES(src)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
 
 LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
@@ -149,4 +152,5 @@ TARGET_LINK_LIBRARIES(mineserver
   ${Boost_FILESYSTEM_LIBRARY}
   ${Boost_SIGNALS_LIBRARY}
   ${Boost_THREAD_LIBRARY}
+  ${ZLIB_LIBRARIES}
 )
