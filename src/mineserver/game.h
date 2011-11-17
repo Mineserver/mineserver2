@@ -50,6 +50,8 @@ namespace Mineserver
     typedef boost::signals2::signal<void (Mineserver::Game::pointer_t, Mineserver::Network_Client::pointer_t, Mineserver::Network_Message::pointer_t)> messageWatcher_t;
     typedef boost::signals2::signal<void (Mineserver::Game::pointer_t, Mineserver::Network_Client::pointer_t, Mineserver::Game_World::pointer_t, Mineserver::Game_World_Chunk::pointer_t, uint8_t x, uint8_t y, uint8_t z)> blockWatcher_t;
 
+    static const int timeOutTicks = 1200;
+
   private:
     std::map<std::string,Mineserver::Game_Player::pointer_t> m_players;
     std::vector<Mineserver::Network_Client::pointer_t> m_clients;

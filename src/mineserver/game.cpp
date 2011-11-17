@@ -44,18 +44,18 @@ void Mineserver::Game::run()
   for (std::vector<Mineserver::Network_Client::pointer_t>::iterator client_it=m_clients.begin();client_it!=m_clients.end();++client_it) {
     Mineserver::Network_Client::pointer_t client(*client_it);
 
-    if (!client || client->alive() == false) {
-      std::cout << "Found a dead client..?" << std::endl;
-      continue;
-    }
-
     // 1200 in-game ticks = timed out, inactive ticks = ticks past since last keep-alive:
-    if (client->inactiveTicks() > 1200) {
+    if (client && client->inactiveTicks() > timeOutTicks) {
       std::cout << "Client timed-out." << std::endl;
       client->timedOut();
-      if (!client || client->alive() == false) {
+      if (client->alive() == false) {
         continue;
       }
+    }
+
+    if (!client || (client && client->alive() == false)) {
+      std::cout << "Found a dead client..?" << std::endl;
+      continue;
     }
 
     std::cout << "There are " << client->incoming().size() << " messages." << std::endl;
