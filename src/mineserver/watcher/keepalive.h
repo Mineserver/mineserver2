@@ -25,8 +25,8 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_WATCHER_HANDSHAKE_H
-#define MINESERVER_WATCHER_HANDSHAKE_H
+#ifndef MINESERVER_WATCHER_KEEPALIVE_H
+#define MINESERVER_WATCHER_KEEPALIVE_H
 
 #include <boost/shared_ptr.hpp>
 
@@ -34,20 +34,17 @@
 #include <mineserver/game.h>
 #include <mineserver/network/client.h>
 #include <mineserver/network/message.h>
-#include <mineserver/network/message/0x02.h>
+#include <mineserver/network/message/keepalive.h>
 
 namespace Mineserver
 {
-  struct Watcher_Handshake
+  struct Watcher_KeepAlive
   {
     void operator()(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message) const
     {
-      std::cout << "Handshake watcher called!" << std::endl;
+      std::cout << "Keep-alive watcher called!" << std::endl;
 
-      boost::shared_ptr<Mineserver::Network_Message_0x02> response(new Mineserver::Network_Message_0x02);
-      response->mid = 0x02;
-      response->username = "-";
-      client->outgoing().push_back(response);
+      client->resetInactiveTicks();
     }
   };
 }

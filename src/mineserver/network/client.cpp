@@ -36,7 +36,29 @@
 #include <boost/asio.hpp>
 
 #include <mineserver/byteorder.h>
+#include <mineserver/localization.h>
 #include <mineserver/network/client.h>
+#include <mineserver/network/message/kick.h>
+
+void Mineserver::Network_Client::run()
+{
+  m_inactiveTicks++;
+}
+
+void Mineserver::Network_Client::resetInactiveTicks()
+{
+  m_inactiveTicks = 0;
+}
+
+void Mineserver::Network_Client::timedOut()
+{
+  boost::shared_ptr<Mineserver::Network_Message_Kick> responseMessage(new Mineserver::Network_Message_Kick);
+  responseMessage->mid = 0xFF;
+  responseMessage->reason = "Timed-out";
+  outgoing().push_back(responseMessage);
+  stop();
+  // Jailout2000: Does the kick message get sent before closing the socket? I guess it doesn't *really* matter...
+}
 
 void Mineserver::Network_Client::start()
 {

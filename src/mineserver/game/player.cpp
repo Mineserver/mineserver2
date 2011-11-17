@@ -27,6 +27,7 @@
 
 #include <iostream>
 
+#include <mineserver/localization.h>
 #include <mineserver/game/player.h>
 
 void Mineserver::Game_Player::run()

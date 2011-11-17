@@ -38,6 +38,8 @@ namespace Mineserver
   {
     typedef boost::shared_ptr<Mineserver::Game_World_Chunk> pointer_t;
 
+    // TODO:
+    // This should use the worldHeight property instead of using 128 verbatim.
     uint8_t m_blockType[16*16*128];
     uint8_t m_blockMeta[16*16*128];
     uint8_t m_lightSky[16*16*128];

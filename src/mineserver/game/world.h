@@ -39,8 +39,30 @@ namespace Mineserver
   public:
     typedef boost::shared_ptr<Mineserver::Game_World> pointer_t;
 
+    // Jailout2000: Are enums okay to use here?
+    // If these enums stay, plugins will need access to them. (TODO)
+    enum GameMode
+    {
+      survival = 0, creative = 1
+    };
+    enum Dimension
+    {
+      nether = -1, overWorld = 0, theEnd = 1
+    };
+    enum Difficulty
+    {
+      peaceful = 0, easy = 1, normal = 2, hard = 3
+    };
+
+    static const uint8_t defaultWorldHeight = 127;
+
   private:
     std::map<std::pair<uint32_t,uint32_t>, Mineserver::Game_World_Chunk::pointer_t> m_chunks;
+    long worldSeed;
+    GameMode gameMode;
+    Dimension dimension;
+    Difficulty difficulty;
+    uint8_t worldHeight;
 
   public:
     bool hasChunk(uint32_t x, uint32_t z)
@@ -59,6 +81,56 @@ namespace Mineserver
     {
       std::pair<uint32_t,uint32_t> coord(x,z);
       m_chunks[coord] = chunk;
+    }
+
+    long getWorldSeed()
+    {
+      return worldSeed;
+    }
+
+    void setWorldSeed(long new_value)
+    {
+      worldSeed = new_value;
+    }
+
+    bool getGameMode()
+    {
+      return gameMode;
+    }
+
+    void setGameMode(GameMode new_value)
+    {
+      gameMode = new_value;
+    }
+
+    int getDimension()
+    {
+      return dimension;
+    }
+
+    void setDimension(Dimension new_value)
+    {
+      dimension = new_value;
+    }
+
+    int getDifficulty()
+    {
+      return difficulty;
+    }
+
+    void setDifficulty(Difficulty new_value)
+    {
+      difficulty = new_value;
+    }
+
+    int getWorldHeight()
+    {
+      return worldHeight;
+    }
+
+    void setWorldHeight(int new_value)
+    {
+      worldHeight = new_value;
     }
   };
 }

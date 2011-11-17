@@ -30,6 +30,7 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include <mineserver/localization.h>
 #include <mineserver/game.h>
 #include <mineserver/network/client.h>
 #include <mineserver/network/message.h>
