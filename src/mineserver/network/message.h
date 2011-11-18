@@ -39,7 +39,8 @@ namespace Mineserver
   public:
     typedef boost::shared_ptr<Mineserver::Network_Message> pointer_t;
 
-    enum messageType {
+    enum messageType
+    {
       MESSAGE_KEEP_ALIVE = 0x00,
       MESSAGE_LOGIN = 0x01,
       MESSAGE_HANDSHAKE = 0x02,

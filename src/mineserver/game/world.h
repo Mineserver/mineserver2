@@ -54,6 +54,9 @@ namespace Mineserver
       peaceful = 0, easy = 1, normal = 2, hard = 3
     };
 
+    static const int8_t defaultGameMode = survival;
+    static const int8_t defaultDimension = overWorld;
+    static const int8_t defaultDifficulty = easy;
     static const uint8_t defaultWorldHeight = 127;
 
   private:
