@@ -395,7 +395,7 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
     size_t src_s, src_l, dst_s, dst_l;
 
     src_s = src_l = len * 2;
-    dst_s = dst_l = src_l * 2;
+    dst_s = dst_l = len;
 
     char* src_c = reinterpret_cast<char*>(&((*m_buffer)[m_pos]));
     dst = dst_c = new char[dst_s];

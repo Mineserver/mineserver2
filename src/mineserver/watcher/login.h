@@ -44,9 +44,12 @@ namespace Mineserver
     void operator()(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message) const
     {
       std::cout << "Login watcher called!" << std::endl;
+      const Mineserver::Network_Message_Login* msg = reinterpret_cast<Mineserver::Network_Message_Login*>(&(*message));
 
       Mineserver::Game_Player::pointer_t player(new Mineserver::Game_Player);
-      player->setName("test");
+      player->setName(msg->username);
+
+      std::cout << "Player login v." << msg->version << ": " << msg->username << std::endl;
 
       game->addPlayer(player);
       game->associateClient(client, player);
