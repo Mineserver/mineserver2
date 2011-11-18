@@ -25,22 +25,22 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_GAME_MAPGENERATOR_H
-#define MINESERVER_GAME_MAPGENERATOR_H
+#ifndef MINESERVER_WORLD_GENERATOR_H
+#define MINESERVER_WORLD_GENERATOR_H
 
 #include <boost/shared_ptr.hpp>
 
-#include <mineserver/game/world/chunk.h>
+#include <mineserver/world/chunk.h>
 
 namespace Mineserver
 {
-  struct Game_MapGenerator
+  struct World_Generator
   {
   public:
-    typedef boost::shared_ptr<Mineserver::Game_MapGenerator> pointer_t;
+    typedef boost::shared_ptr<Mineserver::World_Generator> pointer_t;
 
   public:
-    virtual bool processChunk(Mineserver::Game_World_Chunk::pointer_t chunk) = 0;
+    virtual bool processChunk(Mineserver::World_Chunk::pointer_t chunk) = 0;
   };
 }
 

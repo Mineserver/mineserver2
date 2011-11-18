@@ -25,37 +25,38 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <mineserver/game/world/chunk.h>
-#include <mineserver/game/mapgenerator/flatlands.h>
+#ifndef MINESERVER_WORLD_CHUNK_H
+#define MINESERVER_WORLD_CHUNK_H
 
-bool Mineserver::Game_MapGenerator_Flatlands::processChunk(Mineserver::Game_World_Chunk::pointer_t chunk)
+#include <boost/shared_ptr.hpp>
+
+#include <mineserver/byteorder.h>
+
+namespace Mineserver
 {
-  uint8_t blockType;
+  struct World_Chunk
+  {
+    typedef boost::shared_ptr<Mineserver::World_Chunk> pointer_t;
 
-  for (uint8_t y=0;y<127;++y) {
-    switch (y)
-    {
-      case 0:
-        blockType = 0x07;
-        break;
-      case 1:
-        blockType = 0x03;
-        break;
-      case 59:
-        blockType = 0x02;
-        break;
-      case 60:
-        blockType = 0x00;
-        break;
-    }
+    uint32_t x;
+    uint32_t z;
 
-    for (uint8_t x=0;x<15;++x) {
-      for (uint8_t z=0;z<15;++z) {
-        chunk->setBlockType(x, y, z, blockType);
-        chunk->setBlockMeta(x, y, z, 0);
-      }
-    }
-  }
+    // TODO:
+    // This should use the worldHeight property instead of using 128 verbatim.
+    uint8_t m_blockType[16*16*128];
+    uint8_t m_blockMeta[16*16*128];
+    uint8_t m_lightSky[16*16*128];
+    uint8_t m_lightBlock[16*16*128];
 
-  return true;
+    uint8_t getBlockType(uint8_t x, uint8_t y, uint8_t z) { return m_blockType[x + (y << 8) + (z << 16)]; }
+    void setBlockType(uint8_t x, uint8_t y, uint8_t z, uint8_t blockType) { m_blockType[x + (y << 8) + (z << 16)] = blockType; }
+    uint8_t getBlockMeta(uint8_t x, uint8_t y, uint8_t z) { return m_blockMeta[x + (y << 8) + (z << 16)]; }
+    void setBlockMeta(uint8_t x, uint8_t y, uint8_t z, uint8_t blockMeta) { m_blockMeta[x + (y << 8) + (z << 16)] = blockMeta; }
+    uint8_t getLightSky(uint8_t x, uint8_t y, uint8_t z) { return m_lightSky[x + (y << 8) + (z << 16)]; }
+    void setLightSky(uint8_t x, uint8_t y, uint8_t z, uint8_t lightSky) { m_lightSky[x + (y << 8) + (z << 16)] = lightSky; }
+    uint8_t getLightBlock(uint8_t x, uint8_t y, uint8_t z) { return m_lightBlock[x + (y << 8) + (z << 16)]; }
+    void setLightBlock(uint8_t x, uint8_t y, uint8_t z, uint8_t lightBlock) { m_lightBlock[x + (y << 8) + (z << 16)] = lightBlock; }
+  };
 }
+
+#endif

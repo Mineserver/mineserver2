@@ -64,7 +64,6 @@ SET(mineserver_source
   src/mineserver/nbt.cpp
   src/mineserver/game.cpp
   src/mineserver/game/player.cpp
-  src/mineserver/game/mapgenerator/flatlands.cpp
   src/mineserver/network/server.cpp
   src/mineserver/network/client.cpp
   src/mineserver/network/protocol/notch/protocol.cpp
@@ -132,6 +131,7 @@ SET(mineserver_source
   src/mineserver/network/protocol/notch/packet/0xC9.cpp
   src/mineserver/network/protocol/notch/packet/0xFE.cpp
   src/mineserver/network/protocol/notch/packet/0xFF.cpp
+  src/mineserver/world/generator/flatlands.cpp
 )
 SOURCE_GROUP(${PROJECT_NAME} FILES ${mineserver_source})
 

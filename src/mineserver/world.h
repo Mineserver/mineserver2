@@ -25,19 +25,19 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_GAME_WORLD_H
-#define MINESERVER_GAME_WORLD_H
+#ifndef MINESERVER_WORLD_H
+#define MINESERVER_WORLD_H
 
 #include <boost/shared_ptr.hpp>
 
-#include <mineserver/game/world/chunk.h>
+#include <mineserver/world/chunk.h>
 
 namespace Mineserver
 {
-  struct Game_World
+  struct World
   {
   public:
-    typedef boost::shared_ptr<Mineserver::Game_World> pointer_t;
+    typedef boost::shared_ptr<Mineserver::World> pointer_t;
 
     // Jailout2000: Are enums okay to use here?
     // If these enums stay, plugins will need access to them. (TODO)
@@ -57,7 +57,7 @@ namespace Mineserver
     static const uint8_t defaultWorldHeight = 127;
 
   private:
-    std::map<std::pair<uint32_t,uint32_t>, Mineserver::Game_World_Chunk::pointer_t> m_chunks;
+    std::map<std::pair<uint32_t,uint32_t>, Mineserver::World_Chunk::pointer_t> m_chunks;
     long worldSeed;
     GameMode gameMode;
     Dimension dimension;
@@ -68,16 +68,16 @@ namespace Mineserver
     bool hasChunk(uint32_t x, uint32_t z)
     {
       std::pair<uint32_t,uint32_t> coord(x,z);
-      return Mineserver::Game_World_Chunk::pointer_t(m_chunks[coord]);
+      return Mineserver::World_Chunk::pointer_t(m_chunks[coord]);
     }
 
-    Mineserver::Game_World_Chunk::pointer_t getChunk(uint32_t x, uint32_t z)
+    Mineserver::World_Chunk::pointer_t getChunk(uint32_t x, uint32_t z)
     {
       std::pair<uint32_t,uint32_t> coord(x,z);
-      return Mineserver::Game_World_Chunk::pointer_t(m_chunks[coord]);
+      return Mineserver::World_Chunk::pointer_t(m_chunks[coord]);
     }
 
-    void setChunk(uint32_t x, uint32_t z, Mineserver::Game_World_Chunk::pointer_t chunk)
+    void setChunk(uint32_t x, uint32_t z, Mineserver::World_Chunk::pointer_t chunk)
     {
       std::pair<uint32_t,uint32_t> coord(x,z);
       m_chunks[coord] = chunk;

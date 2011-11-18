@@ -31,7 +31,7 @@
 #include <vector>
 
 #include <mineserver/byteorder.h>
-#include <mineserver/game/world/chunk.h>
+#include <mineserver/world/chunk.h>
 #include <mineserver/network/message.h>
 
 namespace Mineserver
@@ -44,7 +44,7 @@ namespace Mineserver
     int8_t sizeX;
     int8_t sizeY;
     int8_t sizeZ;
-    Mineserver::Game_World_Chunk::pointer_t chunk;
+    Mineserver::World_Chunk::pointer_t chunk;
   };
 }
 

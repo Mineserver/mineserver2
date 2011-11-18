@@ -37,7 +37,7 @@
 #include <boost/signals2.hpp>
 
 #include <mineserver/game/player.h>
-#include <mineserver/game/world.h>
+#include <mineserver/world.h>
 #include <mineserver/network/message.h>
 #include <mineserver/network/client.h>
 
@@ -48,7 +48,7 @@ namespace Mineserver
   public:
     typedef boost::shared_ptr<Mineserver::Game> pointer_t;
     typedef boost::signals2::signal<void (Mineserver::Game::pointer_t, Mineserver::Network_Client::pointer_t, Mineserver::Network_Message::pointer_t)> messageWatcher_t;
-    typedef boost::signals2::signal<void (Mineserver::Game::pointer_t, Mineserver::Network_Client::pointer_t, Mineserver::Game_World::pointer_t, Mineserver::Game_World_Chunk::pointer_t, uint8_t x, uint8_t y, uint8_t z)> blockWatcher_t;
+    typedef boost::signals2::signal<void (Mineserver::Game::pointer_t, Mineserver::Network_Client::pointer_t, Mineserver::World::pointer_t, Mineserver::World_Chunk::pointer_t, uint8_t x, uint8_t y, uint8_t z)> blockWatcher_t;
 
     static const int timeOutTicks = 1200;
 
@@ -56,7 +56,7 @@ namespace Mineserver
     std::map<std::string,Mineserver::Game_Player::pointer_t> m_players;
     std::vector<Mineserver::Network_Client::pointer_t> m_clients;
     std::map<Mineserver::Network_Client::pointer_t,Mineserver::Game_Player::pointer_t> m_clientMap;
-    std::map<int,Mineserver::Game_World::pointer_t> m_worlds;
+    std::map<int,Mineserver::World::pointer_t> m_worlds;
     messageWatcher_t m_messageWatchers[256];
     blockWatcher_t m_blockWatchers;
 
@@ -88,10 +88,10 @@ namespace Mineserver
       m_clientMap[client] = player;
     }
 
-    Mineserver::Game_World::pointer_t getWorld(int n)
+    Mineserver::World::pointer_t getWorld(int n)
     {
       if (m_worlds.find(n) == m_worlds.end()) {
-        m_worlds[n] = boost::make_shared<Mineserver::Game_World>();
+        m_worlds[n] = boost::make_shared<Mineserver::World>();
       }
 
       return m_worlds[n];

@@ -33,7 +33,7 @@
 #include <mineserver/network/protocol/notch/packet/0x33.h>
 
 #include <mineserver/nbt.h>
-#include <mineserver/game/world/chunk.h>
+#include <mineserver/world/chunk.h>
 
 int Mineserver::Network_Protocol_Notch_Packet_0x33::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
 {
