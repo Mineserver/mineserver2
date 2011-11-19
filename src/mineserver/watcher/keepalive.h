@@ -28,24 +28,15 @@
 #ifndef MINESERVER_WATCHER_KEEPALIVE_H
 #define MINESERVER_WATCHER_KEEPALIVE_H
 
-#include <boost/shared_ptr.hpp>
-
-#include <mineserver/localization.h>
 #include <mineserver/game.h>
 #include <mineserver/network/client.h>
 #include <mineserver/network/message.h>
-#include <mineserver/network/message/keepalive.h>
 
 namespace Mineserver
 {
   struct Watcher_KeepAlive
   {
-    void operator()(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message) const
-    {
-      std::cout << "Keep-alive watcher called!" << std::endl;
-
-      client->resetInactiveTicks();
-    }
+    void operator()(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message) const;
   };
 }
 

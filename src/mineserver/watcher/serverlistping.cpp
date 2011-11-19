@@ -25,19 +25,22 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_WATCHER_SERVERLISTPING_H
-#define MINESERVER_WATCHER_SERVERLISTPING_H
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 
 #include <mineserver/game.h>
 #include <mineserver/network/client.h>
 #include <mineserver/network/message.h>
+#include <mineserver/network/message/kick.h>
 
-namespace Mineserver
+#include <mineserver/watcher/serverlistping.h>
+
+void Mineserver::Watcher_ServerListPing::operator()(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message) const
 {
-  struct Watcher_ServerListPing
-  {
-    void operator()(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message) const;
-  };
-}
+  std::cout << "Server list ping watcher called!" << std::endl;
 
-#endif
+  boost::shared_ptr<Mineserver::Network_Message_Kick> response = boost::make_shared<Mineserver::Network_Message_Kick>();
+  response->mid = 0xFF;
+  response->reason = "Mineserver 2.0§0§0"; // description, current users: 0, max users: 0
+  client->outgoing().push_back(response);
+}

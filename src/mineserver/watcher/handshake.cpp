@@ -25,19 +25,22 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_WATCHER_SERVERLISTPING_H
-#define MINESERVER_WATCHER_SERVERLISTPING_H
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 
 #include <mineserver/game.h>
 #include <mineserver/network/client.h>
 #include <mineserver/network/message.h>
+#include <mineserver/network/message/0x02.h>
 
-namespace Mineserver
+#include <mineserver/watcher/handshake.h>
+
+void Mineserver::Watcher_Handshake::operator()(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message) const
 {
-  struct Watcher_ServerListPing
-  {
-    void operator()(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message) const;
-  };
-}
+  std::cout << "Handshake watcher called!" << std::endl;
 
-#endif
+  boost::shared_ptr<Mineserver::Network_Message_0x02> response = boost::make_shared<Mineserver::Network_Message_0x02>();
+  response->mid = 0x02;
+  response->username = "-";
+  client->outgoing().push_back(response);
+}

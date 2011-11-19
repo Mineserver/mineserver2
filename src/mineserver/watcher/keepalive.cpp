@@ -25,19 +25,15 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_WATCHER_SERVERLISTPING_H
-#define MINESERVER_WATCHER_SERVERLISTPING_H
-
 #include <mineserver/game.h>
 #include <mineserver/network/client.h>
 #include <mineserver/network/message.h>
 
-namespace Mineserver
-{
-  struct Watcher_ServerListPing
-  {
-    void operator()(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message) const;
-  };
-}
+#include <mineserver/watcher/keepalive.h>
 
-#endif
+void Mineserver::Watcher_KeepAlive::operator()(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message) const
+{
+  std::cout << "Keep-alive watcher called!" << std::endl;
+
+  client->resetInactiveTicks();
+}
