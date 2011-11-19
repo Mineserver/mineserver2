@@ -112,8 +112,10 @@ namespace Mineserver
       return m_valid && (m_buffer->size() - m_pos) >= n;
     }
 
-    void bytesFrom(const uint8_t* dst, size_t n);
+    void bytesFrom(const uint8_t* src, size_t n);
+    void bytesFrom(const std::vector<uint8_t> src);
     void bytesTo(uint8_t* dst, size_t n);
+    void bytesTo(std::vector<uint8_t> dst);
 
     Mineserver::Network_Protocol_Notch_PacketStream& operator<<(bool val);
     Mineserver::Network_Protocol_Notch_PacketStream& operator>>(bool& val);

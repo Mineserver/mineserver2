@@ -28,6 +28,7 @@
 #include <string>
 #include <cstring>
 #include <errno.h>
+#include <vector>
 
 #include <mineserver/byteorder.h>
 #include <mineserver/network/protocol/notch/packetstream.h>
@@ -38,10 +39,20 @@ void Mineserver::Network_Protocol_Notch_PacketStream::bytesFrom(const uint8_t* s
   memcpy(reinterpret_cast<uint8_t*>(&((*m_buffer)[0])), const_cast<uint8_t*>(src), n);
 }
 
+void Mineserver::Network_Protocol_Notch_PacketStream::bytesFrom(const std::vector<uint8_t> src)
+{
+  m_buffer->insert(m_buffer->end(), src.begin(), src.end());
+}
+
 void Mineserver::Network_Protocol_Notch_PacketStream::bytesTo(uint8_t* dst, size_t n)
 {
   memcpy(dst, reinterpret_cast<uint8_t*>(&((*m_buffer)[0])), n);
   m_pos += n;
+}
+
+void Mineserver::Network_Protocol_Notch_PacketStream::bytesTo(std::vector<uint8_t> dst)
+{
+  dst.insert(dst.end(), m_buffer->begin()+m_pos, m_buffer->end());
 }
 
 Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_Notch_PacketStream::operator<<(bool val)
