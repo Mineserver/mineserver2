@@ -29,6 +29,7 @@
 #define MINESERVER_WATCHER_LOGIN_H
 
 #include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 
 #include <mineserver/localization.h>
 #include <mineserver/game.h>
@@ -36,6 +37,10 @@
 #include <mineserver/network/message.h>
 #include <mineserver/network/message/login.h>
 #include <mineserver/network/message/kick.h>
+#include <mineserver/network/message/chunkprepare.h>
+#include <mineserver/network/message/chunk.h>
+#include <mineserver/network/message/spawnposition.h>
+#include <mineserver/network/message/positionlook.h>
 
 namespace Mineserver
 {
@@ -54,10 +59,51 @@ namespace Mineserver
       game->addPlayer(player);
       game->associateClient(client, player);
 
-      boost::shared_ptr<Mineserver::Network_Message_Kick> responseMessage(new Mineserver::Network_Message_Kick);
-      responseMessage->mid = 0xFF;
-      responseMessage->reason = "go away";
-      client->outgoing().push_back(responseMessage);
+      for (int x = -5; x <= 5; ++x) {
+        for (int z = -5; z <= 5; ++z) {
+          boost::shared_ptr<Mineserver::Network_Message_ChunkPrepare> chunkPrepareMessage = boost::make_shared<Mineserver::Network_Message_ChunkPrepare>();
+          chunkPrepareMessage->mid = 0x32;
+          chunkPrepareMessage->x = x;
+          chunkPrepareMessage->z = z;
+          chunkPrepareMessage->mode = 1;
+          client->outgoing().push_back(chunkPrepareMessage);
+        }
+      }
+
+      Mineserver::World::pointer_t world = game->getWorld(0);
+
+      for (int x = -5; x <= 5; ++x) {
+        for (int z = -5; z <= 5; ++z) {
+          boost::shared_ptr<Mineserver::Network_Message_Chunk> chunkMessage = boost::make_shared<Mineserver::Network_Message_Chunk>();
+          chunkMessage->mid = 0x33;
+          chunkMessage->posX = x;
+          chunkMessage->posY = 0;
+          chunkMessage->posZ = z;
+          chunkMessage->sizeX = 15;
+          chunkMessage->sizeY = 127;
+          chunkMessage->sizeZ = 15;
+          chunkMessage->chunk = world->generateChunk(x, z);
+          client->outgoing().push_back(chunkMessage);
+        }
+      }
+
+      boost::shared_ptr<Mineserver::Network_Message_SpawnPosition> spawnPositionMessage = boost::make_shared<Mineserver::Network_Message_SpawnPosition>();
+      spawnPositionMessage->mid = 0x06;
+      spawnPositionMessage->x = 0;
+      spawnPositionMessage->y = 100;
+      spawnPositionMessage->z = 0;
+      client->outgoing().push_back(spawnPositionMessage);
+
+      boost::shared_ptr<Mineserver::Network_Message_PositionLook> positionLookMessage = boost::make_shared<Mineserver::Network_Message_PositionLook>();
+      positionLookMessage->mid = 0x0D;
+      positionLookMessage->x = 0;
+      positionLookMessage->y = 100;
+      positionLookMessage->z = 0;
+      positionLookMessage->stance = 100;
+      positionLookMessage->yaw = 0;
+      positionLookMessage->pitch = 0;
+      positionLookMessage->onGround = 0;
+      client->outgoing().push_back(positionLookMessage);
     }
   };
 }
