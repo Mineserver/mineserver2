@@ -28,6 +28,8 @@
 #ifndef MINESERVER_WORLD_H
 #define MINESERVER_WORLD_H
 
+#include <utility>
+
 #include <boost/shared_ptr.hpp>
 
 #include <mineserver/world/chunk.h>
@@ -61,79 +63,76 @@ namespace Mineserver
 
   private:
     std::map<std::pair<uint32_t,uint32_t>, Mineserver::World_Chunk::pointer_t> m_chunks;
-    long worldSeed;
-    GameMode gameMode;
-    Dimension dimension;
-    Difficulty difficulty;
-    uint8_t worldHeight;
+    long m_worldSeed;
+    GameMode m_gameMode;
+    Dimension m_dimension;
+    Difficulty m_difficulty;
+    uint8_t m_worldHeight;
 
   public:
     bool hasChunk(uint32_t x, uint32_t z)
     {
-      std::pair<uint32_t,uint32_t> coord(x,z);
-      return Mineserver::World_Chunk::pointer_t(m_chunks[coord]);
+      return m_chunks.find(std::make_pair(x,z)) != m_chunks.end();
     }
 
     Mineserver::World_Chunk::pointer_t getChunk(uint32_t x, uint32_t z)
     {
-      std::pair<uint32_t,uint32_t> coord(x,z);
-      return Mineserver::World_Chunk::pointer_t(m_chunks[coord]);
+      return m_chunks[std::make_pair(x,z)];
     }
 
     void setChunk(uint32_t x, uint32_t z, Mineserver::World_Chunk::pointer_t chunk)
     {
-      std::pair<uint32_t,uint32_t> coord(x,z);
-      m_chunks[coord] = chunk;
+      m_chunks[std::make_pair(x,z)] = chunk;
     }
 
     long getWorldSeed()
     {
-      return worldSeed;
+      return m_worldSeed;
     }
 
-    void setWorldSeed(long new_value)
+    void setWorldSeed(long worldSeed)
     {
-      worldSeed = new_value;
+      m_worldSeed = worldSeed;
     }
 
     bool getGameMode()
     {
-      return gameMode;
+      return m_gameMode;
     }
 
-    void setGameMode(GameMode new_value)
+    void setGameMode(GameMode gameMode)
     {
-      gameMode = new_value;
+      m_gameMode = gameMode;
     }
 
     int getDimension()
     {
-      return dimension;
+      return m_dimension;
     }
 
-    void setDimension(Dimension new_value)
+    void setDimension(Dimension dimension)
     {
-      dimension = new_value;
+      m_dimension = dimension;
     }
 
     int getDifficulty()
     {
-      return difficulty;
+      return m_difficulty;
     }
 
-    void setDifficulty(Difficulty new_value)
+    void setDifficulty(Difficulty difficulty)
     {
-      difficulty = new_value;
+      m_difficulty = difficulty;
     }
 
     int getWorldHeight()
     {
-      return worldHeight;
+      return m_worldHeight;
     }
 
-    void setWorldHeight(int new_value)
+    void setWorldHeight(int worldHeight)
     {
-      worldHeight = new_value;
+      m_worldHeight = worldHeight;
     }
   };
 }
