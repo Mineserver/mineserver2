@@ -34,3 +34,8 @@ void Mineserver::Game_Player::run()
 {
   std::cout << "Player tick: " << m_name << std::endl;
 }
+
+void Mineserver::Game_Player::shutdown()
+{
+  std::cout << "Asked to shutdown: " << m_name << std::endl;
+}

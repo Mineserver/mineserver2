@@ -40,7 +40,7 @@ namespace Mineserver
   {
   private:
     std::string m_name;
-    Mineserver::vec position;
+    Mineserver::vec m_position;
 
   public:
     typedef boost::shared_ptr<Mineserver::Game_Player> pointer_t;
@@ -48,10 +48,11 @@ namespace Mineserver
   public:
     void setName(const std::string& name) { m_name.assign(name); }
     const std::string& getName() { return m_name; }
-    void setPosition(const Mineserver::vec& _position) { position = _position; }
-    const Mineserver::vec& getPosition() { return position; }
+    void setPosition(const Mineserver::vec& position) { m_position = position; }
+    const Mineserver::vec& getPosition() { return m_position; }
 
     void run();
+    void shutdown();
   };
 }
 
