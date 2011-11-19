@@ -31,8 +31,11 @@
 #include <utility>
 
 #include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 
 #include <mineserver/world/chunk.h>
+#include <mineserver/world/generator.h>
+#include <mineserver/world/generator/flatlands.h>
 
 namespace Mineserver
 {
@@ -40,6 +43,7 @@ namespace Mineserver
   {
   public:
     typedef boost::shared_ptr<Mineserver::World> pointer_t;
+    typedef std::map<std::pair<uint32_t,uint32_t>, Mineserver::World_Chunk::pointer_t> chunkList_t;
 
     // Jailout2000: Are enums okay to use here?
     // If these enums stay, plugins will need access to them. (TODO)
@@ -62,12 +66,13 @@ namespace Mineserver
     static const uint8_t defaultWorldHeight = 127;
 
   private:
-    std::map<std::pair<uint32_t,uint32_t>, Mineserver::World_Chunk::pointer_t> m_chunks;
+    chunkList_t m_chunks;
     long m_worldSeed;
     GameMode m_gameMode;
     Dimension m_dimension;
     Difficulty m_difficulty;
     uint8_t m_worldHeight;
+    Mineserver::World_Generator_Flatlands m_generator;
 
   public:
     bool hasChunk(uint32_t x, uint32_t z)
@@ -83,6 +88,19 @@ namespace Mineserver
     void setChunk(uint32_t x, uint32_t z, Mineserver::World_Chunk::pointer_t chunk)
     {
       m_chunks[std::make_pair(x,z)] = chunk;
+    }
+
+    Mineserver::World_Chunk::pointer_t generateChunk(uint32_t x, uint32_t z)
+    {
+      if (!hasChunk(x, z)) {
+        Mineserver::World_Chunk::pointer_t chunk = boost::make_shared<Mineserver::World_Chunk>();
+        chunk->x = x;
+        chunk->z = z;
+        m_generator.processChunk(chunk);
+        setChunk(x, z, chunk);
+      }
+
+      return getChunk(x, z);
     }
 
     long getWorldSeed()
