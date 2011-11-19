@@ -47,16 +47,20 @@ namespace Mineserver
   {
   public:
     typedef boost::shared_ptr<Mineserver::Game> pointer_t;
+    typedef std::map<std::string,Mineserver::Game_Player::pointer_t> playerList_t;
+    typedef std::vector<Mineserver::Network_Client::pointer_t> clientList_t;
+    typedef std::map<Mineserver::Network_Client::pointer_t,Mineserver::Game_Player::pointer_t> clientMap_t;
+    typedef std::map<int,Mineserver::World::pointer_t> worldList_t;
     typedef boost::signals2::signal<void (Mineserver::Game::pointer_t, Mineserver::Network_Client::pointer_t, Mineserver::Network_Message::pointer_t)> messageWatcher_t;
     typedef boost::signals2::signal<void (Mineserver::Game::pointer_t, Mineserver::Network_Client::pointer_t, Mineserver::World::pointer_t, Mineserver::World_Chunk::pointer_t, uint8_t x, uint8_t y, uint8_t z)> blockWatcher_t;
 
     static const int timeOutTicks = 1200;
 
   private:
-    std::map<std::string,Mineserver::Game_Player::pointer_t> m_players;
-    std::vector<Mineserver::Network_Client::pointer_t> m_clients;
-    std::map<Mineserver::Network_Client::pointer_t,Mineserver::Game_Player::pointer_t> m_clientMap;
-    std::map<int,Mineserver::World::pointer_t> m_worlds;
+    playerList_t m_players;
+    clientList_t m_clients;
+    clientMap_t m_clientMap;
+    worldList_t m_worlds;
     messageWatcher_t m_messageWatchers[256];
     blockWatcher_t m_blockWatchers;
 
