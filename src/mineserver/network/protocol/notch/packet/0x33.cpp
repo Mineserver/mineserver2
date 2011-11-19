@@ -26,6 +26,7 @@
 */
 
 #include <vector>
+#include <cstdio>
 
 #include <mineserver/byteorder.h>
 #include <mineserver/network/message/chunk.h>
@@ -53,9 +54,6 @@ int Mineserver::Network_Protocol_Notch_Packet_0x33::_read(Mineserver::Network_Pr
 int Mineserver::Network_Protocol_Notch_Packet_0x33::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
 {
   const Mineserver::Network_Message_Chunk* msg = static_cast<const Mineserver::Network_Message_Chunk*>(&message);
-
-  int16_t bytes;
-  std::vector<uint8_t> data;
 
   Mineserver::NBT nbt(Mineserver::NBT::TAG_COMPOUND);
 
@@ -96,11 +94,15 @@ int Mineserver::Network_Protocol_Notch_Packet_0x33::_write(Mineserver::Network_P
     }
   }
 
+  std::vector<uint8_t> data;
+
   nbt.Write(data);
-  bytes = data.size();
+  int16_t bytes = data.size();
+
+  printf("NBT data is %d bytes\n", bytes);
 
   ps << msg->mid << msg->posX << msg->posY << msg->posZ << msg->sizeX << msg->sizeY << msg->sizeZ << bytes;
-  ps.bytesFrom(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(&(data[0]))), bytes);
+  ps.bytesFrom(data);
 
   return STATE_GOOD;
 }

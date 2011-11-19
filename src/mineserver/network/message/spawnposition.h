@@ -25,26 +25,20 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#ifndef MINESERVER_NETWORK_PACKET_SPAWNPOSITION_H
+#define MINESERVER_NETWORK_PACKET_SPAWNPOSITION_H
+
 #include <mineserver/byteorder.h>
-#include <mineserver/network/message/spawnposition.h>
-#include <mineserver/network/protocol/notch/packet.h>
-#include <mineserver/network/protocol/notch/packet/0x06.h>
+#include <mineserver/network/message.h>
 
-int Mineserver::Network_Protocol_Notch_Packet_0x06::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
+namespace Mineserver
 {
-  Mineserver::Network_Message_SpawnPosition* msg = new Mineserver::Network_Message_SpawnPosition;
-  *message = msg;
-
-  ps >> msg->mid >> msg->x >> msg->y >> msg->z;
-
-  return STATE_GOOD;
+  struct Network_Message_SpawnPosition : public Mineserver::Network_Message
+  {
+    int16_t x;
+    int16_t y;
+    int16_t z;
+  };
 }
 
-int Mineserver::Network_Protocol_Notch_Packet_0x06::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
-{
-  const Mineserver::Network_Message_SpawnPosition* msg = static_cast<const Mineserver::Network_Message_SpawnPosition*>(&message);
-
-  ps << msg->mid << msg->x << msg->y << msg->z;
-
-  return STATE_GOOD;
-}
+#endif
