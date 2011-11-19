@@ -42,20 +42,28 @@ void Mineserver::Game::run()
   //std::cout << "Tick!" << std::endl;
   //std::cout << "There are " << m_clients.size() << " clients connected!" << std::endl;
 
-  for (std::vector<Mineserver::Network_Client::pointer_t>::iterator client_it=m_clients.begin();client_it!=m_clients.end();++client_it) {
+  for (clientList_t::iterator client_it=m_clients.begin();client_it!=m_clients.end();++client_it) {
     Mineserver::Network_Client::pointer_t client(*client_it);
 
-    // 1200 in-game ticks = timed out, inactive ticks = ticks past since last keep-alive:
-    if (client && client->inactiveTicks() > timeOutTicks) {
-      std::cout << "Client timed-out." << std::endl;
-      client->timedOut();
-      if (client->alive() == false) {
-        continue;
-      }
+    if (!client) {
+      std::cout << "Got an invalid pointer somehow..." << std::endl;
+      continue;
     }
 
-    if (!client || (client && client->alive() == false)) {
-      std::cout << "Found a dead client..?" << std::endl;
+    // 1200 in-game ticks = timed out, inactive ticks = ticks past since last keep-alive:
+    if (client->inactiveTicks() > timeOutTicks) {
+      std::cout << "Client timed-out." << std::endl;
+      client->timedOut();
+    }
+
+    if (!client->alive()) {
+      std::cout << "Found a dead client." << std::endl;
+
+      if (m_clientMap.find(client) != m_clientMap.end()) {
+        m_players.erase(m_clientMap[client]->getName());
+        m_clientMap.erase(client);
+      }
+
       continue;
     }
 
@@ -78,4 +86,9 @@ void Mineserver::Game::run()
   }
 
   m_clients.erase(remove_if(m_clients.begin(), m_clients.end(), is_dead), m_clients.end());
+
+  for (playerList_t::iterator player_it=m_players.begin();player_it!=m_players.end();++player_it) {
+    Mineserver::Game_Player::pointer_t player(player_it->second);
+    player->run();
+  }
 }
