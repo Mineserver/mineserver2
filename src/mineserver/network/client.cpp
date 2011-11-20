@@ -43,6 +43,7 @@
 void Mineserver::Network_Client::run()
 {
   m_inactiveTicks++;
+  m_inactiveTicksReply++;
 
   // client disconnects after one minute of us not responding.
   // we do not have to reply with the same keepalive id that they sent us.
@@ -50,18 +51,24 @@ void Mineserver::Network_Client::run()
   // we shall send this 3 times per minute, if we need more, increase this.
   // 1200 ticks = 1 minute, 400 ticks = 20 seconds, 20 * 3 = 1 minute
   // client has 3 times to see if we are responding or not.
-  if (m_inactiveTicks % 400 == 0)
+  if (m_inactiveTicksReply >= 400)
   {
     boost::shared_ptr<Mineserver::Network_Message_KeepAlive> response = boost::make_shared<Mineserver::Network_Message_KeepAlive>();
     response->mid = 0x00;
     response->keepalive_id = 0;
     outgoing().push_back(response);
+    resetInactiveTicksReply();
   }
 }
 
 void Mineserver::Network_Client::resetInactiveTicks()
 {
   m_inactiveTicks = 0;
+}
+
+void Mineserver::Network_Client::resetInactiveTicksReply()
+{
+  m_inactiveTicksReply = 0;
 }
 
 void Mineserver::Network_Client::timedOut()
