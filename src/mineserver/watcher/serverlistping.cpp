@@ -41,6 +41,6 @@ void Mineserver::Watcher_ServerListPing::operator()(Mineserver::Game::pointer_t 
 
   boost::shared_ptr<Mineserver::Network_Message_Kick> response = boost::make_shared<Mineserver::Network_Message_Kick>();
   response->mid = 0xFF;
-  response->reason = "Mineserver 2.0§0§0"; // description, current users: 0, max users: 0
+  response->reason = "Mineserver 2.0§0§32"; // description, current users: 0, max users: 32
   client->outgoing().push_back(response);
 }

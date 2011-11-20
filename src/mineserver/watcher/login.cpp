@@ -55,13 +55,13 @@ void Mineserver::Watcher_Login::operator()(Mineserver::Game::pointer_t game, Min
 
   boost::shared_ptr<Mineserver::Network_Message_Login> loginMessage = boost::make_shared<Mineserver::Network_Message_Login>();
   loginMessage->mid = 0x01;
-  loginMessage->version = 1;
+  loginMessage->version = 17;
   loginMessage->seed = 1;
-  loginMessage->mode = 0;
-  loginMessage->dimension = 0;
-  loginMessage->difficulty = 2;
-  loginMessage->worldHeight = 128;
-  loginMessage->maxPlayers = 128;
+  loginMessage->mode = Mineserver::World::defaultGameMode;
+  loginMessage->dimension = Mineserver::World::defaultDimension;
+  loginMessage->difficulty = Mineserver::World::defaultDifficulty;
+  loginMessage->worldHeight = Mineserver::World::defaultWorldHeight;
+  loginMessage->maxPlayers = 32; // this determines how many slots the tab window will have
   client->outgoing().push_back(loginMessage);
 
   for (int x = -5; x <= 5; ++x) {
@@ -81,9 +81,9 @@ void Mineserver::Watcher_Login::operator()(Mineserver::Game::pointer_t game, Min
     for (int z = -5; z <= 5; ++z) {
       boost::shared_ptr<Mineserver::Network_Message_Chunk> chunkMessage = boost::make_shared<Mineserver::Network_Message_Chunk>();
       chunkMessage->mid = 0x33;
-      chunkMessage->posX = x;
+      chunkMessage->posX = x * 16;
       chunkMessage->posY = 0;
-      chunkMessage->posZ = z;
+      chunkMessage->posZ = z * 16;
       chunkMessage->sizeX = 15;
       chunkMessage->sizeY = 127;
       chunkMessage->sizeZ = 15;
@@ -95,7 +95,7 @@ void Mineserver::Watcher_Login::operator()(Mineserver::Game::pointer_t game, Min
   boost::shared_ptr<Mineserver::Network_Message_SpawnPosition> spawnPositionMessage = boost::make_shared<Mineserver::Network_Message_SpawnPosition>();
   spawnPositionMessage->mid = 0x06;
   spawnPositionMessage->x = 0;
-  spawnPositionMessage->y = 100;
+  spawnPositionMessage->y = 67;
   spawnPositionMessage->z = 0;
   client->outgoing().push_back(spawnPositionMessage);
 
