@@ -40,6 +40,8 @@ namespace Mineserver
     int32_t z;
     int8_t direction;
     int16_t itemId;
+    int8_t amount;
+    int16_t damage;
   };
 }
 

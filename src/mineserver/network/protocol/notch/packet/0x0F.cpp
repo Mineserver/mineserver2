@@ -37,6 +37,10 @@ int Mineserver::Network_Protocol_Notch_Packet_0x0F::_read(Mineserver::Network_Pr
 
   ps >> msg->mid >> msg->x >> msg->y >> msg->z >> msg->direction >> msg->itemId;
 
+  if (msg->itemId > -1) {
+    ps >> msg->amount >> msg->damage;
+  }
+
   return STATE_GOOD;
 }
 
@@ -45,6 +49,10 @@ int Mineserver::Network_Protocol_Notch_Packet_0x0F::_write(Mineserver::Network_P
   const Mineserver::Network_Message_0x0F* msg = static_cast<const Mineserver::Network_Message_0x0F*>(&message);
 
   ps << msg->mid << msg->x << msg->y << msg->z << msg->direction << msg->itemId;
+
+  if (msg->itemId > -1) {
+		ps << msg->amount << msg->damage;
+  }
 
   return STATE_GOOD;
 }
