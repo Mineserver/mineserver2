@@ -66,6 +66,7 @@ namespace Mineserver
 
   public:
     void run();
+		void chat(Mineserver::Network_Client::pointer_t client, std::string message);
 
     boost::signals2::connection addMessageWatcher(uint8_t messageId, const messageWatcher_t::slot_type& slot)
     {

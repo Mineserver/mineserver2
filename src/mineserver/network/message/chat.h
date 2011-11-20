@@ -25,54 +25,20 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#ifndef MINESERVER_NETWORK_PACKET_CHAT_H
+#define MINESERVER_NETWORK_PACKET_CHAT_H
+
 #include <string>
-#include <iostream>
-#include <cstdio>
 
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/asio.hpp>
-#include <boost/thread.hpp>
+#include <mineserver/byteorder.h>
+#include <mineserver/network/message.h>
 
-#include <mineserver/game.h>
-#include <mineserver/network/protocol/notch/protocol.h>
-#include <mineserver/network/server.h>
-
-#include <mineserver/watcher/keepalive.h>
-#include <mineserver/watcher/login.h>
-#include <mineserver/watcher/handshake.h>
-#include <mineserver/watcher/chat.h>
-#include <mineserver/watcher/serverlistping.h>
-
-int main()
+namespace Mineserver
 {
-  boost::asio::io_service service;
-
-  Mineserver::Game::pointer_t game = boost::make_shared<Mineserver::Game>();
-  Mineserver::Network_Protocol::pointer_t protocol = boost::make_shared<Mineserver::Network_Protocol_Notch_Protocol>();
-  Mineserver::Network_Server::pointer_t server = boost::make_shared<Mineserver::Network_Server>(game, protocol, &service);
-
-  game->addMessageWatcher(0x00, Mineserver::Watcher_KeepAlive());
-  game->addMessageWatcher(0x01, Mineserver::Watcher_Login());
-  game->addMessageWatcher(0x02, Mineserver::Watcher_Handshake());
-  game->addMessageWatcher(0x03, Mineserver::Watcher_Chat());
-  game->addMessageWatcher(0xFE, Mineserver::Watcher_ServerListPing());
-
-  while (true) {
-    try {
-      service.poll();
-    } catch (std::exception& e) {
-      std::cerr << e.what() << std::endl;
-    }
-
-    try {
-      game->run();
-    } catch (std::exception& e) {
-      std::cerr << e.what() << std::endl;
-    }
-
-    boost::this_thread::sleep(boost::posix_time::milliseconds(50));
-  }
-
-  return 0;
+  struct Network_Message_Chat : public Mineserver::Network_Message
+  {
+    std::string message;
+  };
 }
+
+#endif

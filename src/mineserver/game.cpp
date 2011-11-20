@@ -29,8 +29,12 @@
 #include <vector>
 #include <algorithm>
 
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
+
 #include <mineserver/localization.h>
 #include <mineserver/network/client.h>
+#include <mineserver/network/message/chat.h>
 #include <mineserver/game.h>
 
 bool is_dead(Mineserver::Network_Client::pointer_t client) {
@@ -91,4 +95,21 @@ void Mineserver::Game::run()
     Mineserver::Game_Player::pointer_t player(player_it->second);
     player->run();
   }
+}
+
+void Mineserver::Game::chat(Mineserver::Network_Client::pointer_t client, std::string message)
+{
+	Mineserver::Game_Player::pointer_t player = m_clientMap[client];
+
+	boost::shared_ptr<Mineserver::Network_Message_Chat> chatMessage = boost::make_shared<Mineserver::Network_Message_Chat>();
+	chatMessage->mid = 0x03;
+	chatMessage->message = "<" + player->getName() + "> " + message;
+
+	for (clientList_t::iterator it=m_clients.begin();it!=m_clients.end();++it) {
+		if (*it == client) {
+      //continue;
+		}
+
+		client->outgoing().push_back(chatMessage);
+	}
 }
