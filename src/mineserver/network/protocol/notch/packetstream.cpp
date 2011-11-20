@@ -35,8 +35,7 @@
 
 void Mineserver::Network_Protocol_Notch_PacketStream::bytesFrom(const uint8_t* src, size_t n)
 {
-  m_buffer->reserve(n);
-  memcpy(reinterpret_cast<uint8_t*>(&((*m_buffer)[0])), const_cast<uint8_t*>(src), n);
+	m_buffer->insert(m_buffer->end(), src, src+n);
 }
 
 void Mineserver::Network_Protocol_Notch_PacketStream::bytesFrom(const std::vector<uint8_t> src)
@@ -46,7 +45,7 @@ void Mineserver::Network_Protocol_Notch_PacketStream::bytesFrom(const std::vecto
 
 void Mineserver::Network_Protocol_Notch_PacketStream::bytesTo(uint8_t* dst, size_t n)
 {
-  memcpy(dst, reinterpret_cast<uint8_t*>(&((*m_buffer)[0])), n);
+  memcpy(dst, reinterpret_cast<uint8_t*>(&((*m_buffer)[m_pos])), n);
   m_pos += n;
 }
 
