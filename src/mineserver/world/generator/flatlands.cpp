@@ -32,28 +32,31 @@ bool Mineserver::World_Generator_Flatlands::processChunk(Mineserver::World_Chunk
 {
   uint8_t blockType;
 
-  for (uint8_t x=0;x<16;++x) {
-    for (uint8_t z=0;z<16;++z) {
-      for (uint8_t y=0;y<128;++y) {
-        switch (y)
-        {
-          case 0:
-            blockType = 0x07;
-            break;
-          case 1:
-            blockType = 0x03;
-            break;
-          case 59:
-            blockType = 0x02;
-            break;
-          case 60:
-            blockType = 0x00;
-            break;
-        }
+  for (uint8_t y=0;y<128;++y) {
+
+    switch (y)
+    {
+      case 0:
+        blockType = 0x07;
+        break;
+      case 1:
+        blockType = 0x03;
+        break;
+      case 59:
+        blockType = 0x02;
+        break;
+      case 60:
+        blockType = 0x00;
+        break;
+    }
+
+    for (uint8_t x=0;x<16;++x) {
+      for (uint8_t z=0;z<16;++z) {
         chunk->setBlockType(x, y, z, blockType);
         chunk->setBlockMeta(x, y, z, 0);
       }
     }
+
   }
 
   return true;
