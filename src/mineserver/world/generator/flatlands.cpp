@@ -32,7 +32,7 @@ bool Mineserver::World_Generator_Flatlands::processChunk(Mineserver::World_Chunk
 {
   uint8_t blockType;
 
-  for (uint8_t y=0;y<127;++y) {
+  for (uint8_t y=0;y<=127;++y) {
     switch (y)
     {
       case 0:
@@ -49,8 +49,8 @@ bool Mineserver::World_Generator_Flatlands::processChunk(Mineserver::World_Chunk
         break;
     }
 
-    for (uint8_t x=0;x<15;++x) {
-      for (uint8_t z=0;z<15;++z) {
+    for (uint8_t x=0;x<=15;++x) {
+      for (uint8_t z=0;z<=15;++z) {
         chunk->setBlockType(x, y, z, blockType);
         chunk->setBlockMeta(x, y, z, 0);
       }
