@@ -25,14 +25,16 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <utility>
+
 #include <mineserver/byteorder.h>
-#include <mineserver/network/message/0x68.h>
+#include <mineserver/network/message/windowitems.h>
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x68.h>
 
 int Mineserver::Network_Protocol_Notch_Packet_0x68::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
 {
-  Mineserver::Network_Message_0x68* msg = new Mineserver::Network_Message_0x68;
+  Mineserver::Network_Message_WindowItems* msg = new Mineserver::Network_Message_WindowItems;
   *message = msg;
 
   ps >> msg->mid >> msg->windowId >> msg->count;
@@ -49,7 +51,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x68::_read(Mineserver::Network_Pr
       ps >> count >> uses;
     }
 
-    msg->slots.push_back(std::pair<int16_t, std::pair<int8_t, int16_t> >(itemId, std::pair<int8_t, int16_t>(count, uses)));
+    msg->slots.push_back(std::make_pair(itemId, std::make_pair(count, uses)));
   }
 
   return STATE_GOOD;
@@ -57,12 +59,9 @@ int Mineserver::Network_Protocol_Notch_Packet_0x68::_read(Mineserver::Network_Pr
 
 int Mineserver::Network_Protocol_Notch_Packet_0x68::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
 {
-  const Mineserver::Network_Message_0x68* msg = static_cast<const Mineserver::Network_Message_0x68*>(&message);
+  const Mineserver::Network_Message_WindowItems* msg = static_cast<const Mineserver::Network_Message_WindowItems*>(&message);
 
   ps << msg->mid << msg->windowId << msg->count;
-
-  int16_t itemId, uses;
-  int8_t count;
 
   for (std::vector<std::pair<int16_t, std::pair<int8_t, int16_t> > >::const_iterator it=msg->slots.begin();it!=msg->slots.end();++it) {
     ps << it->first;
