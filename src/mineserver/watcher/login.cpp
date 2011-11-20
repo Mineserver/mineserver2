@@ -109,9 +109,9 @@ void Mineserver::Watcher_Login::operator()(Mineserver::Game::pointer_t game, Min
   boost::shared_ptr<Mineserver::Network_Message_PositionLook> positionLookMessage = boost::make_shared<Mineserver::Network_Message_PositionLook>();
   positionLookMessage->mid = 0x0D;
   positionLookMessage->x = 12;
-  positionLookMessage->y = 67;
+  positionLookMessage->y = 63;
   positionLookMessage->z = 12.34;
-  positionLookMessage->stance = 68.620000005L;
+  positionLookMessage->stance = positionLookMessage->y + 1.620000005L;
   positionLookMessage->yaw = 0;
   positionLookMessage->pitch = 0;
   positionLookMessage->onGround = true;
