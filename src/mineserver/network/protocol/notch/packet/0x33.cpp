@@ -27,13 +27,13 @@
 
 #include <vector>
 #include <cstdio>
+#include <zlib.h>
 
 #include <mineserver/byteorder.h>
 #include <mineserver/network/message/chunk.h>
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x33.h>
 
-#include <mineserver/nbt.h>
 #include <mineserver/world/chunk.h>
 
 int Mineserver::Network_Protocol_Notch_Packet_0x33::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
@@ -54,55 +54,40 @@ int Mineserver::Network_Protocol_Notch_Packet_0x33::_read(Mineserver::Network_Pr
 int Mineserver::Network_Protocol_Notch_Packet_0x33::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
 {
   const Mineserver::Network_Message_Chunk* msg = static_cast<const Mineserver::Network_Message_Chunk*>(&message);
-
-  Mineserver::NBT nbt(Mineserver::NBT::TAG_COMPOUND);
-
-  nbt.Insert("Blocks", new Mineserver::NBT(Mineserver::NBT::TAG_BYTE_ARRAY));
-  nbt.Insert("Data", new Mineserver::NBT(Mineserver::NBT::TAG_BYTE_ARRAY));
-  nbt.Insert("SkyLight", new Mineserver::NBT(Mineserver::NBT::TAG_BYTE_ARRAY));
-  nbt.Insert("BlockLight", new Mineserver::NBT(Mineserver::NBT::TAG_BYTE_ARRAY));
-  nbt.Insert("HeightMap", new Mineserver::NBT(Mineserver::NBT::TAG_BYTE_ARRAY));
-  nbt.Insert("Entities", new Mineserver::NBT(Mineserver::NBT::TAG_LIST, Mineserver::NBT::TAG_COMPOUND));
-  nbt.Insert("TileEntities", new Mineserver::NBT(Mineserver::NBT::TAG_LIST, Mineserver::NBT::TAG_COMPOUND));
-  nbt.Insert("LastUpdate", new Mineserver::NBT(Mineserver::NBT::TAG_LONG));
-  nbt.Insert("xPos", new Mineserver::NBT(Mineserver::NBT::TAG_INT));
-  nbt.Insert("zPos", new Mineserver::NBT(Mineserver::NBT::TAG_INT));
-  nbt.Insert("TerrainPopulated", new Mineserver::NBT(Mineserver::NBT::TAG_BYTE));
-
-  *nbt["xPos"] = static_cast<int32_t>(msg->chunk->x);
-  *nbt["zPos"] = static_cast<int32_t>(msg->chunk->z);
-
-  std::vector<uint8_t>* blockType = nbt["Blocks"]->GetByteArray();
-  std::vector<uint8_t>* blockMeta = nbt["Data"]->GetByteArray();
-  std::vector<uint8_t>* lightSky = nbt["SkyLight"]->GetByteArray();
-  std::vector<uint8_t>* lightBlock = nbt["BlockLight"]->GetByteArray();
-
-  blockType->resize(128*16*16);
-  blockMeta->resize(128*16*8);
-  lightSky->resize(128*16*8);
-  lightBlock->resize(128*16*8);
+  
+  uint8_t* chunk = new uint8_t[81920];
+  uint8_t* blockType = chunk;
+	memset(blockType, 0x00, 32768);
+  uint8_t* blockMeta = chunk + 32768;
+	memset(blockMeta, 0x00, 16384);
+  uint8_t* lightBlock = chunk + 49152;
+	memset(lightBlock, 0xFF, 16384);
+  uint8_t* lightSky = chunk + 65536;
+	memset(lightSky, 0xFF, 16384);
 
   for (int y = 0; y < 128; ++y) {
-    for (int z = 0; z < 16; ++z) {
-      for (int x = 0; x < 16; x += 2) {
-        (*blockType)[y+(z*128)+(x*128*16)] = msg->chunk->getBlockType(x, y, z);
-        (*blockType)[y+(z*128)+(x*128*16)+1] = msg->chunk->getBlockType(x+1, y, z);
-        (*blockMeta)[y+(z*128)+((x/2)*128*8)] = (msg->chunk->getBlockMeta(x, y, z) << 4) + msg->chunk->getBlockMeta(x+1, y, z);
-        (*lightSky)[y+(z*128)+((x/2)*128*8)] = (msg->chunk->getLightSky(x, y, z) << 4) + msg->chunk->getLightSky(x+1, y, z);
-        (*lightBlock)[y+(z*128)+((x/2)*128*8)] = (msg->chunk->getLightBlock(x, y, z) << 4) + msg->chunk->getLightBlock(x+1, y, z);
+    for (int x = 0; x < 16; ++x) {
+      for (int z = 0; z < 16; ++z) {
+        blockType[y+(z*128)+(x*128*16)] = msg->chunk->getBlockType(x, y, z);
+//        blockMeta[y+(z*128)+(x*128*16)] = 0x00; //(msg->chunk->getBlockMeta(x, y, z) << 4) + msg->chunk->getBlockMeta(x+1, y, z);
+//        lightSky[y+(z*128)+(x*128*16)] = 0xFF; //(msg->chunk->getLightSky(x, y, z) << 4) + msg->chunk->getLightSky(x+1, y, z);
+//        lightBlock[y+(z*128)+(x*128*16)] = 0xFF; //(msg->chunk->getLightBlock(x, y, z) << 4) + msg->chunk->getLightBlock(x+1, y, z);
       }
     }
   }
 
-  std::vector<uint8_t> data;
+	uLong slen = 81920;
+	uLongf dlen = compressBound(slen);
+	uint8_t* compressed = new uint8_t[dlen];
+	int result = compress(compressed, &dlen, chunk, slen);
 
-  nbt.Write(data);
-  int16_t bytes = data.size();
+  printf("Compressed data is %lu bytes\n", dlen);
 
-  printf("NBT data is %d bytes\n", bytes);
+  ps << msg->mid << msg->posX << msg->posY << msg->posZ << msg->sizeX << msg->sizeY << msg->sizeZ << static_cast<int32_t>(dlen);
+  ps.bytesFrom(compressed, dlen);
 
-  ps << msg->mid << msg->posX << msg->posY << msg->posZ << msg->sizeX << msg->sizeY << msg->sizeZ << bytes;
-  ps.bytesFrom(data);
+	delete[] chunk;
+	delete[] compressed;
 
   return STATE_GOOD;
 }
