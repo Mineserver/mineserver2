@@ -404,4 +404,18 @@
 		#define be32toh be32_to_cpu
 	#endif
 
+
+//  #ifndef htons
+//    #define htons be16_to_cpu
+//  #endif
+//  #ifndef htonl
+//    #define htonl cpu_to_be16
+//  #endif
+//  #ifndef ntohs
+//    #define ntohs cpu_to_be16
+//  #endif
+//  #ifndef ntohl
+//    #define ntohl cpu_to_be32
+//  #endif 
+
 #endif
