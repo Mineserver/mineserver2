@@ -55,6 +55,7 @@ bool Mineserver::World_Generator_Flatlands::processChunk(Mineserver::World_Chunk
         chunk->setBlockMeta(x, y, z, 0);
       }
     }
+
   }
 
   return true;

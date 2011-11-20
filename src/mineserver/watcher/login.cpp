@@ -58,11 +58,11 @@ void Mineserver::Watcher_Login::operator()(Mineserver::Game::pointer_t game, Min
   loginMessage->mid = 0x01;
   loginMessage->version = 17;
   loginMessage->seed = 1;
-  loginMessage->mode = 0;
-  loginMessage->dimension = 0;
-  loginMessage->difficulty = 2;
-  loginMessage->worldHeight = 127;
-  loginMessage->maxPlayers = 127;
+  loginMessage->mode = Mineserver::World::defaultGameMode;
+  loginMessage->dimension = Mineserver::World::defaultDimension;
+  loginMessage->difficulty = Mineserver::World::defaultDifficulty;
+  loginMessage->worldHeight = Mineserver::World::defaultWorldHeight;
+  loginMessage->maxPlayers = 32; // this determines how many slots the tab window will have
   client->outgoing().push_back(loginMessage);
 
   for (int x = -5; x <= 5; ++x) {
@@ -82,9 +82,9 @@ void Mineserver::Watcher_Login::operator()(Mineserver::Game::pointer_t game, Min
     for (int z = -5; z <= 5; ++z) {
       boost::shared_ptr<Mineserver::Network_Message_Chunk> chunkMessage = boost::make_shared<Mineserver::Network_Message_Chunk>();
       chunkMessage->mid = 0x33;
-      chunkMessage->posX = x*16;
+      chunkMessage->posX = x * 16;
       chunkMessage->posY = 0;
-			chunkMessage->posZ = z*16;
+      chunkMessage->posZ = z * 16;
       chunkMessage->sizeX = 15;
       chunkMessage->sizeY = 127;
       chunkMessage->sizeZ = 15;
@@ -100,11 +100,11 @@ void Mineserver::Watcher_Login::operator()(Mineserver::Game::pointer_t game, Min
   spawnPositionMessage->z = 0;
   client->outgoing().push_back(spawnPositionMessage);
 
-	boost::shared_ptr<Mineserver::Network_Message_WindowItems> windowItemsMessage = boost::make_shared<Mineserver::Network_Message_WindowItems>();
-	windowItemsMessage->mid = 0x68;
-	windowItemsMessage->windowId = -1;
-	windowItemsMessage->count = 0;
-	client->outgoing().push_back(windowItemsMessage);
+  boost::shared_ptr<Mineserver::Network_Message_WindowItems> windowItemsMessage = boost::make_shared<Mineserver::Network_Message_WindowItems>();
+  windowItemsMessage->mid = 0x68;
+  windowItemsMessage->windowId = -1;
+  windowItemsMessage->count = 0;
+  client->outgoing().push_back(windowItemsMessage);
 
   boost::shared_ptr<Mineserver::Network_Message_PositionLook> positionLookMessage = boost::make_shared<Mineserver::Network_Message_PositionLook>();
   positionLookMessage->mid = 0x0D;
