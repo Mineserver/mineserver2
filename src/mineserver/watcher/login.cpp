@@ -36,6 +36,7 @@
 #include <mineserver/network/message/chunkprepare.h>
 #include <mineserver/network/message/chunk.h>
 #include <mineserver/network/message/spawnposition.h>
+#include <mineserver/network/message/windowitems.h>
 #include <mineserver/network/message/positionlook.h>
 
 #include <mineserver/watcher/login.h>
@@ -55,13 +56,13 @@ void Mineserver::Watcher_Login::operator()(Mineserver::Game::pointer_t game, Min
 
   boost::shared_ptr<Mineserver::Network_Message_Login> loginMessage = boost::make_shared<Mineserver::Network_Message_Login>();
   loginMessage->mid = 0x01;
-  loginMessage->version = 1;
+  loginMessage->version = 17;
   loginMessage->seed = 1;
   loginMessage->mode = 0;
   loginMessage->dimension = 0;
   loginMessage->difficulty = 2;
-  loginMessage->worldHeight = 128;
-  loginMessage->maxPlayers = 128;
+  loginMessage->worldHeight = 127;
+  loginMessage->maxPlayers = 127;
   client->outgoing().push_back(loginMessage);
 
   for (int x = -5; x <= 5; ++x) {
@@ -81,9 +82,9 @@ void Mineserver::Watcher_Login::operator()(Mineserver::Game::pointer_t game, Min
     for (int z = -5; z <= 5; ++z) {
       boost::shared_ptr<Mineserver::Network_Message_Chunk> chunkMessage = boost::make_shared<Mineserver::Network_Message_Chunk>();
       chunkMessage->mid = 0x33;
-      chunkMessage->posX = x;
+      chunkMessage->posX = x*16;
       chunkMessage->posY = 0;
-      chunkMessage->posZ = z;
+			chunkMessage->posZ = z*16;
       chunkMessage->sizeX = 15;
       chunkMessage->sizeY = 127;
       chunkMessage->sizeZ = 15;
@@ -95,18 +96,24 @@ void Mineserver::Watcher_Login::operator()(Mineserver::Game::pointer_t game, Min
   boost::shared_ptr<Mineserver::Network_Message_SpawnPosition> spawnPositionMessage = boost::make_shared<Mineserver::Network_Message_SpawnPosition>();
   spawnPositionMessage->mid = 0x06;
   spawnPositionMessage->x = 0;
-  spawnPositionMessage->y = 100;
+  spawnPositionMessage->y = 61;
   spawnPositionMessage->z = 0;
   client->outgoing().push_back(spawnPositionMessage);
+
+	boost::shared_ptr<Mineserver::Network_Message_WindowItems> windowItemsMessage = boost::make_shared<Mineserver::Network_Message_WindowItems>();
+	windowItemsMessage->mid = 0x68;
+	windowItemsMessage->windowId = -1;
+	windowItemsMessage->count = 0;
+	client->outgoing().push_back(windowItemsMessage);
 
   boost::shared_ptr<Mineserver::Network_Message_PositionLook> positionLookMessage = boost::make_shared<Mineserver::Network_Message_PositionLook>();
   positionLookMessage->mid = 0x0D;
   positionLookMessage->x = 0;
-  positionLookMessage->y = 100;
+  positionLookMessage->y = 61;
   positionLookMessage->z = 0;
-  positionLookMessage->stance = 100;
+  positionLookMessage->stance = 61.7;
   positionLookMessage->yaw = 0;
   positionLookMessage->pitch = 0;
-  positionLookMessage->onGround = 0;
+  positionLookMessage->onGround = 1;
   client->outgoing().push_back(positionLookMessage);
 }
