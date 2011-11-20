@@ -27,6 +27,7 @@
 
 #include <vector>
 #include <cstdio>
+#include <cstring>
 #include <zlib.h>
 
 #include <mineserver/byteorder.h>
