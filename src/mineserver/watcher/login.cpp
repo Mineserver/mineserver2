@@ -104,7 +104,7 @@ void Mineserver::Watcher_Login::operator()(Mineserver::Game::pointer_t game, Min
   positionLookMessage->x = 0;
   positionLookMessage->y = 100;
   positionLookMessage->z = 0;
-  positionLookMessage->stance = 100;
+  positionLookMessage->stance = 101.620000005;
   positionLookMessage->yaw = 0;
   positionLookMessage->pitch = 0;
   positionLookMessage->onGround = 0;
