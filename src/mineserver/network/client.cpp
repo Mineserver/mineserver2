@@ -38,6 +38,7 @@
 #include <mineserver/byteorder.h>
 #include <mineserver/localization.h>
 #include <mineserver/network/client.h>
+#include <mineserver/network/message/keepalive.h>
 #include <mineserver/network/message/kick.h>
 
 void Mineserver::Network_Client::run()
