@@ -136,6 +136,7 @@ SET(mineserver_source
   src/mineserver/watcher/handshake.cpp
   src/mineserver/watcher/keepalive.cpp
   src/mineserver/watcher/login.cpp
+  src/mineserver/watcher/chat.cpp
   src/mineserver/watcher/serverlistping.cpp
 )
 SOURCE_GROUP(${PROJECT_NAME} FILES ${mineserver_source})
