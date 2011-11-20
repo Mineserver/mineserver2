@@ -54,14 +54,16 @@ void Mineserver::Watcher_Login::operator()(Mineserver::Game::pointer_t game, Min
   game->addPlayer(player);
   game->associateClient(client, player);
 
+  Mineserver::World::pointer_t world = game->getWorld(0);
+
   boost::shared_ptr<Mineserver::Network_Message_Login> loginMessage = boost::make_shared<Mineserver::Network_Message_Login>();
   loginMessage->mid = 0x01;
-  loginMessage->version = 17;
-  loginMessage->seed = 1;
-  loginMessage->mode = Mineserver::World::defaultGameMode;
-  loginMessage->dimension = Mineserver::World::defaultDimension;
-  loginMessage->difficulty = Mineserver::World::defaultDifficulty;
-  loginMessage->worldHeight = Mineserver::World::defaultWorldHeight;
+  loginMessage->version = 22;
+  loginMessage->seed = world->getWorldSeed();
+  loginMessage->mode = world->getGameMode();
+  loginMessage->dimension = world->getDimension();
+  loginMessage->difficulty = world->getDifficulty();
+  loginMessage->worldHeight = world->getWorldHeight();
   loginMessage->maxPlayers = 32; // this determines how many slots the tab window will have
   client->outgoing().push_back(loginMessage);
 
@@ -75,8 +77,6 @@ void Mineserver::Watcher_Login::operator()(Mineserver::Game::pointer_t game, Min
       client->outgoing().push_back(chunkPrepareMessage);
     }
   }
-
-  Mineserver::World::pointer_t world = game->getWorld(0);
 
   for (int x = -5; x <= 5; ++x) {
     for (int z = -5; z <= 5; ++z) {

@@ -103,55 +103,21 @@ namespace Mineserver
       return getChunk(x, z);
     }
 
-    long getWorldSeed()
-    {
-      return m_worldSeed;
-    }
+    long getWorldSeed() { return m_worldSeed; }
+    void setWorldSeed(long worldSeed) { m_worldSeed = worldSeed; }
 
-    void setWorldSeed(long worldSeed)
-    {
-      m_worldSeed = worldSeed;
-    }
+    bool getGameMode() { return m_gameMode; }
+    void setGameMode(GameMode gameMode) { m_gameMode = gameMode; }
 
-    bool getGameMode()
-    {
-      return m_gameMode;
-    }
+    int getDimension() { return m_dimension; }
+    void setDimension(Dimension dimension) { m_dimension = dimension; }
 
-    void setGameMode(GameMode gameMode)
-    {
-      m_gameMode = gameMode;
-    }
+    int getDifficulty() { return m_difficulty; }
+    void setDifficulty(Difficulty difficulty) { m_difficulty = difficulty; }
 
-    int getDimension()
-    {
-      return m_dimension;
-    }
+    uint8_t getWorldHeight() { return m_worldHeight; }
+    void setWorldHeight(uint8_t worldHeight) { m_worldHeight = worldHeight; }
 
-    void setDimension(Dimension dimension)
-    {
-      m_dimension = dimension;
-    }
-
-    int getDifficulty()
-    {
-      return m_difficulty;
-    }
-
-    void setDifficulty(Difficulty difficulty)
-    {
-      m_difficulty = difficulty;
-    }
-
-    int getWorldHeight()
-    {
-      return m_worldHeight;
-    }
-
-    void setWorldHeight(int worldHeight)
-    {
-      m_worldHeight = worldHeight;
-    }
   };
 }
 

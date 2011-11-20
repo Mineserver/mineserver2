@@ -82,8 +82,6 @@ void Mineserver::Game::run()
 
     client->incoming().clear();
 
-    // +1 in-game tick, and anything else:
-    // possibly send keep-alive?
     client->run();
 
     client->write();
