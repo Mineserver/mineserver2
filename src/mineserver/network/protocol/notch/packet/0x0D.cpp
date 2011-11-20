@@ -44,7 +44,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x0D::_write(Mineserver::Network_P
 {
   const Mineserver::Network_Message_PositionLook* msg = static_cast<const Mineserver::Network_Message_PositionLook*>(&message);
 
-  ps << msg->mid << msg->x << msg->y << msg->stance << msg->z << msg->yaw << msg->pitch << msg->onGround;
+  ps << msg->mid << msg->x << msg->stance << msg->y << msg->z << msg->yaw << msg->pitch << msg->onGround;
 
   return STATE_GOOD;
 }
