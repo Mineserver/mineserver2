@@ -35,8 +35,8 @@ namespace Mineserver
 {
   struct Network_Message_ChunkPrepare : public Mineserver::Network_Message
   {
-    int16_t x;
-    int16_t z;
+    int32_t x;
+    int32_t z;
     bool mode;
   };
 }
