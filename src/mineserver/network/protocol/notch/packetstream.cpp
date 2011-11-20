@@ -311,7 +311,7 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
   uint64_t nval;
 
   memcpy(&nval, &val, 8);
-  nval = betoh16(nval);
+  nval = betoh64(nval);
   append(reinterpret_cast<const uint8_t*>(&nval), sizeof(nval));
 
   return *this;
