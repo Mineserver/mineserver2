@@ -50,8 +50,8 @@ void Mineserver::Watcher_Digging::operator()(Mineserver::Game::pointer_t game, M
   Mineserver::World::pointer_t world = game->getWorld(0);
 
   int chunk_x, chunk_z;
-  chunk_x = msg->x / 16;
-  chunk_z = msg->z / 16;
+  chunk_x = ((msg->x) >> 4);
+  chunk_z = ((msg->z) >> 4);
 
   if (!world->hasChunk(chunk_x, chunk_z))
   {
