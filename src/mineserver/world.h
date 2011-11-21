@@ -60,9 +60,9 @@ namespace Mineserver
       peaceful = 0, easy = 1, normal = 2, hard = 3
     };
 
-    static const int8_t defaultGameMode = survival;
-    static const int8_t defaultDimension = overWorld;
-    static const int8_t defaultDifficulty = easy;
+    static const GameMode defaultGameMode = survival;
+    static const Dimension defaultDimension = overWorld;
+    static const Difficulty defaultDifficulty = easy;
     static const uint8_t defaultWorldHeight = 127;
 
   private:
@@ -75,6 +75,17 @@ namespace Mineserver
     Mineserver::World_Generator_Flatlands m_generator;
 
   public:
+    World()
+    {
+      // TODO: Randomize the seed, or change all of these to their configured equivalents.
+      //
+      m_worldSeed = 1337;
+      m_gameMode = defaultGameMode;
+      m_dimension = defaultDimension;
+      m_difficulty = defaultDifficulty;
+      m_worldHeight = defaultWorldHeight;
+    }
+
     bool hasChunk(uint32_t x, uint32_t z)
     {
       return m_chunks.find(std::make_pair(x,z)) != m_chunks.end();
