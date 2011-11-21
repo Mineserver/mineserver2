@@ -39,9 +39,12 @@
 #include <mineserver/network/server.h>
 
 #include <mineserver/watcher/keepalive.h>
-#include <mineserver/watcher/login.h>
 #include <mineserver/watcher/handshake.h>
+#include <mineserver/watcher/login.h>
 #include <mineserver/watcher/chat.h>
+#include <mineserver/watcher/digging.h>
+#include <mineserver/watcher/blockplacement.h>
+#include <mineserver/watcher/blockchange.h>
 #include <mineserver/watcher/serverlistping.h>
 
 int main()
@@ -56,6 +59,9 @@ int main()
   game->addMessageWatcher(0x01, Mineserver::Watcher_Login());
   game->addMessageWatcher(0x02, Mineserver::Watcher_Handshake());
   game->addMessageWatcher(0x03, Mineserver::Watcher_Chat());
+  game->addMessageWatcher(0x0E, Mineserver::Watcher_Digging());
+  game->addMessageWatcher(0x0F, Mineserver::Watcher_BlockPlacement());
+  game->addMessageWatcher(0x35, Mineserver::Watcher_BlockChange());
   game->addMessageWatcher(0xFE, Mineserver::Watcher_ServerListPing());
 
   while (true) {
@@ -76,3 +82,4 @@ int main()
 
   return 0;
 }
+

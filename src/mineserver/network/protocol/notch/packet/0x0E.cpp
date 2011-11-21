@@ -26,13 +26,13 @@
 */
 
 #include <mineserver/byteorder.h>
-#include <mineserver/network/message/0x0E.h>
+#include <mineserver/network/message/digging.h>
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x0E.h>
 
 int Mineserver::Network_Protocol_Notch_Packet_0x0E::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
 {
-  Mineserver::Network_Message_0x0E* msg = new Mineserver::Network_Message_0x0E;
+  Mineserver::Network_Message_Digging* msg = new Mineserver::Network_Message_Digging;
   *message = msg;
 
   ps >> msg->mid >> msg->status >> msg->x >> msg->y >> msg->z >> msg->face;
@@ -42,7 +42,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x0E::_read(Mineserver::Network_Pr
 
 int Mineserver::Network_Protocol_Notch_Packet_0x0E::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
 {
-  const Mineserver::Network_Message_0x0E* msg = static_cast<const Mineserver::Network_Message_0x0E*>(&message);
+  const Mineserver::Network_Message_Digging* msg = static_cast<const Mineserver::Network_Message_Digging*>(&message);
 
   ps << msg->mid << msg->status << msg->x << msg->y << msg->z << msg->face;
 

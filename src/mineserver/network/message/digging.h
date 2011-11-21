@@ -25,26 +25,22 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#ifndef MINESERVER_NETWORK_PACKET_DIGGING_H
+#define MINESERVER_NETWORK_PACKET_DIGGING_H
+
 #include <mineserver/byteorder.h>
-#include <mineserver/network/message/blockchange.h>
-#include <mineserver/network/protocol/notch/packet.h>
-#include <mineserver/network/protocol/notch/packet/0x35.h>
+#include <mineserver/network/message.h>
 
-int Mineserver::Network_Protocol_Notch_Packet_0x35::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
+namespace Mineserver
 {
-  Mineserver::Network_Message_BlockChange* msg = new Mineserver::Network_Message_BlockChange;
-  *message = msg;
-
-  ps >> msg->mid >> msg->x >> msg->y >> msg->z >> msg->type >> msg->meta;
-
-  return STATE_GOOD;
+  struct Network_Message_Digging : public Mineserver::Network_Message
+  {
+    int8_t status;
+    int32_t x;
+    int8_t y;
+    int32_t z;
+    int8_t face;
+  };
 }
 
-int Mineserver::Network_Protocol_Notch_Packet_0x35::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
-{
-  const Mineserver::Network_Message_BlockChange* msg = static_cast<const Mineserver::Network_Message_BlockChange*>(&message);
-
-  ps << msg->mid << msg->x << msg->y << msg->z << msg->type << msg->meta;
-
-  return STATE_GOOD;
-}
+#endif

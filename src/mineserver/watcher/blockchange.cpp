@@ -25,26 +25,49 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <mineserver/byteorder.h>
+#include <boost/lexical_cast.hpp>
+
+#include <mineserver/game.h>
+#include <mineserver/network/client.h>
+#include <mineserver/network/message.h>
 #include <mineserver/network/message/blockchange.h>
-#include <mineserver/network/protocol/notch/packet.h>
-#include <mineserver/network/protocol/notch/packet/0x35.h>
 
-int Mineserver::Network_Protocol_Notch_Packet_0x35::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
+#include <mineserver/watcher/blockchange.h>
+
+void Mineserver::Watcher_BlockChange::operator()(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message) const
 {
-  Mineserver::Network_Message_BlockChange* msg = new Mineserver::Network_Message_BlockChange;
-  *message = msg;
+  std::cout << "Block-change watcher called!" << std::endl;
+  const Mineserver::Network_Message_BlockChange* msg = reinterpret_cast<Mineserver::Network_Message_BlockChange*>(&(*message));
 
-  ps >> msg->mid >> msg->x >> msg->y >> msg->z >> msg->type >> msg->meta;
+  Mineserver::World::pointer_t world = game->getWorld(0);
 
-  return STATE_GOOD;
+  int x, y, z, id;
+  x = msg->x / 16;
+  y = msg->y;
+  z = msg->z / 16;
+  id = msg->type;
+
+  if (!world->hasChunk(x, z))
+  {
+    std::cout << "Chunk " << x << "," << z << " not found!" << std::endl;
+  }
+  else
+  {
+    Mineserver::World_Chunk::pointer_t chunk = world->getChunk(x, z);
+
+    // (TODO) blockPlacePre
+
+    chunk->setBlockType(x, y, z, id);
+
+    std::string text = "§4You placed block id ";
+    text += boost::lexical_cast<std::string>(msg->type) + " at ";
+    text += boost::lexical_cast<std::string>(msg->x) + ",";
+    text += boost::lexical_cast<std::string>(msg->y) + ","; // y seems to be reporting a non-numeric value???
+    text += boost::lexical_cast<std::string>(msg->z) + "!";
+	  game->chat(client, text, game->chatSelf);
+
+    // (TODO) blockPlacePost
+
+  }
 }
 
-int Mineserver::Network_Protocol_Notch_Packet_0x35::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
-{
-  const Mineserver::Network_Message_BlockChange* msg = static_cast<const Mineserver::Network_Message_BlockChange*>(&message);
-
-  ps << msg->mid << msg->x << msg->y << msg->z << msg->type << msg->meta;
-
-  return STATE_GOOD;
-}

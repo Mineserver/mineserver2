@@ -133,10 +133,13 @@ SET(mineserver_source
   src/mineserver/network/protocol/notch/packet/0xFE.cpp
   src/mineserver/network/protocol/notch/packet/0xFF.cpp
   src/mineserver/world/generator/flatlands.cpp
-  src/mineserver/watcher/handshake.cpp
   src/mineserver/watcher/keepalive.cpp
   src/mineserver/watcher/login.cpp
+  src/mineserver/watcher/handshake.cpp
   src/mineserver/watcher/chat.cpp
+  src/mineserver/watcher/digging.cpp
+  src/mineserver/watcher/blockplacement.cpp
+  src/mineserver/watcher/blockchange.cpp
   src/mineserver/watcher/serverlistping.cpp
 )
 SOURCE_GROUP(${PROJECT_NAME} FILES ${mineserver_source})

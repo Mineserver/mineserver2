@@ -26,13 +26,13 @@
 */
 
 #include <mineserver/byteorder.h>
-#include <mineserver/network/message/0x0F.h>
+#include <mineserver/network/message/blockplacement.h>
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x0F.h>
 
 int Mineserver::Network_Protocol_Notch_Packet_0x0F::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
 {
-  Mineserver::Network_Message_0x0F* msg = new Mineserver::Network_Message_0x0F;
+  Mineserver::Network_Message_BlockPlacement* msg = new Mineserver::Network_Message_BlockPlacement;
   *message = msg;
 
   ps >> msg->mid >> msg->x >> msg->y >> msg->z >> msg->direction >> msg->itemId;
@@ -46,7 +46,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x0F::_read(Mineserver::Network_Pr
 
 int Mineserver::Network_Protocol_Notch_Packet_0x0F::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
 {
-  const Mineserver::Network_Message_0x0F* msg = static_cast<const Mineserver::Network_Message_0x0F*>(&message);
+  const Mineserver::Network_Message_BlockPlacement* msg = static_cast<const Mineserver::Network_Message_BlockPlacement*>(&message);
 
   ps << msg->mid << msg->x << msg->y << msg->z << msg->direction << msg->itemId;
 

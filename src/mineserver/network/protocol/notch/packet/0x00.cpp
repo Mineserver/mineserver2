@@ -26,25 +26,25 @@
 */
 
 #include <mineserver/byteorder.h>
-#include <mineserver/network/message/ping.h>
+#include <mineserver/network/message/keepalive.h>
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x00.h>
 
 int Mineserver::Network_Protocol_Notch_Packet_0x00::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
 {
-  Mineserver::Network_Message_Ping* msg = new Mineserver::Network_Message_Ping;
+  Mineserver::Network_Message_KeepAlive* msg = new Mineserver::Network_Message_KeepAlive;
   *message = msg;
 
-  ps >> msg->mid >> msg->id;
+  ps >> msg->mid >> msg->keepalive_id;
 
   return STATE_GOOD;
 }
 
 int Mineserver::Network_Protocol_Notch_Packet_0x00::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
 {
-  const Mineserver::Network_Message_Ping* msg = static_cast<const Mineserver::Network_Message_Ping*>(&message);
+  const Mineserver::Network_Message_KeepAlive* msg = static_cast<const Mineserver::Network_Message_KeepAlive*>(&message);
 
-  ps << msg->mid << msg->id;
+  ps << msg->mid << msg->keepalive_id;
 
   return STATE_GOOD;
 }
