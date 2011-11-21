@@ -88,6 +88,9 @@ namespace Mineserver
       m_difficulty = defaultDifficulty;
       m_worldHeight = defaultWorldHeight;
       m_spawnPosition = Mineserver::vec(0, 60, 0);
+
+      // TODO: Make this configurable
+			m_generators.push_back(boost::make_shared<Mineserver::World_Generator_Flatlands>());
     }
 
     bool hasChunk(uint32_t x, uint32_t z)
@@ -144,4 +147,3 @@ namespace Mineserver
 }
 
 #endif
-
