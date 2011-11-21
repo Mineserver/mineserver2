@@ -44,3 +44,4 @@ void Mineserver::Watcher_Handshake::operator()(Mineserver::Game::pointer_t game,
   response->username = "-";
   client->outgoing().push_back(response);
 }
+

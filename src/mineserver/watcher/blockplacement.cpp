@@ -25,16 +25,46 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <boost/lexical_cast.hpp>
+
 #include <mineserver/game.h>
 #include <mineserver/network/client.h>
 #include <mineserver/network/message.h>
+#include <mineserver/network/message/blockplacement.h>
 
-#include <mineserver/watcher/keepalive.h>
+#include <mineserver/watcher/blockplacement.h>
 
-void Mineserver::Watcher_KeepAlive::operator()(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message) const
+void Mineserver::Watcher_BlockPlacement::operator()(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message) const
 {
-  std::cout << "Keep-alive watcher called!" << std::endl;
+  std::cout << "Block-placement watcher called!" << std::endl;
+  const Mineserver::Network_Message_BlockPlacement* msg = reinterpret_cast<Mineserver::Network_Message_BlockPlacement*>(&(*message));
 
-  client->resetInactiveTicks();
+  //if (msg->itemId==-1) { return; }
+
+  Mineserver::World::pointer_t world = game->getWorld(0);
+
+  int x, y, z, id;
+  x = msg->x / 16;
+  y = msg->y;
+  z = msg->z / 16;
+
+  if (!world->hasChunk(x, z))
+  {
+    std::cout << "Chunk " << x << "," << z << " not found!" << std::endl;
+  }
+  else
+  {
+    Mineserver::World_Chunk::pointer_t chunk = world->getChunk(x, z);
+    id = chunk->getBlockType(x, y, z);
+
+    std::string text = "§4You interacted with a block at ";
+    text += boost::lexical_cast<std::string>(msg->x) + ",";
+    text += boost::lexical_cast<std::string>(msg->y) + ","; // y seems to be reporting a non-numeric value???
+    text += boost::lexical_cast<std::string>(msg->z) + "!";
+	  game->chat(client, text, game->chatSelf);
+
+    // (TODO) interpret block action
+
+  }
 }
 

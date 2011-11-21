@@ -60,3 +60,4 @@ bool Mineserver::World_Generator_Flatlands::processChunk(Mineserver::World_Chunk
 
   return true;
 }
+

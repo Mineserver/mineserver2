@@ -117,3 +117,4 @@ void Mineserver::Watcher_Login::operator()(Mineserver::Game::pointer_t game, Min
   positionLookMessage->onGround = true;
   client->outgoing().push_back(positionLookMessage);
 }
+

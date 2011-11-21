@@ -44,3 +44,4 @@ void Mineserver::Watcher_ServerListPing::operator()(Mineserver::Game::pointer_t 
   response->reason = "Mineserver 2.0§0§32"; // description, current users: 0, max users: 32
   client->outgoing().push_back(response);
 }
+

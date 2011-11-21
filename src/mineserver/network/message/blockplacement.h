@@ -25,16 +25,24 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <mineserver/game.h>
-#include <mineserver/network/client.h>
+#ifndef MINESERVER_NETWORK_PACKET_BLOCKPLACEMENT_H
+#define MINESERVER_NETWORK_PACKET_BLOCKPLACEMENT_H
+
+#include <mineserver/byteorder.h>
 #include <mineserver/network/message.h>
 
-#include <mineserver/watcher/keepalive.h>
-
-void Mineserver::Watcher_KeepAlive::operator()(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message) const
+namespace Mineserver
 {
-  std::cout << "Keep-alive watcher called!" << std::endl;
-
-  client->resetInactiveTicks();
+  struct Network_Message_BlockPlacement : public Mineserver::Network_Message
+  {
+    int32_t x;
+    int8_t y;
+    int32_t z;
+    int8_t direction;
+    int16_t itemId;
+    int8_t amount;
+    int16_t damage;
+  };
 }
 
+#endif

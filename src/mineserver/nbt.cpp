@@ -830,3 +830,4 @@ void Mineserver::NBT::Dump(std::string& data, const std::string& name, int tabs)
     data += tabPrefix + "Invalid TAG:" + dtos(m_type) + "\n";
   }
 }
+

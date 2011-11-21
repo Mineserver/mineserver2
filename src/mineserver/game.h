@@ -55,6 +55,9 @@ namespace Mineserver
     typedef boost::signals2::signal<void (Mineserver::Game::pointer_t, Mineserver::Network_Client::pointer_t, Mineserver::World::pointer_t, Mineserver::World_Chunk::pointer_t, uint8_t x, uint8_t y, uint8_t z)> blockWatcher_t;
 
     static const int timeOutTicks = 1200;
+    enum {
+      chatSelf, chatNearby, chatWorld, chatGlobal
+    } messageTypes;
 
   private:
     playerList_t m_players;
@@ -66,7 +69,7 @@ namespace Mineserver
 
   public:
     void run();
-		void chat(Mineserver::Network_Client::pointer_t client, std::string message);
+		void chat(Mineserver::Network_Client::pointer_t client, std::string message, int messageType);
 
     boost::signals2::connection addMessageWatcher(uint8_t messageId, const messageWatcher_t::slot_type& slot)
     {
@@ -105,3 +108,4 @@ namespace Mineserver
 }
 
 #endif
+
