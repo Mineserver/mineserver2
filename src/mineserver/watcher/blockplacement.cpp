@@ -44,8 +44,8 @@ void Mineserver::Watcher_BlockPlacement::operator()(Mineserver::Game::pointer_t 
   Mineserver::World::pointer_t world = game->getWorld(0);
 
   int chunk_x, chunk_z;
-  x = msg->x / 16;
-  z = msg->z / 16;
+  chunk_x = msg->x / 16;
+  chunk_z = msg->z / 16;
 
   if (!world->hasChunk(chunk_x, chunk_z))
   {
