@@ -77,4 +77,3 @@ void Mineserver::Watcher_BlockChange::operator()(Mineserver::Game::pointer_t gam
     client->outgoing().push_back(chatMessage);
   }
 }
-
