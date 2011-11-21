@@ -75,31 +75,31 @@ namespace Mineserver
 
   public:
     void run();
-		void chat(Mineserver::Network_Client::pointer_t client, std::string message, int messageType);
+		void chat(Mineserver::Network_Client::pointer_t client, std::string message);
 
     boost::signals2::connection addMessageWatcher(uint8_t messageId, const messageWatcher_t::slot_type& slot)
     {
       return m_messageWatchers[messageId].connect(slot);
     }
 
-    boost::signals2::connection addBlockBreakPreWatcher(const blockWatcher_t::slot_type& slot)
+    boost::signals2::connection addBlockBreakPreWatcher(uint8_t blockId, const blockWatcher_t::slot_type& slot)
     {
-      return m_blockBreakPreWatchers.connect(slot);
+      return m_blockBreakPreWatchers[blockId].connect(slot);
     }
 
-    boost::signals2::connection addBlockBreakPostWatcher(const blockWatcher_t::slot_type& slot)
+    boost::signals2::connection addBlockBreakPostWatcher(uint8_t blockId, const blockWatcher_t::slot_type& slot)
     {
-      return m_blockBreakPostWatchers.connect(slot);
+      return m_blockBreakPostWatchers[blockId].connect(slot);
     }
 
-    boost::signals2::connection addBlockPlacePreWatcher(const blockWatcher_t::slot_type& slot)
+    boost::signals2::connection addBlockPlacePreWatcher(uint8_t blockId, const blockWatcher_t::slot_type& slot)
     {
-      return m_blockPlacePreWatchers.connect(slot);
+      return m_blockPlacePreWatchers[blockId].connect(slot);
     }
 
-    boost::signals2::connection addBlockPlacePostWatcher(const blockWatcher_t::slot_type& slot)
+    boost::signals2::connection addBlockPlacePostWatcher(uint8_t blockId, const blockWatcher_t::slot_type& slot)
     {
-      return m_blockPlacePostWatchers.connect(slot);
+      return m_blockPlacePostWatchers[blockId].connect(slot);
     }
 
     void addPlayer(Mineserver::Game_Player::pointer_t player)
@@ -112,7 +112,7 @@ namespace Mineserver
       return (m_players.find(name) != m_players.end());
     }
 
-    void getPlayer(const std::string& name)
+    Mineserver::Game_Player::pointer_t getPlayer(const std::string& name)
     {
       return m_players[name];
     }

@@ -31,6 +31,7 @@
 #include <mineserver/network/client.h>
 #include <mineserver/network/message.h>
 #include <mineserver/network/message/blockplacement.h>
+#include <mineserver/network/message/chat.h>
 
 #include <mineserver/watcher/blockplacement.h>
 
@@ -54,22 +55,25 @@ void Mineserver::Watcher_BlockPlacement::operator()(Mineserver::Game::pointer_t 
   else
   {
     Mineserver::World_Chunk::pointer_t chunk = world->getChunk(chunk_x, chunk_z);
-    
+
     int x, y, z, type;
     x = msg->x & 15;
     y = msg->y;
     z = msg->z & 15;
     type = chunk->getBlockType(x, y, z);
 
-    std::string text = "§4You interacted with block id ";
-    text += boost::lexical_cast<std::string>(type) + " at ";
-    text += boost::lexical_cast<std::string>(msg->x) + ",";
-    text += boost::lexical_cast<std::string>(msg->y) + ",";
-    text += boost::lexical_cast<std::string>(msg->z) + "!";
-	  game->chat(client, text, game->chatSelf);
-
-    // (TODO) interpret block action
-
+    boost::shared_ptr<Mineserver::Network_Message_Chat> chatMessage = boost::make_shared<Mineserver::Network_Message_Chat>();
+    chatMessage->mid = 0x03;
+    chatMessage->message += "§4You interacted with block id ";
+    chatMessage->message += type;
+    chatMessage->message += " at ";
+    chatMessage->message += msg->x;
+    chatMessage->message += ",";
+    chatMessage->message += msg->y;
+    chatMessage->message += ",";
+    chatMessage->message += msg->z;
+    chatMessage->message += "!";
+    client->outgoing().push_back(chatMessage);
   }
 }
 

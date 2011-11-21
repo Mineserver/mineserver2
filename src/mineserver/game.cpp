@@ -95,29 +95,24 @@ void Mineserver::Game::run()
   }
 }
 
-void Mineserver::Game::chat(Mineserver::Network_Client::pointer_t client, std::string message, int messageType)
+void Mineserver::Game::chat(Mineserver::Network_Client::pointer_t client, std::string message)
 {
 	Mineserver::Game_Player::pointer_t player = m_clientMap[client];
 
-	boost::shared_ptr<Mineserver::Network_Message_Chat> chatMessage = boost::make_shared<Mineserver::Network_Message_Chat>();
-	chatMessage->mid = 0x03;
-	if (messageType!=chatSelf)
-	{
-	  chatMessage->message = "<" + player->getName() + "> " + message;
-	}
-	else
-	{
-	  chatMessage->message = message;
+  boost::shared_ptr<Mineserver::Network_Message_Chat> selfMessage = boost::make_shared<Mineserver::Network_Message_Chat>();
+	selfMessage->mid = 0x03;
+  selfMessage->message = message;
+	client->outgoing().push_back(selfMessage);
+
+  boost::shared_ptr<Mineserver::Network_Message_Chat> chatMessage = boost::make_shared<Mineserver::Network_Message_Chat>();
+  chatMessage->mid = 0x03;
+  chatMessage->message = "<" + player->getName() + "> " + message;
+
+	for (clientList_t::iterator it=m_clients.begin();it!=m_clients.end();++it) {
+    if (*it == client) {
+      continue;
+    }
+
+    (*it)->outgoing().push_back(chatMessage);
   }
-
-  client->outgoing().push_back(chatMessage);
-
-	//for (clientList_t::iterator it=m_clients.begin();it!=m_clients.end();++it) {
-	//	if (*it == client) {
-  //    continue;
-	//	}
-
-	//	it->outgoing().push_back(chatMessage);
-	//}
 }
-

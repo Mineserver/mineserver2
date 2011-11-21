@@ -32,6 +32,7 @@
 #include <mineserver/network/message.h>
 #include <mineserver/network/message/digging.h>
 #include <mineserver/network/message/blockchange.h>
+#include <mineserver/network/message/chat.h>
 
 #include <mineserver/watcher/digging.h>
 
@@ -60,32 +61,26 @@ void Mineserver::Watcher_Digging::operator()(Mineserver::Game::pointer_t game, M
   else
   {
     Mineserver::World_Chunk::pointer_t chunk = world->getChunk(chunk_x, chunk_z);
-    
-    int x, y, z;
-    x = msg->x;
-    y = msg->y;
-    z = msg->z;
 
-    // (TODO) blockBreakPre
-
-    chunk->setBlockType(x & 15, y, z & 15, 0);
+    chunk->setBlockType(msg->x & 15, msg->y, msg->z & 15, 0);
     boost::shared_ptr<Mineserver::Network_Message_BlockChange> response = boost::make_shared<Mineserver::Network_Message_BlockChange>();
     response->mid = 0x35;
-    response->x = x;
-    response->y = y;
-    response->z = z;
+    response->x = msg->x;
+    response->y = msg->y;
+    response->z = msg->z;
     response->type = 0;
     response->meta = 0;
     client->outgoing().push_back(response);
 
-    std::string text = "§4You broke the block at ";
-    text += boost::lexical_cast<std::string>(x) + ",";
-    text += boost::lexical_cast<std::string>(y) + ",";
-    text += boost::lexical_cast<std::string>(z) + "!";
-	  game->chat(client, text, game->chatSelf);
-
-    // (TODO) blockBreakPost
-
+		boost::shared_ptr<Mineserver::Network_Message_Chat> chatMessage = boost::make_shared<Mineserver::Network_Message_Chat>();
+		chatMessage->mid = 0x03;
+		chatMessage->message += "§4You broke the block at: ";
+		chatMessage->message += msg->x;
+		chatMessage->message += ",";
+		chatMessage->message += msg->y;
+		chatMessage->message += ",";
+		chatMessage->message += msg->z;
+		chatMessage->message += "!";
+		client->outgoing().push_back(chatMessage);
   }
 }
-

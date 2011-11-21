@@ -40,6 +40,6 @@ void Mineserver::Watcher_Chat::operator()(Mineserver::Game::pointer_t game, Mine
   std::cout << "Chat watcher called!" << std::endl;
   const Mineserver::Network_Message_Chat* msg = reinterpret_cast<Mineserver::Network_Message_Chat*>(&(*message));
 
-	game->chat(client, msg->message, game->chatGlobal);
+	game->chat(client, msg->message);
 }
 
