@@ -80,7 +80,7 @@ void Mineserver::Watcher_Digging::operator()(Mineserver::Game::pointer_t game, M
 
     std::string text = "§4You broke the block at ";
     text += boost::lexical_cast<std::string>(x) + ",";
-    text += boost::lexical_cast<std::string>(y) + ","; // y seems to be reporting a non-numeric value???
+    text += boost::lexical_cast<std::string>(y) + ",";
     text += boost::lexical_cast<std::string>(z) + "!";
 	  game->chat(client, text, game->chatSelf);
 
