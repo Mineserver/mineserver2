@@ -75,11 +75,11 @@ void Mineserver::Watcher_Digging::operator()(Mineserver::Game::pointer_t game, M
 		boost::shared_ptr<Mineserver::Network_Message_Chat> chatMessage = boost::make_shared<Mineserver::Network_Message_Chat>();
 		chatMessage->mid = 0x03;
 		chatMessage->message += "§4You broke the block at: ";
-		chatMessage->message += msg->x;
+		chatMessage->message += static_cast<int>(msg->x);
 		chatMessage->message += ",";
-		chatMessage->message += msg->y;
+		chatMessage->message += static_cast<int>(msg->y);
 		chatMessage->message += ",";
-		chatMessage->message += msg->z;
+		chatMessage->message += static_cast<int>(msg->z);
 		chatMessage->message += "!";
 		client->outgoing().push_back(chatMessage);
   }
