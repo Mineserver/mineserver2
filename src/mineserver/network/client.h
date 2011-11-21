@@ -53,6 +53,7 @@ namespace Mineserver
     boost::array<uint8_t, 8192> m_tmp;
     Mineserver::Network_Protocol::pointer_t m_protocol;
     std::vector<uint8_t> m_incomingBuffer;
+		std::vector<uint8_t> m_outgoingBuffer;
     std::vector<Mineserver::Network_Message::pointer_t> m_incoming;
     std::vector<Mineserver::Network_Message::pointer_t> m_outgoing;
     bool m_alive;

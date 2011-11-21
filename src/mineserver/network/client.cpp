@@ -108,21 +108,19 @@ void Mineserver::Network_Client::read()
 
 void Mineserver::Network_Client::write()
 {
-  boost::shared_ptr< std::vector<uint8_t> > buffer = boost::make_shared< std::vector<uint8_t> >();
-
   for (std::vector<Mineserver::Network_Message::pointer_t>::iterator it=m_outgoing.begin();it!=m_outgoing.end();++it) {
     printf("Trying to send message ID: %02x\n", (*it)->mid);
-    m_protocol->compose(*buffer, **it);
+    m_protocol->compose(m_outgoingBuffer, **it);
   }
 
   m_outgoing.clear();
 
-  printf("We want to send %d bytes\n", buffer->size());
+  printf("We want to send %lu bytes\n", m_outgoingBuffer.size());
 
-  if (buffer->size() > 0)
+  if (m_outgoingBuffer.size() > 0)
   {
     m_socket.async_write_some(
-      boost::asio::buffer(*buffer),
+      boost::asio::buffer(m_outgoingBuffer),
       boost::bind(
         &Mineserver::Network_Client::handleWrite,
         shared_from_this(),
@@ -165,5 +163,6 @@ void Mineserver::Network_Client::handleRead(const boost::system::error_code& e, 
 
 void Mineserver::Network_Client::handleWrite(const boost::system::error_code& e, size_t n)
 {
-  printf("Wrote %d bytes\n", n);
+	m_outgoingBuffer.erase(m_outgoingBuffer.begin(), m_outgoingBuffer.begin() + n);
+  printf("Wrote %lu bytes, %lu left\n", n, m_outgoingBuffer.size());
 }
