@@ -41,26 +41,29 @@ void Mineserver::Watcher_BlockChange::operator()(Mineserver::Game::pointer_t gam
 
   Mineserver::World::pointer_t world = game->getWorld(0);
 
-  int x, y, z, id;
-  x = msg->x / 16;
-  y = msg->y;
-  z = msg->z / 16;
-  id = msg->type;
+  int chunk_x, chunk_z;
+  chunk_x = ((msg->x) >> 4);
+  chunk_z = ((msg->z) >> 4);
 
-  if (!world->hasChunk(x, z))
+  if (!world->hasChunk(chunk_x, chunk_z))
   {
-    std::cout << "Chunk " << x << "," << z << " not found!" << std::endl;
+    std::cout << "Chunk " << chunk_x << "," << chunk_z << " not found!" << std::endl;
   }
   else
   {
-    Mineserver::World_Chunk::pointer_t chunk = world->getChunk(x, z);
+    Mineserver::World_Chunk::pointer_t chunk = world->getChunk(chunk_x, chunk_z);
+    
+    int x = msg->x & 15;
+    int y = msg->y;
+    int z = msg->z & 15;
+    int type = msg->type;
 
     // (TODO) blockPlacePre
 
-    chunk->setBlockType(x, y, z, id);
+    chunk->setBlockType(x, y, z, type);
 
     std::string text = "§4You placed block id ";
-    text += boost::lexical_cast<std::string>(msg->type) + " at ";
+    text += boost::lexical_cast<std::string>(type) + " at ";
     text += boost::lexical_cast<std::string>(msg->x) + ",";
     text += boost::lexical_cast<std::string>(msg->y) + ","; // y seems to be reporting a non-numeric value???
     text += boost::lexical_cast<std::string>(msg->z) + "!";

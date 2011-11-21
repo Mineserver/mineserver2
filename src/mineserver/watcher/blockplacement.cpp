@@ -56,16 +56,16 @@ void Mineserver::Watcher_BlockPlacement::operator()(Mineserver::Game::pointer_t 
     Mineserver::World_Chunk::pointer_t chunk = world->getChunk(chunk_x, chunk_z);
     
     int x, y, z, type;
-    x = msg->x;
+    x = msg->x & 15;
     y = msg->y;
-    z = msg->z;
+    z = msg->z & 15;
     type = chunk->getBlockType(x, y, z);
 
     std::string text = "§4You interacted with block id ";
     text += boost::lexical_cast<std::string>(type) + " at ";
-    text += boost::lexical_cast<std::string>(x) + ",";
-    text += boost::lexical_cast<std::string>(y) + ",";
-    text += boost::lexical_cast<std::string>(z) + "!";
+    text += boost::lexical_cast<std::string>(msg->x) + ",";
+    text += boost::lexical_cast<std::string>(msg->y) + ",";
+    text += boost::lexical_cast<std::string>(msg->z) + "!";
 	  game->chat(client, text, game->chatSelf);
 
     // (TODO) interpret block action

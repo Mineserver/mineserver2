@@ -35,7 +35,11 @@ int Mineserver::Network_Protocol_Notch_Packet_0x6B::_read(Mineserver::Network_Pr
   Mineserver::Network_Message_0x6B* msg = new Mineserver::Network_Message_0x6B;
   *message = msg;
 
-  ps >> msg->mid >> msg->slot >> msg->itemId >> msg->quantity >> msg->damage;
+  ps >> msg->mid >> msg->slot >> msg->itemId;
+
+  if (msg->itemId > -1) {
+    ps >> msg->quantity >> msg->damage;
+  }
 
   return STATE_GOOD;
 }
@@ -44,7 +48,11 @@ int Mineserver::Network_Protocol_Notch_Packet_0x6B::_write(Mineserver::Network_P
 {
   const Mineserver::Network_Message_0x6B* msg = static_cast<const Mineserver::Network_Message_0x6B*>(&message);
 
-  ps << msg->mid << msg->slot << msg->itemId << msg->quantity << msg->damage;
+  ps << msg->mid << msg->slot << msg->itemId;
+
+  if (msg->itemId > -1) {
+    ps << msg->quantity << msg->damage;
+  }
 
   return STATE_GOOD;
 }
