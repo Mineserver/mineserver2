@@ -44,6 +44,7 @@ namespace Mineserver
   public:
     typedef boost::shared_ptr<Mineserver::World> pointer_t;
     typedef std::map<std::pair<uint32_t,uint32_t>, Mineserver::World_Chunk::pointer_t> chunkList_t;
+    typedef std::vector<Mineserver::World_Generator::pointer_t> generatorList_t;
 
     // Jailout2000: Are enums okay to use here?
     // If these enums stay, plugins will need access to them. (TODO)
@@ -67,12 +68,13 @@ namespace Mineserver
 
   private:
     chunkList_t m_chunks;
+    generatorList_t m_generators;
+
     long m_worldSeed;
     GameMode m_gameMode;
     Dimension m_dimension;
     Difficulty m_difficulty;
     uint8_t m_worldHeight;
-    Mineserver::World_Generator_Flatlands m_generator;
     Mineserver::vec m_spawnPosition;
 
   public:
@@ -107,9 +109,14 @@ namespace Mineserver
     {
       if (!hasChunk(x, z)) {
         Mineserver::World_Chunk::pointer_t chunk = boost::make_shared<Mineserver::World_Chunk>();
+
         chunk->x = x;
         chunk->z = z;
-        m_generator.processChunk(chunk);
+
+        for (generatorList_t::const_iterator it = m_generators.begin(); it != m_generators.end(); ++it) {
+          (*it)->processChunk(chunk);
+        }
+
         setChunk(x, z, chunk);
       }
 
@@ -133,7 +140,6 @@ namespace Mineserver
 
     void setSpawnPosition(const Mineserver::vec& position) { m_spawnPosition = position; }
     const Mineserver::vec& getSpawnPosition() { return m_spawnPosition; }
-
   };
 }
 

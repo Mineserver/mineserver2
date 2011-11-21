@@ -52,7 +52,8 @@ namespace Mineserver
     typedef std::map<Mineserver::Network_Client::pointer_t,Mineserver::Game_Player::pointer_t> clientMap_t;
     typedef std::map<int,Mineserver::World::pointer_t> worldList_t;
     typedef boost::signals2::signal<void (Mineserver::Game::pointer_t, Mineserver::Network_Client::pointer_t, Mineserver::Network_Message::pointer_t)> messageWatcher_t;
-    typedef boost::signals2::signal<void (Mineserver::Game::pointer_t, Mineserver::Network_Client::pointer_t, Mineserver::World::pointer_t, Mineserver::World_Chunk::pointer_t, uint8_t x, uint8_t y, uint8_t z)> blockWatcher_t;
+    typedef boost::signals2::signal<bool (Mineserver::Game::pointer_t, Mineserver::Network_Client::pointer_t, Mineserver::World::pointer_t, Mineserver::World_Chunk::pointer_t, uint8_t x, uint8_t y, uint8_t z)> blockWatcher_t;
+    typedef boost::signals2::signal<bool (Mineserver::Game::pointer_t, Mineserver::Network_Client::pointer_t, uint32_t x, uint32_t y, uint32_t z)> movementWatcher_t;
 
     static const int timeOutTicks = 1200;
     enum {
@@ -65,7 +66,12 @@ namespace Mineserver
     clientMap_t m_clientMap;
     worldList_t m_worlds;
     messageWatcher_t m_messageWatchers[256];
-    blockWatcher_t m_blockWatchers;
+    std::vector<blockWatcher_t> m_blockBreakPreWatchers;
+    std::vector<blockWatcher_t> m_blockBreakPostWatchers;
+    std::vector<blockWatcher_t> m_blockPlacePreWatchers;
+    std::vector<blockWatcher_t> m_blockPlacePostWatchers;
+    std::vector<movementWatcher_t> m_movementPreWatchers;
+    std::vector<movementWatcher_t> m_movementPostWatchers;
 
   public:
     void run();
@@ -76,14 +82,39 @@ namespace Mineserver
       return m_messageWatchers[messageId].connect(slot);
     }
 
-    boost::signals2::connection addBlockWatcher(const blockWatcher_t::slot_type& slot)
+    boost::signals2::connection addBlockBreakPreWatcher(const blockWatcher_t::slot_type& slot)
     {
-      return m_blockWatchers.connect(slot);
+      return m_blockBreakPreWatchers.connect(slot);
+    }
+
+    boost::signals2::connection addBlockBreakPostWatcher(const blockWatcher_t::slot_type& slot)
+    {
+      return m_blockBreakPostWatchers.connect(slot);
+    }
+
+    boost::signals2::connection addBlockPlacePreWatcher(const blockWatcher_t::slot_type& slot)
+    {
+      return m_blockPlacePreWatchers.connect(slot);
+    }
+
+    boost::signals2::connection addBlockPlacePostWatcher(const blockWatcher_t::slot_type& slot)
+    {
+      return m_blockPlacePostWatchers.connect(slot);
     }
 
     void addPlayer(Mineserver::Game_Player::pointer_t player)
     {
       m_players[player->getName()] = player;
+    }
+
+    bool hasPlayer(const std::string& name)
+    {
+      return (m_players.find(name) != m_players.end());
+    }
+
+    void getPlayer(const std::string& name)
+    {
+      return m_players[name];
     }
 
     void addClient(Mineserver::Network_Client::pointer_t client)
@@ -94,6 +125,16 @@ namespace Mineserver
     void associateClient(Mineserver::Network_Client::pointer_t client, Mineserver::Game_Player::pointer_t player)
     {
       m_clientMap[client] = player;
+    }
+
+    bool clientIsAssociated(Mineserver::Network_Client::pointer_t client)
+    {
+      return (m_clientMap.find(client) != m_clientMap.end());
+    }
+
+    Mineserver::Game_Player::pointer_t getPlayerForClient(Mineserver::Network_Client::pointer_t client)
+    {
+      return m_clientMap[client];
     }
 
     Mineserver::World::pointer_t getWorld(int n)
@@ -108,4 +149,3 @@ namespace Mineserver
 }
 
 #endif
-

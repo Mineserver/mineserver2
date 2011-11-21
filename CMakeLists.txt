@@ -59,6 +59,7 @@ ENDIF(MSVC_IDE)
 FIND_PACKAGE(Boost COMPONENTS system filesystem signals thread REQUIRED)
 FIND_PACKAGE(ZLIB)
 FIND_PACKAGE(Iconv)
+FIND_PACKAGE(Threads)
 
 SET(mineserver_source
   src/app.cpp
@@ -164,4 +165,5 @@ TARGET_LINK_LIBRARIES(mineserver
   ${Boost_THREAD_LIBRARY}
   ${ZLIB_LIBRARIES}
   ${ICONV_LIBRARIES}
+  ${CMAKE_THREAD_LIBS_INIT}
 )
