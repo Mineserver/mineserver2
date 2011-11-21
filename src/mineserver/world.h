@@ -85,7 +85,7 @@ namespace Mineserver
       m_dimension = defaultDimension;
       m_difficulty = defaultDifficulty;
       m_worldHeight = defaultWorldHeight;
-      m_spawnPosition = Mineserver::vec(1, 127, 23);
+      m_spawnPosition = Mineserver::vec(0, 60, 0);
     }
 
     bool hasChunk(uint32_t x, uint32_t z)
