@@ -49,35 +49,39 @@ void Mineserver::Watcher_Digging::operator()(Mineserver::Game::pointer_t game, M
 
   Mineserver::World::pointer_t world = game->getWorld(0);
 
-  int x, y, z;
-  x = msg->x / 16;
-  y = msg->y;
-  z = msg->z / 16;
+  int chunk_x, chunk_z;
+  chunk_x = msg->x / 16;
+  chunk_z = msg->z / 16;
 
-  if (!world->hasChunk(x, z))
+  if (!world->hasChunk(chunk_x, chunk_z))
   {
-    std::cout << "Chunk " << x << "," << z << " not found!" << std::endl;
+    std::cout << "Chunk " << chunk_x << "," << chunk_z << " not found!" << std::endl;
   }
   else
   {
-    Mineserver::World_Chunk::pointer_t chunk = world->getChunk(x, z);
+    Mineserver::World_Chunk::pointer_t chunk = world->getChunk(chunk_x, chunk_z);
+    
+    int x, y, z;
+    x = msg->x;
+    y = msg->y;
+    z = msg->z;
 
     // (TODO) blockBreakPre
 
-    chunk->setBlockType(x, y, z, 0);
+    chunk->setBlockType(x & 15, y, z & 15, 0);
     boost::shared_ptr<Mineserver::Network_Message_BlockChange> response = boost::make_shared<Mineserver::Network_Message_BlockChange>();
     response->mid = 0x35;
-    response->x = msg->x;
-    response->y = msg->y;
-    response->z = msg->z;
+    response->x = x;
+    response->y = y;
+    response->z = z;
     response->type = 0;
     response->meta = 0;
     client->outgoing().push_back(response);
 
     std::string text = "§4You broke the block at ";
-    text += boost::lexical_cast<std::string>(msg->x) + ",";
-    text += boost::lexical_cast<std::string>(msg->y) + ","; // y seems to be reporting a non-numeric value???
-    text += boost::lexical_cast<std::string>(msg->z) + "!";
+    text += boost::lexical_cast<std::string>(x) + ",";
+    text += boost::lexical_cast<std::string>(y) + ","; // y seems to be reporting a non-numeric value???
+    text += boost::lexical_cast<std::string>(z) + "!";
 	  game->chat(client, text, game->chatSelf);
 
     // (TODO) blockBreakPost
