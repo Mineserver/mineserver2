@@ -95,9 +95,9 @@ void Mineserver::Watcher_Login::operator()(Mineserver::Game::pointer_t game, Min
 
   boost::shared_ptr<Mineserver::Network_Message_SpawnPosition> spawnPositionMessage = boost::make_shared<Mineserver::Network_Message_SpawnPosition>();
   spawnPositionMessage->mid = 0x06;
-  spawnPositionMessage->x = 0;
-  spawnPositionMessage->y = 61;
-  spawnPositionMessage->z = 0;
+  spawnPositionMessage->x = world->getSpawnPosition().x();
+  spawnPositionMessage->y = world->getSpawnPosition().y();
+  spawnPositionMessage->z = world->getSpawnPosition().z();
   client->outgoing().push_back(spawnPositionMessage);
 
   boost::shared_ptr<Mineserver::Network_Message_WindowItems> windowItemsMessage = boost::make_shared<Mineserver::Network_Message_WindowItems>();
@@ -108,9 +108,9 @@ void Mineserver::Watcher_Login::operator()(Mineserver::Game::pointer_t game, Min
 
   boost::shared_ptr<Mineserver::Network_Message_PositionLook> positionLookMessage = boost::make_shared<Mineserver::Network_Message_PositionLook>();
   positionLookMessage->mid = 0x0D;
-  positionLookMessage->x = 12;
-  positionLookMessage->y = 63;
-  positionLookMessage->z = 12.34;
+  positionLookMessage->x = world->getSpawnPosition().x();
+  positionLookMessage->y = world->getSpawnPosition().y() + 1;
+  positionLookMessage->z = world->getSpawnPosition().z();
   positionLookMessage->stance = positionLookMessage->y + 1.620000005L;
   positionLookMessage->yaw = 0;
   positionLookMessage->pitch = 0;

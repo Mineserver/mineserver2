@@ -73,6 +73,7 @@ namespace Mineserver
     Difficulty m_difficulty;
     uint8_t m_worldHeight;
     Mineserver::World_Generator_Flatlands m_generator;
+    Mineserver::vec m_spawnPosition;
 
   public:
     World()
@@ -84,6 +85,7 @@ namespace Mineserver
       m_dimension = defaultDimension;
       m_difficulty = defaultDifficulty;
       m_worldHeight = defaultWorldHeight;
+      m_spawnPosition = Mineserver::vec(1, 127, 23);
     }
 
     bool hasChunk(uint32_t x, uint32_t z)
@@ -128,6 +130,9 @@ namespace Mineserver
 
     uint8_t getWorldHeight() { return m_worldHeight; }
     void setWorldHeight(uint8_t worldHeight) { m_worldHeight = worldHeight; }
+
+    void setSpawnPosition(const Mineserver::vec& position) { m_spawnPosition = position; }
+    const Mineserver::vec& getSpawnPosition() { return m_spawnPosition; }
 
   };
 }
