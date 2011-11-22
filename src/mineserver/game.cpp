@@ -35,6 +35,9 @@
 #include <mineserver/localization.h>
 #include <mineserver/network/client.h>
 #include <mineserver/network/message/chat.h>
+#include <mineserver/network/message/position.h>
+#include <mineserver/network/message/orientation.h>
+#include <mineserver/network/message/positionandorientation.h>
 #include <mineserver/game.h>
 
 bool is_dead(Mineserver::Network_Client::pointer_t client) {
@@ -120,27 +123,45 @@ void Mineserver::Game::chat(Mineserver::Network_Client::pointer_t client, std::s
 void Mineserver::Game::messageWatcherPosition(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)
 {
   std::cout << "Position watcher called!" << std::endl;
+
+  const Mineserver::Network_Message_Position* msg = reinterpret_cast<Mineserver::Network_Message_Position*>(&(*message));
+
+  if (clientIsAssociated(client)) {
+    Mineserver::Game_Player::pointer_t player = getPlayerForClient(client);
+    Mineserver::Game_PlayerPosition position(msg->x, msg->y, msg->z, msg->stance, player->getPosition().yaw, player->getPosition().pitch, msg->onGround);
+    movementPostWatcher(shared_from_this(), getPlayerForClient(client), position);
+  }
 }
 
 void Mineserver::Game::messageWatcherOrientation(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)
 {
   std::cout << "Orientation watcher called!" << std::endl;
+
+  const Mineserver::Network_Message_Orientation* msg = reinterpret_cast<Mineserver::Network_Message_Orientation*>(&(*message));
+
+  if (clientIsAssociated(client)) {
+    Mineserver::Game_Player::pointer_t player = getPlayerForClient(client);
+    Mineserver::Game_PlayerPosition position(player->getPosition().x, player->getPosition().y, player->getPosition().z, player->getPosition().stance, msg->yaw, msg->pitch, msg->onGround);
+    movementPostWatcher(shared_from_this(), getPlayerForClient(client), position);
+  }
 }
 
 void Mineserver::Game::messageWatcherPositionAndOrientation(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)
 {
   std::cout << "PositionAndOrientation watcher called!" << std::endl;
+
+  const Mineserver::Network_Message_PositionAndOrientation* msg = reinterpret_cast<Mineserver::Network_Message_PositionAndOrientation*>(&(*message));
+
+  if (clientIsAssociated(client)) {
+    Mineserver::Game_Player::pointer_t player = getPlayerForClient(client);
+    Mineserver::Game_PlayerPosition position(msg->x, msg->y, msg->z, msg->stance, msg->yaw, msg->pitch, msg->onGround);
+    movementPostWatcher(shared_from_this(), getPlayerForClient(client), position);
+  }
 }
 
-bool Mineserver::Game::movementPositionPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::Game_PlayerPosition position)
+bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::Game_PlayerPosition position)
 {
-  std::cout << "movementPositionPostWatcher called!" << std::endl;
-  return true;
-}
-
-bool Mineserver::Game::movementOrientationPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::Game_PlayerPosition position)
-{
-  std::cout << "movementOrientationPostWatcher called!" << std::endl;
+  std::cout << "movementPostWatcher called!" << std::endl;
   return true;
 }
 

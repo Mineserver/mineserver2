@@ -55,8 +55,7 @@ namespace Mineserver
     typedef std::map<Mineserver::Network_Client::pointer_t,Mineserver::Game_Player::pointer_t> clientMap_t;
     typedef std::map<int,Mineserver::World::pointer_t> worldList_t;
     typedef boost::signals2::signal<void (Mineserver::Game::pointer_t, Mineserver::Network_Client::pointer_t, Mineserver::Network_Message::pointer_t message)> messageWatcher_t;
-    typedef boost::signals2::signal<bool (Mineserver::Game::pointer_t, Mineserver::Game_Player::pointer_t, Mineserver::Game_PlayerPosition position)> movementPositionWatcher_t;
-    typedef boost::signals2::signal<bool (Mineserver::Game::pointer_t, Mineserver::Game_Player::pointer_t, Mineserver::Game_PlayerPosition position)> movementOrientationWatcher_t;
+    typedef boost::signals2::signal<bool (Mineserver::Game::pointer_t, Mineserver::Game_Player::pointer_t, Mineserver::Game_PlayerPosition position)> movementWatcher_t;
     typedef boost::signals2::signal<bool (Mineserver::Game::pointer_t, Mineserver::Game_Player::pointer_t, Mineserver::World::pointer_t, Mineserver::World_Chunk::pointer_t, Mineserver::World_ChunkPosition position)> blockBreakWatcher_t;
     typedef boost::signals2::signal<bool (Mineserver::Game::pointer_t, Mineserver::Game_Player::pointer_t, Mineserver::World::pointer_t, Mineserver::World_Chunk::pointer_t, Mineserver::World_ChunkPosition position, uint8_t type, uint8_t meta)> blockPlaceWatcher_t;
 
@@ -72,10 +71,8 @@ namespace Mineserver
     clientMap_t m_clientMap;
     worldList_t m_worlds;
     messageWatcher_t m_messageWatchers[256];
-    movementPositionWatcher_t m_movementPositionPreWatcher;
-    movementPositionWatcher_t m_movementPositionPostWatcher;
-    movementOrientationWatcher_t m_movementOrientationPreWatcher;
-    movementOrientationWatcher_t m_movementOrientationPostWatcher;
+    movementWatcher_t m_movementPreWatcher;
+    movementWatcher_t m_movementPostWatcher;
     blockBreakWatcher_t m_blockBreakPreWatcher;
     blockBreakWatcher_t m_blockBreakPostWatcher;
     blockPlaceWatcher_t m_blockPlacePreWatcher;
@@ -87,15 +84,12 @@ namespace Mineserver
 
     Game()
     {
-      setWorld(0, boost::make_shared<Mineserver::World>());
-
       m_nextEid = 0;
 
       m_messageWatchers[0x0B].connect(boost::bind(&Mineserver::Game::messageWatcherPosition, this, _1, _2, _3));
       m_messageWatchers[0x0C].connect(boost::bind(&Mineserver::Game::messageWatcherOrientation, this, _1, _2, _3));
       m_messageWatchers[0x0D].connect(boost::bind(&Mineserver::Game::messageWatcherPositionAndOrientation, this, _1, _2, _3));
-      m_movementPositionPostWatcher.connect(boost::bind(&Mineserver::Game::movementPositionPostWatcher, this, _1, _2, _3));
-      m_movementOrientationPostWatcher.connect(boost::bind(&Mineserver::Game::movementOrientationPostWatcher, this, _1, _2, _3));
+      m_movementPostWatcher.connect(boost::bind(&Mineserver::Game::movementPostWatcher, this, _1, _2, _3));
       m_blockBreakPostWatcher.connect(boost::bind(&Mineserver::Game::blockBreakPostWatcher, this, _1, _2, _3, _4, _5));
       m_blockPlacePostWatcher.connect(boost::bind(&Mineserver::Game::blockPlacePostWatcher, this, _1, _2, _3, _4, _5, _6, _7));
     }
@@ -106,8 +100,7 @@ namespace Mineserver
     void messageWatcherOrientation(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message);
     void messageWatcherPositionAndOrientation(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message);
 
-    bool movementPositionPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::Game_PlayerPosition position);
-    bool movementOrientationPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::Game_PlayerPosition position);
+    bool movementPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::Game_PlayerPosition position);
     bool blockBreakPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::World::pointer_t world, Mineserver::World_Chunk::pointer_t chunk, Mineserver::World_ChunkPosition position);
     bool blockPlacePostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::World::pointer_t world, Mineserver::World_Chunk::pointer_t chunk, Mineserver::World_ChunkPosition position, uint8_t type, uint8_t meta);
 
