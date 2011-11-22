@@ -81,6 +81,7 @@ namespace Mineserver
     int32_t getEid() { return m_eid; }
     void setEid(int32_t eid) { m_eid = eid; }
     Mineserver::Game_PlayerPosition& getPosition() { return m_position; }
+    void setPosition(Mineserver::Game_PlayerPosition pos) { m_position = pos; }
 
     void run();
     void shutdown();

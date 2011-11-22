@@ -162,6 +162,7 @@ void Mineserver::Game::messageWatcherPositionAndOrientation(Mineserver::Game::po
 bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::Game_PlayerPosition position)
 {
   std::cout << "movementPostWatcher called!" << std::endl;
+  player->setPosition(position);
   return true;
 }
 
