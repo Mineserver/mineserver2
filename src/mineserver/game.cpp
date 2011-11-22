@@ -35,6 +35,11 @@
 #include <mineserver/localization.h>
 #include <mineserver/network/client.h>
 #include <mineserver/network/message/chat.h>
+#include <mineserver/network/message/login.h>
+#include <mineserver/network/message/chunkprepare.h>
+#include <mineserver/network/message/chunk.h>
+#include <mineserver/network/message/spawnposition.h>
+#include <mineserver/network/message/windowitems.h>
 #include <mineserver/network/message/position.h>
 #include <mineserver/network/message/orientation.h>
 #include <mineserver/network/message/positionandorientation.h>
@@ -118,6 +123,104 @@ void Mineserver::Game::chat(Mineserver::Network_Client::pointer_t client, std::s
 
     (*it)->outgoing().push_back(chatMessage);
   }
+}
+
+void Mineserver::Game::messageWatcherKeepAlive(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)
+{
+  std::cout << "KeepAlive watcher called!" << std::endl;
+  
+  client->resetInactiveTicks();
+}
+
+void Mineserver::Game::messageWatcherLogin(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)
+{
+  std::cout << "Login watcher called!" << std::endl;
+
+  const Mineserver::Network_Message_Login* msg = reinterpret_cast<Mineserver::Network_Message_Login*>(&(*message));
+
+  Mineserver::World::pointer_t world = getWorld(0);
+
+  std::cout << "Player login v." << msg->version << ": " << msg->username << std::endl;
+
+  Mineserver::Game_Player::pointer_t player;
+  if (m_players.find(msg->username) == m_players.end()) {
+    player = boost::make_shared<Mineserver::Game_Player>();
+    player->setName(msg->username);
+    player->setEid(getNextEid());
+    player->getPosition().x = world->getSpawnPosition().x;
+    player->getPosition().y = world->getSpawnPosition().y;
+    player->getPosition().z = world->getSpawnPosition().z;
+    player->getPosition().stance = world->getSpawnPosition().y + 1.62;
+    player->getPosition().onGround = true;
+    addPlayer(player);
+  } else {
+    player = m_players[msg->username];
+  }
+
+  associateClient(client, player);
+
+  boost::shared_ptr<Mineserver::Network_Message_Login> loginMessage = boost::make_shared<Mineserver::Network_Message_Login>();
+  loginMessage->mid = 0x01;
+  loginMessage->version = 22;
+  loginMessage->seed = world->getWorldSeed();
+  loginMessage->mode = world->getGameMode();
+  loginMessage->dimension = world->getDimension();
+  loginMessage->difficulty = world->getDifficulty();
+  loginMessage->worldHeight = world->getWorldHeight();
+  loginMessage->maxPlayers = 32; // this determines how many slots the tab window will have
+  client->outgoing().push_back(loginMessage);
+
+  for (int x = -5; x <= 5; ++x) {
+    for (int z = -5; z <= 5; ++z) {
+      boost::shared_ptr<Mineserver::Network_Message_ChunkPrepare> chunkPrepareMessage = boost::make_shared<Mineserver::Network_Message_ChunkPrepare>();
+      chunkPrepareMessage->mid = 0x32;
+      chunkPrepareMessage->x = x;
+      chunkPrepareMessage->z = z;
+      chunkPrepareMessage->mode = 1;
+      client->outgoing().push_back(chunkPrepareMessage);
+    }
+  }
+
+  for (int x = -5; x <= 5; ++x) {
+    for (int z = -5; z <= 5; ++z) {
+      boost::shared_ptr<Mineserver::Network_Message_Chunk> chunkMessage = boost::make_shared<Mineserver::Network_Message_Chunk>();
+      chunkMessage->mid = 0x33;
+      chunkMessage->posX = x * 16;
+      chunkMessage->posY = 0;
+      chunkMessage->posZ = z * 16;
+      chunkMessage->sizeX = 15;
+      chunkMessage->sizeY = 127;
+      chunkMessage->sizeZ = 15;
+      chunkMessage->chunk = world->generateChunk(x, z);
+      client->outgoing().push_back(chunkMessage);
+    }
+  }
+
+  boost::shared_ptr<Mineserver::Network_Message_SpawnPosition> spawnPositionMessage = boost::make_shared<Mineserver::Network_Message_SpawnPosition>();
+  spawnPositionMessage->mid = 0x06;
+  spawnPositionMessage->x = world->getSpawnPosition().x;
+  spawnPositionMessage->y = world->getSpawnPosition().y;
+  spawnPositionMessage->z = world->getSpawnPosition().z;
+  client->outgoing().push_back(spawnPositionMessage);
+
+  boost::shared_ptr<Mineserver::Network_Message_WindowItems> windowItemsMessage = boost::make_shared<Mineserver::Network_Message_WindowItems>();
+  windowItemsMessage->mid = 0x68;
+  windowItemsMessage->windowId = -1;
+  windowItemsMessage->count = 0;
+  client->outgoing().push_back(windowItemsMessage);
+
+  std::cout << "Spawning player at " << player->getPosition().x << "," << player->getPosition().y << "," << player->getPosition().z << std::endl;
+
+  boost::shared_ptr<Mineserver::Network_Message_PositionAndOrientation> positionAndOrientationMessage = boost::make_shared<Mineserver::Network_Message_PositionAndOrientation>();
+  positionAndOrientationMessage->mid = 0x0D;
+  positionAndOrientationMessage->x = player->getPosition().x;
+  positionAndOrientationMessage->y = player->getPosition().y;
+  positionAndOrientationMessage->z = player->getPosition().z;
+  positionAndOrientationMessage->stance = player->getPosition().stance;
+  positionAndOrientationMessage->yaw = player->getPosition().yaw;
+  positionAndOrientationMessage->pitch = player->getPosition().pitch;
+  positionAndOrientationMessage->onGround = player->getPosition().onGround;
+  client->outgoing().push_back(positionAndOrientationMessage);
 }
 
 void Mineserver::Game::messageWatcherPosition(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)

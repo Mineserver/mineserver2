@@ -82,20 +82,12 @@ namespace Mineserver
     void run();
 		void chat(Mineserver::Network_Client::pointer_t client, std::string message);
 
-    Game()
-    {
-      m_nextEid = 0;
-
-      m_messageWatchers[0x0B].connect(boost::bind(&Mineserver::Game::messageWatcherPosition, this, _1, _2, _3));
-      m_messageWatchers[0x0C].connect(boost::bind(&Mineserver::Game::messageWatcherOrientation, this, _1, _2, _3));
-      m_messageWatchers[0x0D].connect(boost::bind(&Mineserver::Game::messageWatcherPositionAndOrientation, this, _1, _2, _3));
-      m_movementPostWatcher.connect(boost::bind(&Mineserver::Game::movementPostWatcher, this, _1, _2, _3));
-      m_blockBreakPostWatcher.connect(boost::bind(&Mineserver::Game::blockBreakPostWatcher, this, _1, _2, _3, _4, _5));
-      m_blockPlacePostWatcher.connect(boost::bind(&Mineserver::Game::blockPlacePostWatcher, this, _1, _2, _3, _4, _5, _6, _7));
-    }
+    Game() : m_nextEid(0) {}
 
     int32_t getNextEid() { return m_nextEid++; }
 
+    void messageWatcherKeepAlive(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message);
+    void messageWatcherLogin(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message);
     void messageWatcherPosition(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message);
     void messageWatcherOrientation(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message);
     void messageWatcherPositionAndOrientation(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message);
@@ -107,6 +99,16 @@ namespace Mineserver
     boost::signals2::connection addMessageWatcher(uint8_t messageId, const messageWatcher_t::slot_type& slot)
     {
       return m_messageWatchers[messageId].connect(slot);
+    }
+
+    boost::signals2::connection addMovementPreWatcher(const movementWatcher_t::slot_type& slot)
+    {
+      return m_movementPreWatcher.connect(slot);
+    }
+
+    boost::signals2::connection addMovementPostWatcher(const movementWatcher_t::slot_type& slot)
+    {
+      return m_movementPostWatcher.connect(slot);
     }
 
     boost::signals2::connection addBlockBreakPreWatcher(const blockBreakWatcher_t::slot_type& slot)
