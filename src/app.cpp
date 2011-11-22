@@ -35,6 +35,9 @@
 #include <boost/thread.hpp>
 
 #include <mineserver/game.h>
+#include <mineserver/world.h>
+#include <mineserver/world/generator.h>
+#include <mineserver/world/generator/flatlands.h>
 #include <mineserver/network/protocol/notch/protocol.h>
 #include <mineserver/network/server.h>
 
@@ -52,8 +55,9 @@ int main()
   boost::asio::io_service service;
 
   Mineserver::Game::pointer_t game = boost::make_shared<Mineserver::Game>();
-  Mineserver::Network_Protocol::pointer_t protocol = boost::make_shared<Mineserver::Network_Protocol_Notch_Protocol>();
-  Mineserver::Network_Server::pointer_t server = boost::make_shared<Mineserver::Network_Server>(game, protocol, &service);
+
+  game->setWorld(0, boost::make_shared<Mineserver::World>());
+  game->getWorld(0)->addGenerator(boost::make_shared<Mineserver::World_Generator_Flatlands>());
 
   game->addMessageWatcher(0x00, Mineserver::Watcher_KeepAlive());
   game->addMessageWatcher(0x01, Mineserver::Watcher_Login());
@@ -63,6 +67,9 @@ int main()
   game->addMessageWatcher(0x0F, Mineserver::Watcher_BlockPlacement());
   game->addMessageWatcher(0x35, Mineserver::Watcher_BlockChange());
   game->addMessageWatcher(0xFE, Mineserver::Watcher_ServerListPing());
+
+  Mineserver::Network_Protocol::pointer_t protocol = boost::make_shared<Mineserver::Network_Protocol_Notch_Protocol>();
+  Mineserver::Network_Server::pointer_t server = boost::make_shared<Mineserver::Network_Server>(game, protocol, &service);
 
   while (true) {
     try {
@@ -82,4 +89,3 @@ int main()
 
   return 0;
 }
-
