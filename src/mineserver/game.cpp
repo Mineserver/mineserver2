@@ -132,17 +132,26 @@ void Mineserver::Game::messageWatcherPositionAndOrientation(Mineserver::Game::po
   std::cout << "PositionAndOrientation watcher called!" << std::endl;
 }
 
-bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, uint32_t x, uint32_t y, uint32_t z)
+bool Mineserver::Game::movementPositionPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::Game_PlayerPosition position)
 {
+  std::cout << "movementPositionPostWatcher called!" << std::endl;
   return true;
 }
 
-bool Mineserver::Game::blockBreakPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::World::pointer_t world, Mineserver::World_Chunk::pointer_t chunk, uint8_t x, uint8_t y, uint8_t z)
+bool Mineserver::Game::movementOrientationPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::Game_PlayerPosition position)
 {
+  std::cout << "movementOrientationPostWatcher called!" << std::endl;
   return true;
 }
 
-bool Mineserver::Game::blockPlacePostWatcher(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::World::pointer_t world, Mineserver::World_Chunk::pointer_t chunk, uint8_t x, uint8_t y, uint8_t z)
+bool Mineserver::Game::blockBreakPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::World::pointer_t world, Mineserver::World_Chunk::pointer_t chunk, Mineserver::World_ChunkPosition position)
 {
+  std::cout << "blockBreakPostWatcher called!" << std::endl;
+  return true;
+}
+
+bool Mineserver::Game::blockPlacePostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::World::pointer_t world, Mineserver::World_Chunk::pointer_t chunk, Mineserver::World_ChunkPosition position, uint8_t type, uint8_t meta)
+{
+  std::cout << "blockPlacePostWatcher called!" << std::endl;
   return true;
 }

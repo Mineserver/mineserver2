@@ -35,10 +35,53 @@
 
 #include <mineserver/world/chunk.h>
 #include <mineserver/world/generator.h>
-#include <mineserver/world/generator/flatlands.h>
 
 namespace Mineserver
 {
+  struct WorldPosition
+  {
+    double x;
+    double y;
+    double z;
+
+    WorldPosition(double _x, double _y, double _z) : x(_x),y(_y),z(_z) {}
+    WorldPosition() : x(0),y(0),z(0) {}
+    WorldPosition(const WorldPosition& other) : x(other.x),y(other.y),z(other.z) {}
+
+    Mineserver::WorldPosition& operator=(const Mineserver::WorldPosition& other)
+    {
+      if (this != &other) {
+        x = other.x;
+        y = other.y;
+        z = other.z;
+      }
+
+      return *this;
+    }
+  };
+
+  struct WorldBlockPosition
+  {
+    int32_t x;
+    int16_t y;
+    int32_t z;
+
+    WorldBlockPosition(int32_t _x, int16_t _y, int32_t _z) : x(_x),y(_y),z(_z) {}
+    WorldBlockPosition() : x(0),y(0),z(0) {}
+    WorldBlockPosition(const WorldBlockPosition& other) : x(other.x),y(other.y),z(other.z) {}
+
+    Mineserver::WorldBlockPosition& operator=(const Mineserver::WorldBlockPosition& other)
+    {
+      if (this != &other) {
+        x = other.x;
+        y = other.y;
+        z = other.z;
+      }
+
+      return *this;
+    }
+  };
+
   struct World
   {
   public:
@@ -75,7 +118,7 @@ namespace Mineserver
     Dimension m_dimension;
     Difficulty m_difficulty;
     uint8_t m_worldHeight;
-    Mineserver::vec m_spawnPosition;
+    Mineserver::WorldPosition m_spawnPosition;
 
   public:
     World()
@@ -87,10 +130,7 @@ namespace Mineserver
       m_dimension = defaultDimension;
       m_difficulty = defaultDifficulty;
       m_worldHeight = defaultWorldHeight;
-      m_spawnPosition = Mineserver::vec(0, 60, 0);
-
-      // TODO: Make this configurable
-			m_generators.push_back(boost::make_shared<Mineserver::World_Generator_Flatlands>());
+      m_spawnPosition = Mineserver::WorldPosition(0,60,0);
     }
 
     bool hasChunk(uint32_t x, uint32_t z)
@@ -141,8 +181,8 @@ namespace Mineserver
     uint8_t getWorldHeight() { return m_worldHeight; }
     void setWorldHeight(uint8_t worldHeight) { m_worldHeight = worldHeight; }
 
-    void setSpawnPosition(const Mineserver::vec& position) { m_spawnPosition = position; }
-    const Mineserver::vec& getSpawnPosition() { return m_spawnPosition; }
+    void setSpawnPosition(const Mineserver::WorldPosition& position) { m_spawnPosition = position; }
+    const Mineserver::WorldPosition& getSpawnPosition() { return m_spawnPosition; }
   };
 }
 

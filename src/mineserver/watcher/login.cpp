@@ -29,6 +29,7 @@
 #include <boost/make_shared.hpp>
 
 #include <mineserver/game.h>
+#include <mineserver/game/player.h>
 #include <mineserver/network/client.h>
 #include <mineserver/network/message.h>
 #include <mineserver/network/message/login.h>
@@ -45,16 +46,23 @@ void Mineserver::Watcher_Login::operator()(Mineserver::Game::pointer_t game, Min
 {
   std::cout << "Login watcher called!" << std::endl;
   const Mineserver::Network_Message_Login* msg = reinterpret_cast<Mineserver::Network_Message_Login*>(&(*message));
+  
+  Mineserver::World::pointer_t world = game->getWorld(0);
 
   Mineserver::Game_Player::pointer_t player(new Mineserver::Game_Player);
   player->setName(msg->username);
+  player->setEid(game->getNextEid());
 
   std::cout << "Player login v." << msg->version << ": " << msg->username << std::endl;
 
   game->addPlayer(player);
   game->associateClient(client, player);
 
-  Mineserver::World::pointer_t world = game->getWorld(0);
+  player->getPosition().x = world->getSpawnPosition().x;
+  player->getPosition().y = world->getSpawnPosition().y;
+  player->getPosition().z = world->getSpawnPosition().z;
+  player->getPosition().stance = world->getSpawnPosition().y + 1.62;
+  player->getPosition().onGround = true;
 
   boost::shared_ptr<Mineserver::Network_Message_Login> loginMessage = boost::make_shared<Mineserver::Network_Message_Login>();
   loginMessage->mid = 0x01;
@@ -95,9 +103,9 @@ void Mineserver::Watcher_Login::operator()(Mineserver::Game::pointer_t game, Min
 
   boost::shared_ptr<Mineserver::Network_Message_SpawnPosition> spawnPositionMessage = boost::make_shared<Mineserver::Network_Message_SpawnPosition>();
   spawnPositionMessage->mid = 0x06;
-  spawnPositionMessage->x = world->getSpawnPosition().x();
-  spawnPositionMessage->y = world->getSpawnPosition().y();
-  spawnPositionMessage->z = world->getSpawnPosition().z();
+  spawnPositionMessage->x = world->getSpawnPosition().x;
+  spawnPositionMessage->y = world->getSpawnPosition().y;
+  spawnPositionMessage->z = world->getSpawnPosition().z;
   client->outgoing().push_back(spawnPositionMessage);
 
   boost::shared_ptr<Mineserver::Network_Message_WindowItems> windowItemsMessage = boost::make_shared<Mineserver::Network_Message_WindowItems>();
@@ -108,13 +116,13 @@ void Mineserver::Watcher_Login::operator()(Mineserver::Game::pointer_t game, Min
 
   boost::shared_ptr<Mineserver::Network_Message_PositionLook> positionLookMessage = boost::make_shared<Mineserver::Network_Message_PositionLook>();
   positionLookMessage->mid = 0x0D;
-  positionLookMessage->x = world->getSpawnPosition().x();
-  positionLookMessage->y = world->getSpawnPosition().y() + 1;
-  positionLookMessage->z = world->getSpawnPosition().z();
-  positionLookMessage->stance = positionLookMessage->y + 1.620000005L;
-  positionLookMessage->yaw = 0;
-  positionLookMessage->pitch = 0;
-  positionLookMessage->onGround = true;
+  positionLookMessage->x = player->getPosition().x;
+  positionLookMessage->y = player->getPosition().y;
+  positionLookMessage->z = player->getPosition().z;
+  positionLookMessage->stance = player->getPosition().stance;
+  positionLookMessage->yaw = player->getPosition().yaw;
+  positionLookMessage->pitch = player->getPosition().pitch;
+  positionLookMessage->onGround = player->getPosition().onGround;
   client->outgoing().push_back(positionLookMessage);
 }
 
