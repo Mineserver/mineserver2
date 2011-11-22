@@ -165,6 +165,11 @@ namespace Mineserver
 
       return getChunk(x, z);
     }
+    
+    void addGenerator(Mineserver::World_Generator::pointer_t generator)
+    {
+      m_generators.push_back(generator);
+    }
 
     long getWorldSeed() { return m_worldSeed; }
     void setWorldSeed(long worldSeed) { m_worldSeed = worldSeed; }
