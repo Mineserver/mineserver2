@@ -31,6 +31,7 @@
 #include <map>
 #include <vector>
 
+#include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/enable_shared_from_this.hpp>
@@ -66,40 +67,59 @@ namespace Mineserver
     clientMap_t m_clientMap;
     worldList_t m_worlds;
     messageWatcher_t m_messageWatchers[256];
-    std::vector<blockWatcher_t> m_blockBreakPreWatchers;
-    std::vector<blockWatcher_t> m_blockBreakPostWatchers;
-    std::vector<blockWatcher_t> m_blockPlacePreWatchers;
-    std::vector<blockWatcher_t> m_blockPlacePostWatchers;
-    std::vector<movementWatcher_t> m_movementPreWatchers;
-    std::vector<movementWatcher_t> m_movementPostWatchers;
+    blockWatcher_t m_blockBreakPreWatcher;
+    blockWatcher_t m_blockBreakPostWatcher;
+    blockWatcher_t m_blockPlacePreWatcher;
+    blockWatcher_t m_blockPlacePostWatcher;
+    movementWatcher_t m_movementPreWatcher;
+    movementWatcher_t m_movementPostWatcher;
 
   public:
     void run();
 		void chat(Mineserver::Network_Client::pointer_t client, std::string message);
+
+    Game()
+    {
+      setWorld(0, boost::make_shared<Mineserver::World>());
+
+      m_messageWatchers[0x0B].connect(boost::bind(&Mineserver::Game::messageWatcherPosition, this, _1, _2, _3));
+      m_messageWatchers[0x0C].connect(boost::bind(&Mineserver::Game::messageWatcherOrientation, this, _1, _2, _3));
+      m_messageWatchers[0x0D].connect(boost::bind(&Mineserver::Game::messageWatcherPositionAndOrientation, this, _1, _2, _3));
+      m_movementPostWatcher.connect(boost::bind(&Mineserver::Game::movementPostWatcher, this, _1, _2, _3, _4, _5));
+      m_blockBreakPostWatcher.connect(boost::bind(&Mineserver::Game::blockBreakPostWatcher, this, _1, _2, _3, _4, _5, _6, _7));
+      m_blockPlacePostWatcher.connect(boost::bind(&Mineserver::Game::blockPlacePostWatcher, this, _1, _2, _3, _4, _5, _6, _7));
+    }
+
+    void messageWatcherPosition(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message);
+    void messageWatcherOrientation(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message);
+    void messageWatcherPositionAndOrientation(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message);
+    bool movementPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, uint32_t x, uint32_t y, uint32_t z);
+    bool blockBreakPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::World::pointer_t world, Mineserver::World_Chunk::pointer_t chunk, uint8_t x, uint8_t y, uint8_t z);
+    bool blockPlacePostWatcher(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::World::pointer_t world, Mineserver::World_Chunk::pointer_t chunk, uint8_t x, uint8_t y, uint8_t z);
 
     boost::signals2::connection addMessageWatcher(uint8_t messageId, const messageWatcher_t::slot_type& slot)
     {
       return m_messageWatchers[messageId].connect(slot);
     }
 
-    boost::signals2::connection addBlockBreakPreWatcher(uint8_t blockId, const blockWatcher_t::slot_type& slot)
+    boost::signals2::connection addBlockBreakPreWatcher(const blockWatcher_t::slot_type& slot)
     {
-      return m_blockBreakPreWatchers[blockId].connect(slot);
+      return m_blockBreakPreWatcher.connect(slot);
     }
 
-    boost::signals2::connection addBlockBreakPostWatcher(uint8_t blockId, const blockWatcher_t::slot_type& slot)
+    boost::signals2::connection addBlockBreakPostWatcher(const blockWatcher_t::slot_type& slot)
     {
-      return m_blockBreakPostWatchers[blockId].connect(slot);
+      return m_blockBreakPostWatcher.connect(slot);
     }
 
-    boost::signals2::connection addBlockPlacePreWatcher(uint8_t blockId, const blockWatcher_t::slot_type& slot)
+    boost::signals2::connection addBlockPlacePreWatcher(const blockWatcher_t::slot_type& slot)
     {
-      return m_blockPlacePreWatchers[blockId].connect(slot);
+      return m_blockPlacePreWatcher.connect(slot);
     }
 
-    boost::signals2::connection addBlockPlacePostWatcher(uint8_t blockId, const blockWatcher_t::slot_type& slot)
+    boost::signals2::connection addBlockPlacePostWatcher(const blockWatcher_t::slot_type& slot)
     {
-      return m_blockPlacePostWatchers[blockId].connect(slot);
+      return m_blockPlacePostWatcher.connect(slot);
     }
 
     void addPlayer(Mineserver::Game_Player::pointer_t player)
@@ -137,12 +157,18 @@ namespace Mineserver
       return m_clientMap[client];
     }
 
+    void setWorld(int n, Mineserver::World::pointer_t world)
+    {
+			m_worlds[n] = world;
+    }
+
+    bool hasWorld(int n)
+    {
+			return (m_worlds.find(n) == m_worlds.end());
+    }
+
     Mineserver::World::pointer_t getWorld(int n)
     {
-      if (m_worlds.find(n) == m_worlds.end()) {
-        m_worlds[n] = boost::make_shared<Mineserver::World>();
-      }
-
       return m_worlds[n];
     }
   };

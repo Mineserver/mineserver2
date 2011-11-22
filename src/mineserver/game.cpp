@@ -116,3 +116,33 @@ void Mineserver::Game::chat(Mineserver::Network_Client::pointer_t client, std::s
     (*it)->outgoing().push_back(chatMessage);
   }
 }
+
+void Mineserver::Game::messageWatcherPosition(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)
+{
+  std::cout << "Position watcher called!" << std::endl;
+}
+
+void Mineserver::Game::messageWatcherOrientation(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)
+{
+  std::cout << "Orientation watcher called!" << std::endl;
+}
+
+void Mineserver::Game::messageWatcherPositionAndOrientation(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)
+{
+  std::cout << "PositionAndOrientation watcher called!" << std::endl;
+}
+
+bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, uint32_t x, uint32_t y, uint32_t z)
+{
+  return true;
+}
+
+bool Mineserver::Game::blockBreakPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::World::pointer_t world, Mineserver::World_Chunk::pointer_t chunk, uint8_t x, uint8_t y, uint8_t z)
+{
+  return true;
+}
+
+bool Mineserver::Game::blockPlacePostWatcher(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::World::pointer_t world, Mineserver::World_Chunk::pointer_t chunk, uint8_t x, uint8_t y, uint8_t z)
+{
+  return true;
+}
