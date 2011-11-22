@@ -38,7 +38,7 @@
 #include <mineserver/network/message/chunk.h>
 #include <mineserver/network/message/spawnposition.h>
 #include <mineserver/network/message/windowitems.h>
-#include <mineserver/network/message/positionlook.h>
+#include <mineserver/network/message/positionandorientation.h>
 
 #include <mineserver/watcher/login.h>
 
@@ -113,16 +113,17 @@ void Mineserver::Watcher_Login::operator()(Mineserver::Game::pointer_t game, Min
   windowItemsMessage->windowId = -1;
   windowItemsMessage->count = 0;
   client->outgoing().push_back(windowItemsMessage);
+  
+  std::cout << "Spawning player at " << player->getPosition().x << "," << player->getPosition().y << "," << player->getPosition().z << std::endl;
 
-  boost::shared_ptr<Mineserver::Network_Message_PositionLook> positionLookMessage = boost::make_shared<Mineserver::Network_Message_PositionLook>();
-  positionLookMessage->mid = 0x0D;
-  positionLookMessage->x = player->getPosition().x;
-  positionLookMessage->y = player->getPosition().y;
-  positionLookMessage->z = player->getPosition().z;
-  positionLookMessage->stance = player->getPosition().stance;
-  positionLookMessage->yaw = player->getPosition().yaw;
-  positionLookMessage->pitch = player->getPosition().pitch;
-  positionLookMessage->onGround = player->getPosition().onGround;
-  client->outgoing().push_back(positionLookMessage);
+  boost::shared_ptr<Mineserver::Network_Message_PositionAndOrientation> positionAndOrientationMessage = boost::make_shared<Mineserver::Network_Message_PositionAndOrientation>();
+  positionAndOrientationMessage->mid = 0x0D;
+  positionAndOrientationMessage->x = player->getPosition().x;
+  positionAndOrientationMessage->y = player->getPosition().y;
+  positionAndOrientationMessage->z = player->getPosition().z;
+  positionAndOrientationMessage->stance = player->getPosition().stance;
+  positionAndOrientationMessage->yaw = player->getPosition().yaw;
+  positionAndOrientationMessage->pitch = player->getPosition().pitch;
+  positionAndOrientationMessage->onGround = player->getPosition().onGround;
+  client->outgoing().push_back(positionAndOrientationMessage);
 }
-

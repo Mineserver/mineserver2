@@ -26,13 +26,13 @@
 */
 
 #include <mineserver/byteorder.h>
-#include <mineserver/network/message/positionlook.h>
+#include <mineserver/network/message/positionandorientation.h>
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x0D.h>
 
 int Mineserver::Network_Protocol_Notch_Packet_0x0D::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
 {
-  Mineserver::Network_Message_PositionLook* msg = new Mineserver::Network_Message_PositionLook;
+  Mineserver::Network_Message_PositionAndOrientation* msg = new Mineserver::Network_Message_PositionAndOrientation;
   *message = msg;
 
   ps >> msg->mid >> msg->x >> msg->y >> msg->stance >> msg->z >> msg->yaw >> msg->pitch >> msg->onGround;
@@ -42,7 +42,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x0D::_read(Mineserver::Network_Pr
 
 int Mineserver::Network_Protocol_Notch_Packet_0x0D::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
 {
-  const Mineserver::Network_Message_PositionLook* msg = static_cast<const Mineserver::Network_Message_PositionLook*>(&message);
+  const Mineserver::Network_Message_PositionAndOrientation* msg = static_cast<const Mineserver::Network_Message_PositionAndOrientation*>(&message);
 
   ps << msg->mid << msg->x << msg->stance << msg->y << msg->z << msg->yaw << msg->pitch << msg->onGround;
 

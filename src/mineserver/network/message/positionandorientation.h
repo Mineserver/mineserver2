@@ -25,15 +25,15 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_NETWORK_PACKET_POSITIONLOOK_H
-#define MINESERVER_NETWORK_PACKET_POSITIONLOOK_H
+#ifndef MINESERVER_NETWORK_PACKET_POSITIONANDORIENTATION_H
+#define MINESERVER_NETWORK_PACKET_POSITIONANDORIENTATION_H
 
 #include <mineserver/byteorder.h>
 #include <mineserver/network/message.h>
 
 namespace Mineserver
 {
-  struct Network_Message_PositionLook : public Mineserver::Network_Message
+  struct Network_Message_PositionAndOrientation : public Mineserver::Network_Message
   {
     double x;
     double y;
