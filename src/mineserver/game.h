@@ -50,9 +50,10 @@ namespace Mineserver
   {
   public:
     typedef boost::shared_ptr<Mineserver::Game> pointer_t;
-    typedef std::map<std::string,Mineserver::Game_Player::pointer_t> playerList_t;
     typedef std::vector<Mineserver::Network_Client::pointer_t> clientList_t;
+    typedef std::map<std::string,Mineserver::Game_Player::pointer_t> playerList_t;
     typedef std::map<Mineserver::Network_Client::pointer_t,Mineserver::Game_Player::pointer_t> clientMap_t;
+    typedef std::map<Mineserver::Game_Player::pointer_t,clientList_t> playerMap_t;
     typedef std::map<int,Mineserver::World::pointer_t> worldList_t;
     typedef boost::signals2::signal<void (Mineserver::Game::pointer_t, Mineserver::Network_Client::pointer_t, Mineserver::Network_Message::pointer_t message)> messageWatcher_t;
     typedef boost::signals2::signal<bool (Mineserver::Game::pointer_t, Mineserver::Game_Player::pointer_t, Mineserver::Game_PlayerPosition position)> movementWatcher_t;
@@ -68,6 +69,7 @@ namespace Mineserver
     int32_t m_nextEid;
     playerList_t m_players;
     clientList_t m_clients;
+    playerMap_t m_playerMap;
     clientMap_t m_clientMap;
     worldList_t m_worlds;
     messageWatcher_t m_messageWatchers[256];
@@ -144,6 +146,11 @@ namespace Mineserver
     Mineserver::Game_Player::pointer_t getPlayer(const std::string& name)
     {
       return m_players[name];
+    }
+
+    Mineserver::Game::clientList_t& getClientsForPlayer(Mineserver::Game_Player::pointer_t player)
+    {
+      return m_playerMap[player];
     }
 
     void addClient(Mineserver::Network_Client::pointer_t client)
