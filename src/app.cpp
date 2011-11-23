@@ -41,7 +41,6 @@
 #include <mineserver/network/protocol/notch/protocol.h>
 #include <mineserver/network/server.h>
 
-#include <mineserver/watcher/keepalive.h>
 #include <mineserver/watcher/handshake.h>
 #include <mineserver/watcher/chat.h>
 #include <mineserver/watcher/digging.h>

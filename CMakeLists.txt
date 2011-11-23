@@ -68,6 +68,14 @@ SET(mineserver_source
   src/mineserver/game/player.cpp
   src/mineserver/network/server.cpp
   src/mineserver/network/client.cpp
+  src/mineserver/world/generator/flatlands.cpp
+  src/mineserver/watcher/handshake.cpp
+  src/mineserver/watcher/chat.cpp
+  src/mineserver/watcher/digging.cpp
+  src/mineserver/watcher/blockplacement.cpp
+  src/mineserver/watcher/blockchange.cpp
+  src/mineserver/watcher/serverlistping.cpp
+  # These need to be put into a separate .so file or something...
   src/mineserver/network/protocol/notch/protocol.cpp
   src/mineserver/network/protocol/notch/packetstream.cpp
   src/mineserver/network/protocol/notch/packet/0x00.cpp
@@ -133,14 +141,8 @@ SET(mineserver_source
   src/mineserver/network/protocol/notch/packet/0xC9.cpp
   src/mineserver/network/protocol/notch/packet/0xFE.cpp
   src/mineserver/network/protocol/notch/packet/0xFF.cpp
-  src/mineserver/world/generator/flatlands.cpp
-  src/mineserver/watcher/handshake.cpp
-  src/mineserver/watcher/chat.cpp
-  src/mineserver/watcher/digging.cpp
-  src/mineserver/watcher/blockplacement.cpp
-  src/mineserver/watcher/blockchange.cpp
-  src/mineserver/watcher/serverlistping.cpp
 )
+
 SOURCE_GROUP(${PROJECT_NAME} FILES ${mineserver_source})
 
 INCLUDE_DIRECTORIES(src)
