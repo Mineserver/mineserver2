@@ -53,7 +53,8 @@ namespace Mineserver
     typedef std::map<std::string,Mineserver::Game_Player::pointer_t> playerList_t;
     typedef std::vector<Mineserver::Network_Client::pointer_t> clientList_t;
     typedef std::map<Mineserver::Network_Client::pointer_t,Mineserver::Game_Player::pointer_t> clientMap_t;
-    typedef std::map<int,Mineserver::World::pointer_t> worldList_t;
+    typedef std::map<int,Mineserver::World::pointer_t> worldList_t; 
+    typedef std::map<Mineserver::Game_Player::pointer_t,std::set<Mineserver::Game_Player::pointer_t>> playerInRangeMap_t; // this name sucks! 
     typedef boost::signals2::signal<void (Mineserver::Game::pointer_t, Mineserver::Network_Client::pointer_t, Mineserver::Network_Message::pointer_t message)> messageWatcher_t;
     typedef boost::signals2::signal<bool (Mineserver::Game::pointer_t, Mineserver::Game_Player::pointer_t, Mineserver::Game_PlayerPosition position)> movementWatcher_t;
     typedef boost::signals2::signal<bool (Mineserver::Game::pointer_t, Mineserver::Game_Player::pointer_t, Mineserver::World::pointer_t, Mineserver::World_Chunk::pointer_t, Mineserver::World_ChunkPosition position)> blockBreakWatcher_t;
@@ -77,6 +78,7 @@ namespace Mineserver
     blockBreakWatcher_t m_blockBreakPostWatcher;
     blockPlaceWatcher_t m_blockPlacePreWatcher;
     blockPlaceWatcher_t m_blockPlacePostWatcher;
+    playerInRangeMap_t  m_playerInRange;
 
   public:
     void run();
