@@ -44,8 +44,9 @@
 #include <mineserver/network/message/position.h>
 #include <mineserver/network/message/orientation.h>
 #include <mineserver/network/message/positionandorientation.h>
-#include <mineserver/network/message/blockchange.h>
 #include <mineserver/network/message/digging.h>
+#include <mineserver/network/message/blockplacement.h>
+#include <mineserver/network/message/blockchange.h>
 #include <mineserver/game.h>
 
 bool is_dead(Mineserver::Network_Client::pointer_t client) {
@@ -299,6 +300,33 @@ void Mineserver::Game::messageWatcherDigging(Mineserver::Game::pointer_t game, M
     for (clientList_t::iterator it = m_clients.begin(); it != m_clients.end(); ++it) {
       (*it)->outgoing().push_back(blockChangeMessage);
     }
+  }
+}
+
+void Mineserver::Game::messageWatcherBlockPlacement(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)
+{
+  std::cout << "BlockPlacement watcher called!" << std::endl;
+
+  const Mineserver::Network_Message_BlockPlacement* msg = reinterpret_cast<Mineserver::Network_Message_BlockPlacement*>(&(*message));
+  if (!clientIsAssociated(client)) { return; }
+  //if (msg->itemId==-1) { return; }
+
+  Mineserver::World::pointer_t world = game->getWorld(0);
+
+  int chunk_x, chunk_z;
+  chunk_x = ((msg->x) >> 4);
+  chunk_z = ((msg->z) >> 4);
+
+  if (!world->hasChunk(chunk_x, chunk_z))
+  {
+    std::cout << "Chunk " << chunk_x << "," << chunk_z << " not found!" << std::endl;
+  }
+  else
+  {
+    Mineserver::World_Chunk::pointer_t chunk = world->getChunk(chunk_x, chunk_z);
+
+    int type = chunk->getBlockType(msg->x & 15, msg->y, msg->z & 15);
+    // TODO: Do pre/post block interaction
   }
 }
 
