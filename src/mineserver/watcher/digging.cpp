@@ -25,8 +25,6 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <boost/lexical_cast.hpp>
-
 #include <mineserver/game.h>
 #include <mineserver/network/client.h>
 #include <mineserver/network/message.h>
