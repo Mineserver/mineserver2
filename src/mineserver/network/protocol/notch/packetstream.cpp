@@ -358,7 +358,7 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
   size_t rc = iconv(m_iconvUtfHandler, &src_c, &src_l, &dst_c, &dst_l);
 
   // Should be handling these errors
-  if (rc == -1) {
+  if (static_cast<int>(rc) == -1) {
     switch (errno) {
     case E2BIG:
       break;
@@ -413,7 +413,7 @@ Mineserver::Network_Protocol_Notch_PacketStream& Mineserver::Network_Protocol_No
     size_t rc = iconv(m_iconvUcsHandler, &src_c, &src_l, &dst_c, &dst_l);
 
     // Should be handling these errors
-    if (rc == -1) {
+    if (static_cast<int>(rc) == -1) {
       switch (errno) {
       case E2BIG:
         break;

@@ -25,8 +25,6 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <boost/lexical_cast.hpp>
-
 #include <mineserver/game.h>
 #include <mineserver/network/client.h>
 #include <mineserver/network/message.h>
@@ -55,26 +53,9 @@ void Mineserver::Watcher_BlockPlacement::operator()(Mineserver::Game::pointer_t 
   else
   {
     Mineserver::World_Chunk::pointer_t chunk = world->getChunk(chunk_x, chunk_z);
-/*
-    int x, y, z, type;
-    x = msg->x & 15;
-    y = msg->y;
-    z = msg->z & 15;
-*/
-    int type = chunk->getBlockType(msg->x & 15, msg->y, msg->z & 15);
 
-    boost::shared_ptr<Mineserver::Network_Message_Chat> chatMessage = boost::make_shared<Mineserver::Network_Message_Chat>();
-    chatMessage->mid = 0x03;
-    chatMessage->message += "§4You interacted with block id ";
-    chatMessage->message += static_cast<int>(type);
-    chatMessage->message += " at ";
-    chatMessage->message += static_cast<int>(msg->x);
-    chatMessage->message += ",";
-    chatMessage->message += static_cast<int>(msg->y);
-    chatMessage->message += ",";
-    chatMessage->message += static_cast<int>(msg->z);
-    chatMessage->message += "!";
-    client->outgoing().push_back(chatMessage);
+    int type = chunk->getBlockType(msg->x & 15, msg->y, msg->z & 15);
+    // TODO: Do pre/post block interaction
   }
 }
 

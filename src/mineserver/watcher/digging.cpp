@@ -25,8 +25,6 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <boost/lexical_cast.hpp>
-
 #include <mineserver/game.h>
 #include <mineserver/network/client.h>
 #include <mineserver/network/message.h>
@@ -71,16 +69,5 @@ void Mineserver::Watcher_Digging::operator()(Mineserver::Game::pointer_t game, M
     response->type = 0;
     response->meta = 0;
     client->outgoing().push_back(response);
-
-		boost::shared_ptr<Mineserver::Network_Message_Chat> chatMessage = boost::make_shared<Mineserver::Network_Message_Chat>();
-		chatMessage->mid = 0x03;
-		chatMessage->message += "§4You broke the block at: ";
-		chatMessage->message += static_cast<int>(msg->x);
-		chatMessage->message += ",";
-		chatMessage->message += static_cast<int>(msg->y);
-		chatMessage->message += ",";
-		chatMessage->message += static_cast<int>(msg->z);
-		chatMessage->message += "!";
-		client->outgoing().push_back(chatMessage);
   }
 }

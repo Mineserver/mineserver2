@@ -66,11 +66,10 @@ SET(mineserver_source
   src/mineserver/nbt.cpp
   src/mineserver/game.cpp
   src/mineserver/game/player.cpp
+  src/mineserver/localization.cpp
   src/mineserver/network/server.cpp
   src/mineserver/network/client.cpp
   src/mineserver/world/generator/flatlands.cpp
-  src/mineserver/watcher/handshake.cpp
-  src/mineserver/watcher/chat.cpp
   src/mineserver/watcher/digging.cpp
   src/mineserver/watcher/blockplacement.cpp
   src/mineserver/watcher/blockchange.cpp

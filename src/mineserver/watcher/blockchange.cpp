@@ -25,8 +25,6 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <boost/lexical_cast.hpp>
-
 #include <mineserver/game.h>
 #include <mineserver/network/client.h>
 #include <mineserver/network/message.h>
@@ -54,26 +52,6 @@ void Mineserver::Watcher_BlockChange::operator()(Mineserver::Game::pointer_t gam
   {
     Mineserver::World_Chunk::pointer_t chunk = world->getChunk(chunk_x, chunk_z);
 
-/*
-    int x = msg->x & 15;
-    int y = msg->y;
-    int z = msg->z & 15;
-    int type = msg->type;
-*/
-
     chunk->setBlockType(msg->x & 15, msg->y, msg->z & 15, msg->type);
-
-    boost::shared_ptr<Mineserver::Network_Message_Chat> chatMessage = boost::make_shared<Mineserver::Network_Message_Chat>();
-    chatMessage->mid = 0x03;
-    chatMessage->message += "§4You placed block id ";
-    chatMessage->message += static_cast<int>(msg->type);
-    chatMessage->message += " at ";
-    chatMessage->message += static_cast<int>(msg->x);
-    chatMessage->message += ",";
-    chatMessage->message += static_cast<int>(msg->y);
-    chatMessage->message += ",";
-    chatMessage->message += static_cast<int>(msg->z);
-    chatMessage->message += "!";
-    client->outgoing().push_back(chatMessage);
   }
 }

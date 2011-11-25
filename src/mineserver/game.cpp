@@ -36,6 +36,7 @@
 #include <mineserver/network/client.h>
 #include <mineserver/network/message/chat.h>
 #include <mineserver/network/message/login.h>
+#include <mineserver/network/message/handshake.h>
 #include <mineserver/network/message/chunkprepare.h>
 #include <mineserver/network/message/chunk.h>
 #include <mineserver/network/message/spawnposition.h>
@@ -48,6 +49,7 @@
 #include <mineserver/network/message/entityteleport.h>
 #include <mineserver/network/message/entityrelativemove.h>
 #include <mineserver/network/message/entityrelativemoveandlook.h>
+#include <mineserver/network/message/blockchange.h>
 #include <mineserver/game.h>
 
 bool is_dead(Mineserver::Network_Client::pointer_t client) {
@@ -56,9 +58,6 @@ bool is_dead(Mineserver::Network_Client::pointer_t client) {
 
 void Mineserver::Game::run()
 {
-  //std::cout << "Tick!" << std::endl;
-  //std::cout << "There are " << m_clients.size() << " clients connected!" << std::endl;
-
   for (clientList_t::iterator client_it=m_clients.begin();client_it!=m_clients.end();++client_it) {
     Mineserver::Network_Client::pointer_t client(*client_it);
 
@@ -108,33 +107,30 @@ void Mineserver::Game::run()
   }
 }
 
-void Mineserver::Game::chat(Mineserver::Network_Client::pointer_t client, std::string message)
-{
-	Mineserver::Game_Player::pointer_t player = m_clientMap[client];
-
-  boost::shared_ptr<Mineserver::Network_Message_Chat> selfMessage = boost::make_shared<Mineserver::Network_Message_Chat>();
-	selfMessage->mid = 0x03;
-  selfMessage->message = message;
-	client->outgoing().push_back(selfMessage);
-
-  boost::shared_ptr<Mineserver::Network_Message_Chat> chatMessage = boost::make_shared<Mineserver::Network_Message_Chat>();
-  chatMessage->mid = 0x03;
-  chatMessage->message = "<" + player->getName() + "> " + message;
-
-	for (clientList_t::iterator it=m_clients.begin();it!=m_clients.end();++it) {
-    if (*it == client) {
-      continue;
-    }
-
-    (*it)->outgoing().push_back(chatMessage);
-  }
-}
-
 void Mineserver::Game::messageWatcherKeepAlive(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)
 {
   std::cout << "KeepAlive watcher called!" << std::endl;
-  
+
   client->resetInactiveTicks();
+}
+
+void Mineserver::Game::messageWatcherHandshake(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)
+{
+  std::cout << "Handshake watcher called!" << std::endl;
+
+  boost::shared_ptr<Mineserver::Network_Message_Handshake> response = boost::make_shared<Mineserver::Network_Message_Handshake>();
+  response->mid = 0x02;
+  response->username = "-";
+  client->outgoing().push_back(response);
+}
+
+void Mineserver::Game::messageWatcherChat(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)
+{
+  std::cout << "Chat watcher called!" << std::endl;
+
+  const Mineserver::Network_Message_Chat* msg = reinterpret_cast<Mineserver::Network_Message_Chat*>(&(*message));
+
+  chatPostWatcher(shared_from_this(), getPlayerForClient(client), msg->message);
 }
 
 void Mineserver::Game::messageWatcherLogin(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)
@@ -265,6 +261,19 @@ void Mineserver::Game::messageWatcherPositionAndOrientation(Mineserver::Game::po
     Mineserver::Game_PlayerPosition position(msg->x, msg->y, msg->z, msg->stance, msg->yaw, msg->pitch, msg->onGround);
     movementPostWatcher(shared_from_this(), getPlayerForClient(client), position);
   }
+}
+
+bool Mineserver::Game::chatPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, std::string message)
+{
+  boost::shared_ptr<Mineserver::Network_Message_Chat> chatMessage = boost::make_shared<Mineserver::Network_Message_Chat>();
+  chatMessage->mid = 0x03;
+  chatMessage->message = "<" + player->getName() + "> " + message;
+
+  for (clientList_t::iterator it = m_clients.begin(); it != m_clients.end(); ++it) {
+    (*it)->outgoing().push_back(chatMessage);
+  }
+
+  return true;
 }
 
 bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::Game_PlayerPosition position)
@@ -398,11 +407,37 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
 bool Mineserver::Game::blockBreakPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::World::pointer_t world, Mineserver::World_Chunk::pointer_t chunk, Mineserver::World_ChunkPosition position)
 {
   std::cout << "blockBreakPostWatcher called!" << std::endl;
+
+  boost::shared_ptr<Mineserver::Network_Message_BlockChange> blockChangeMessage = boost::make_shared<Mineserver::Network_Message_BlockChange>();
+  blockChangeMessage->mid = 0x35;
+  blockChangeMessage->x = position.x;
+  blockChangeMessage->y = position.y;
+  blockChangeMessage->z = position.z;
+  blockChangeMessage->type = 0;
+  blockChangeMessage->meta = 0;
+
+  for (clientList_t::iterator it = m_clients.begin(); it != m_clients.end(); ++it) {
+    (*it)->outgoing().push_back(blockChangeMessage);
+  }
+
   return true;
 }
 
 bool Mineserver::Game::blockPlacePostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::World::pointer_t world, Mineserver::World_Chunk::pointer_t chunk, Mineserver::World_ChunkPosition position, uint8_t type, uint8_t meta)
 {
   std::cout << "blockPlacePostWatcher called!" << std::endl;
+
+  boost::shared_ptr<Mineserver::Network_Message_BlockChange> blockChangeMessage = boost::make_shared<Mineserver::Network_Message_BlockChange>();
+  blockChangeMessage->mid = 0x35;
+  blockChangeMessage->x = position.x;
+  blockChangeMessage->y = position.y;
+  blockChangeMessage->z = position.z;
+  blockChangeMessage->type = type;
+  blockChangeMessage->meta = meta;
+
+  for (clientList_t::iterator it = m_clients.begin(); it != m_clients.end(); ++it) {
+    (*it)->outgoing().push_back(blockChangeMessage);
+  }
+
   return true;
 }
