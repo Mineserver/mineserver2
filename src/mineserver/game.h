@@ -147,6 +147,11 @@ namespace Mineserver
       return (m_players.find(name) != m_players.end());
     }
 
+    uint32_t countPlayers() 
+    {
+        return m_players.size();
+    }
+
     Mineserver::Game_Player::pointer_t getPlayer(const std::string& name)
     {
       return m_players[name];

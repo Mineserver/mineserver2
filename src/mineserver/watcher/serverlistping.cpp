@@ -27,21 +27,23 @@
 
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
+#include <iostream>
+#include <sstream>
 
 #include <mineserver/game.h>
 #include <mineserver/network/client.h>
 #include <mineserver/network/message.h>
 #include <mineserver/network/message/kick.h>
-
 #include <mineserver/watcher/serverlistping.h>
 
 void Mineserver::Watcher_ServerListPing::operator()(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message) const
 {
   std::cout << "Server list ping watcher called!" << std::endl;
-
+  std::stringstream reason;
+  reason << "mineserver 2.0§" << game->countPlayers() << "§" << 32; // TODO: get max players
   boost::shared_ptr<Mineserver::Network_Message_Kick> response = boost::make_shared<Mineserver::Network_Message_Kick>();
   response->mid = 0xFF;
-  response->reason = "Mineserver 2.0§0§32"; // description, current users: 0, max users: 32
+  response->reason = reason.str(); 
   client->outgoing().push_back(response);
 }
 
