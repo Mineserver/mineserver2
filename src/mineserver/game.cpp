@@ -300,6 +300,9 @@ void Mineserver::Game::messageWatcherDigging(Mineserver::Game::pointer_t game, M
     for (clientList_t::iterator it = m_clients.begin(); it != m_clients.end(); ++it) {
       (*it)->outgoing().push_back(blockChangeMessage);
     }
+
+    Mineserver::World_ChunkPosition position = Mineserver::World_ChunkPosition(msg->x, msg->y, msg->z);
+    blockBreakPostWatcher(shared_from_this(), getPlayerForClient(client), world, chunk, position);
   }
 }
 
