@@ -44,6 +44,7 @@
 #include <mineserver/network/message/position.h>
 #include <mineserver/network/message/orientation.h>
 #include <mineserver/network/message/positionandorientation.h>
+#include <mineserver/network/message/blockchange.h>
 #include <mineserver/game.h>
 
 bool is_dead(Mineserver::Network_Client::pointer_t client) {
@@ -266,6 +267,8 @@ bool Mineserver::Game::chatPostWatcher(Mineserver::Game::pointer_t game, Mineser
   for (clientList_t::iterator it = m_clients.begin(); it != m_clients.end(); ++it) {
     (*it)->outgoing().push_back(chatMessage);
   }
+
+  return true;
 }
 
 bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::Game_PlayerPosition position)
@@ -277,11 +280,37 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
 bool Mineserver::Game::blockBreakPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::World::pointer_t world, Mineserver::World_Chunk::pointer_t chunk, Mineserver::World_ChunkPosition position)
 {
   std::cout << "blockBreakPostWatcher called!" << std::endl;
+
+  boost::shared_ptr<Mineserver::Network_Message_BlockChange> blockChangeMessage = boost::make_shared<Mineserver::Network_Message_BlockChange>();
+  blockChangeMessage->mid = 0x35;
+  blockChangeMessage->x = position.x;
+  blockChangeMessage->y = position.y;
+  blockChangeMessage->z = position.z;
+  blockChangeMessage->type = 0;
+  blockChangeMessage->meta = 0;
+
+  for (clientList_t::iterator it = m_clients.begin(); it != m_clients.end(); ++it) {
+    (*it)->outgoing().push_back(blockChangeMessage);
+  }
+
   return true;
 }
 
 bool Mineserver::Game::blockPlacePostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::World::pointer_t world, Mineserver::World_Chunk::pointer_t chunk, Mineserver::World_ChunkPosition position, uint8_t type, uint8_t meta)
 {
   std::cout << "blockPlacePostWatcher called!" << std::endl;
+
+  boost::shared_ptr<Mineserver::Network_Message_BlockChange> blockChangeMessage = boost::make_shared<Mineserver::Network_Message_BlockChange>();
+  blockChangeMessage->mid = 0x35;
+  blockChangeMessage->x = position.x;
+  blockChangeMessage->y = position.y;
+  blockChangeMessage->z = position.z;
+  blockChangeMessage->type = type;
+  blockChangeMessage->meta = meta;
+
+  for (clientList_t::iterator it = m_clients.begin(); it != m_clients.end(); ++it) {
+    (*it)->outgoing().push_back(blockChangeMessage);
+  }
+
   return true;
 }
