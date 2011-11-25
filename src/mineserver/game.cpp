@@ -289,17 +289,6 @@ void Mineserver::Game::messageWatcherDigging(Mineserver::Game::pointer_t game, M
     Mineserver::World_Chunk::pointer_t chunk = world->getChunk(chunk_x, chunk_z);
 
     chunk->setBlockType(msg->x & 15, msg->y, msg->z & 15, 0);
-    boost::shared_ptr<Mineserver::Network_Message_BlockChange> blockChangeMessage = boost::make_shared<Mineserver::Network_Message_BlockChange>();
-    blockChangeMessage->mid = 0x35;
-    blockChangeMessage->x = msg->x;
-    blockChangeMessage->y = msg->y;
-    blockChangeMessage->z = msg->z;
-    blockChangeMessage->type = 0;
-    blockChangeMessage->meta = 0;
-
-    for (clientList_t::iterator it = m_clients.begin(); it != m_clients.end(); ++it) {
-      (*it)->outgoing().push_back(blockChangeMessage);
-    }
 
     Mineserver::World_ChunkPosition position = Mineserver::World_ChunkPosition(msg->x, msg->y, msg->z);
     blockBreakPostWatcher(shared_from_this(), getPlayerForClient(client), world, chunk, position);
