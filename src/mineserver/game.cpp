@@ -45,6 +45,7 @@
 #include <mineserver/network/message/orientation.h>
 #include <mineserver/network/message/positionandorientation.h>
 #include <mineserver/network/message/blockchange.h>
+#include <mineserver/network/message/digging.h>
 #include <mineserver/game.h>
 
 bool is_dead(Mineserver::Network_Client::pointer_t client) {
@@ -255,6 +256,49 @@ void Mineserver::Game::messageWatcherPositionAndOrientation(Mineserver::Game::po
     Mineserver::Game_Player::pointer_t player = getPlayerForClient(client);
     Mineserver::Game_PlayerPosition position(msg->x, msg->y, msg->z, msg->stance, msg->yaw, msg->pitch, msg->onGround);
     movementPostWatcher(shared_from_this(), getPlayerForClient(client), position);
+  }
+}
+
+void Mineserver::Game::messageWatcherDigging(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)
+{
+  std::cout << "Digging watcher called!" << std::endl;
+
+  const Mineserver::Network_Message_Digging* msg = reinterpret_cast<Mineserver::Network_Message_Digging*>(&(*message));
+  if (!clientIsAssociated(client)) { return; }
+
+  // status 0x00: start digging
+  // status 0x02: finish digging
+  // status 0x04: drop item
+  // status 0x05: shoot arrow
+
+  if (msg->status != 2) { return; }
+
+  Mineserver::World::pointer_t world = getWorld(0);
+
+  int chunk_x, chunk_z;
+  chunk_x = ((msg->x) >> 4);
+  chunk_z = ((msg->z) >> 4);
+
+  if (!world->hasChunk(chunk_x, chunk_z))
+  {
+    std::cout << "Chunk " << chunk_x << "," << chunk_z << " not found!" << std::endl;
+  }
+  else
+  {
+    Mineserver::World_Chunk::pointer_t chunk = world->getChunk(chunk_x, chunk_z);
+
+    chunk->setBlockType(msg->x & 15, msg->y, msg->z & 15, 0);
+    boost::shared_ptr<Mineserver::Network_Message_BlockChange> blockChangeMessage = boost::make_shared<Mineserver::Network_Message_BlockChange>();
+    blockChangeMessage->mid = 0x35;
+    blockChangeMessage->x = msg->x;
+    blockChangeMessage->y = msg->y;
+    blockChangeMessage->z = msg->z;
+    blockChangeMessage->type = 0;
+    blockChangeMessage->meta = 0;
+
+    for (clientList_t::iterator it = m_clients.begin(); it != m_clients.end(); ++it) {
+      (*it)->outgoing().push_back(blockChangeMessage);
+    }
   }
 }
 
