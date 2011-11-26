@@ -70,7 +70,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x68::_write(Mineserver::Network_P
       ps << it->getCount() << it->getDamage();
 
       if (it->getEnchanted()) {
-        std::vector<uint8_t>* data = it->getEnchantedData()->getByteArray();
+        std::vector<uint8_t>* data = it->getEnchantedData().GetByteArray();
         ps << static_cast<int16_t>(data->size());
         ps.bytesFrom(*data);
       }
