@@ -287,10 +287,10 @@ void Mineserver::Game::messageWatcherDigging(Mineserver::Game::pointer_t game, M
   else
   {
     Mineserver::World_Chunk::pointer_t chunk = world->getChunk(chunk_x, chunk_z);
+    Mineserver::World_ChunkPosition position = Mineserver::World_ChunkPosition(msg->x & 15, msg->y, msg->z & 15);
 
     chunk->setBlockType(msg->x & 15, msg->y, msg->z & 15, 0);
 
-    Mineserver::World_ChunkPosition position = Mineserver::World_ChunkPosition(msg->x, msg->y, msg->z);
     blockBreakPostWatcher(shared_from_this(), getPlayerForClient(client), world, chunk, position);
   }
 }
