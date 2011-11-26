@@ -37,9 +37,14 @@ namespace Mineserver
 {
   struct Network_Message_WindowItems : public Mineserver::Network_Message
   {
-    int8_t windowId;
-    int16_t count;
-    std::vector< std::pair< int16_t, std::pair< int8_t, int16_t > > > slots;
+    public:
+      typedef std::pair< int16_t, std::pair< int8_t, int16_t > > slot_t;
+      typedef std::vector<slot_t> slotList_t;
+
+    public:
+      int8_t windowId;
+      int16_t count;
+      slotList_t slots;
   };
 }
 
