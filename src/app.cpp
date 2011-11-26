@@ -41,8 +41,6 @@
 #include <mineserver/network/protocol/notch/protocol.h>
 #include <mineserver/network/server.h>
 
-#include <mineserver/watcher/serverlistping.h>
-
 int main()
 {
   boost::asio::io_service service;
@@ -62,12 +60,10 @@ int main()
   game->addMessageWatcher(0x0E, boost::bind(&Mineserver::Game::messageWatcherDigging, game, _1, _2, _3));
   game->addMessageWatcher(0x0F, boost::bind(&Mineserver::Game::messageWatcherBlockPlacement, game, _1, _2, _3));
   game->addMessageWatcher(0x35, boost::bind(&Mineserver::Game::messageWatcherBlockChange, game, _1, _2, _3));
+  game->addMessageWatcher(0xFE, boost::bind(&Mineserver::Game::messageWatcherServerListPing, game, _1, _2, _3));
   game->addMovementPostWatcher(boost::bind(&Mineserver::Game::movementPostWatcher, game, _1, _2, _3));
   game->addBlockBreakPostWatcher(boost::bind(&Mineserver::Game::blockBreakPostWatcher, game, _1, _2, _3, _4, _5, _6));
   game->addBlockPlacePostWatcher(boost::bind(&Mineserver::Game::blockPlacePostWatcher, game, _1, _2, _3, _4, _5, _6, _7, _8));
-
-  // TODO: Merge these into the Game class
-  game->addMessageWatcher(0xFE, Mineserver::Watcher_ServerListPing());
 
   Mineserver::Network_Protocol::pointer_t protocol = boost::make_shared<Mineserver::Network_Protocol_Notch_Protocol>();
   Mineserver::Network_Server::pointer_t server = boost::make_shared<Mineserver::Network_Server>(game, protocol, &service);

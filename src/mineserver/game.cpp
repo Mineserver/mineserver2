@@ -47,6 +47,8 @@
 #include <mineserver/network/message/digging.h>
 #include <mineserver/network/message/blockplacement.h>
 #include <mineserver/network/message/blockchange.h>
+#include <mineserver/network/message/serverlistping.h>
+#include <mineserver/network/message/kick.h>
 #include <mineserver/game.h>
 
 bool is_dead(Mineserver::Network_Client::pointer_t client) {
@@ -354,6 +356,19 @@ void Mineserver::Game::messageWatcherBlockChange(Mineserver::Game::pointer_t gam
 
     blockPlacePostWatcher(shared_from_this(), getPlayerForClient(client), world, wPosition, chunk, cPosition, msg->type, msg->meta);
   }
+}
+
+void Mineserver::Game::messageWatcherServerListPing(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)
+{
+  std::cout << "ServerListPing watcher called!" << std::endl;
+
+  std::stringstream reason;
+  reason << "Mineserver 2.0§" << game->countPlayers() << "§" << 32; // TODO: Get max players
+
+  boost::shared_ptr<Mineserver::Network_Message_Kick> response = boost::make_shared<Mineserver::Network_Message_Kick>();
+  response->mid = 0xFF;
+  response->reason = reason.str(); 
+  client->outgoing().push_back(response);
 }
 
 bool Mineserver::Game::chatPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, std::string message)
