@@ -370,14 +370,20 @@ void Mineserver::Game::messageWatcherBlockPlacement(Mineserver::Game::pointer_t 
     uint8_t itemId = chunk->getBlockType(cPosition.x, cPosition.y, cPosition.z);
     uint8_t itemMeta = chunk->getBlockMeta(cPosition.x, cPosition.y, cPosition.z);
 
-    if ((msg->x != -1 && msg->y != -1 && msg->z != -1 && msg->direction != -1) && (itemId == 0))
+    if (msg->y != -1 && msg->direction != -1)
     {
-      // TODO: blockPlacePreWatcher
+      // TODO: We will check if there's air here or not, but later we need to move this into blockPlacePreWatcher
+      if (itemId == 0)
+      {
+        chunk->setBlockType(cPosition.x, cPosition.y, cPosition.z, msg->itemId);
+        chunk->setBlockMeta(cPosition.x, cPosition.y, cPosition.z, msg->damage);
 
-      chunk->setBlockType(cPosition.x, cPosition.y, cPosition.z, msg->itemId);
-      chunk->setBlockMeta(cPosition.x, cPosition.y, cPosition.z, msg->damage);
-
-      blockPlacePostWatcher(shared_from_this(), getPlayerForClient(client), world, wPosition, chunk, cPosition, msg->itemId, msg->damage);
+        blockPlacePostWatcher(shared_from_this(), getPlayerForClient(client), world, wPosition, chunk, cPosition, msg->itemId, msg->damage);
+      }
+      else
+      {
+        std::cout << "Player tried to place a block where one already exists." << std::endl;
+      }
     }
     else if (msg->x == -1 && msg->y == -1 && msg->z == -1 && msg->direction == -1)
     {
@@ -385,7 +391,7 @@ void Mineserver::Game::messageWatcherBlockPlacement(Mineserver::Game::pointer_t 
     }
     else
     {
-      std::cout << "BlockPlacement watcher is doing something funny.";
+      std::cout << "BlockPlacement watcher is doing something funny." << std::endl;
     }
 
   }
