@@ -208,15 +208,23 @@ void Mineserver::Game::messageWatcherLogin(Mineserver::Game::pointer_t game, Min
   spawnPositionMessage->z = world->getSpawnPosition().z;
   client->outgoing().push_back(spawnPositionMessage);
 
-  // TODO: Inventory items doesn't seem to show dirt (id 3) for every single slot???
   boost::shared_ptr<Mineserver::Network_Message_WindowItems> windowItemsMessage = boost::make_shared<Mineserver::Network_Message_WindowItems>();
   windowItemsMessage->mid = 0x68;
   windowItemsMessage->windowId = 0;
   windowItemsMessage->count = 44;
   windowItemsMessage->slots.resize(windowItemsMessage->count);
   for (Network_Message_WindowItems::slotList_t::iterator it = windowItemsMessage->slots.begin(); it != windowItemsMessage->slots.end(); ++it) {
-    (*it) = std::make_pair(3, std::make_pair(64, 0));
+    (*it) = std::make_pair(-1, std::make_pair(0, 0));
   }
+  //windowItemsMessage->slots[36].first = 278; windowItemsMessage->slots[36].second.first = 1;
+  //windowItemsMessage->slots[37].first = 277; windowItemsMessage->slots[37].second.first = 1;
+  //windowItemsMessage->slots[38].first = 279; windowItemsMessage->slots[38].second.first = 1;
+  windowItemsMessage->slots[39].first = 1;   windowItemsMessage->slots[39].second.first = 64;
+  windowItemsMessage->slots[40].first = 3;   windowItemsMessage->slots[40].second.first = 64;
+  windowItemsMessage->slots[41].first = 5;   windowItemsMessage->slots[41].second.first = 64;
+  windowItemsMessage->slots[42].first = 58;  windowItemsMessage->slots[42].second.first = 64;
+  windowItemsMessage->slots[43].first = 54;  windowItemsMessage->slots[43].second.first = 64;
+  windowItemsMessage->slots[44].first = 102; windowItemsMessage->slots[44].second.first = 64;
   client->outgoing().push_back(windowItemsMessage);
 
   std::cout << "Spawning player at " << player->getPosition().x << "," << player->getPosition().y << "," << player->getPosition().z << std::endl;
@@ -370,7 +378,7 @@ void Mineserver::Game::messageWatcherBlockPlacement(Mineserver::Game::pointer_t 
     uint8_t itemId = chunk->getBlockType(cPosition.x, cPosition.y, cPosition.z);
     uint8_t itemMeta = chunk->getBlockMeta(cPosition.x, cPosition.y, cPosition.z);
 
-    if (msg->y != -1 && msg->direction != -1)
+    if (msg->y != -1 && msg->direction != -1 && msg->itemId != -1)
     {
       // TODO: We will check if there's air here or not, but later we need to move this into blockPlacePreWatcher
       if (itemId == 0)

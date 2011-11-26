@@ -63,7 +63,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x68::_write(Mineserver::Network_P
 
   ps << msg->mid << msg->windowId << msg->count;
 
-  for (std::vector<std::pair<int16_t, std::pair<int8_t, int16_t> > >::const_iterator it=msg->slots.begin();it!=msg->slots.end();++it) {
+  for (Network_Message_WindowItems::slotList_t::const_iterator it = msg->slots.begin(); it != msg->slots.end(); ++it) {
     ps << it->first;
 
     if (it->first != -1) {
