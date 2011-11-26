@@ -41,27 +41,28 @@ namespace Mineserver
       int16_t m_itemId;
       int8_t m_count;
       int16_t m_damage;
-      bool m_enchanted;
+      bool m_enchantable;
       Mineserver::NBT m_enchantedData;
 
     public:
-      Game_Object_Slot() : m_itemId(-1),m_count(0),m_damage(0),m_enchanted(false),m_enchantedData(Mineserver::NBT(Mineserver::NBT::TAG_COMPOUND, Mineserver::NBT::TAG_SHORT)) {}
-      Game_Object_Slot(int16_t itemId) : m_itemId(itemId),m_count(1),m_damage(0),m_enchanted(false),m_enchantedData(Mineserver::NBT(Mineserver::NBT::TAG_COMPOUND, Mineserver::NBT::TAG_SHORT)) {}
-      Game_Object_Slot(int16_t itemId, int8_t count, int16_t damage) : m_itemId(itemId),m_count(count),m_damage(damage),m_enchanted(false),m_enchantedData(Mineserver::NBT(Mineserver::NBT::TAG_COMPOUND, Mineserver::NBT::TAG_SHORT)) {}
-      Game_Object_Slot(int16_t itemId, int8_t count, int16_t damage, bool enchanted, Mineserver::NBT enchantedData) : m_itemId(itemId),m_count(count),m_damage(damage),m_enchanted(enchanted),m_enchantedData(enchantedData) {}
+      Game_Object_Slot() : m_itemId(-1),m_count(0),m_damage(0),m_enchantable(false),m_enchantedData(Mineserver::NBT(Mineserver::NBT::TAG_COMPOUND, Mineserver::NBT::TAG_SHORT)) {}
+      Game_Object_Slot(int16_t itemId) : m_itemId(itemId),m_count(1),m_damage(0),m_enchantable(false),m_enchantedData(Mineserver::NBT(Mineserver::NBT::TAG_COMPOUND, Mineserver::NBT::TAG_SHORT)) {}
+      Game_Object_Slot(int16_t itemId, int8_t count, int16_t damage) : m_itemId(itemId),m_count(count),m_damage(damage),m_enchantable(false),m_enchantedData(Mineserver::NBT(Mineserver::NBT::TAG_COMPOUND, Mineserver::NBT::TAG_SHORT)) {}
+      Game_Object_Slot(int16_t itemId, int8_t count, int16_t damage, Mineserver::NBT enchantedData) : m_itemId(itemId),m_count(count),m_damage(damage),m_enchantable(true),m_enchantedData(enchantedData) {}
+      Game_Object_Slot(int16_t itemId, int8_t count, int16_t damage, bool enchantable, Mineserver::NBT enchantedData) : m_itemId(itemId),m_count(count),m_damage(damage),m_enchantable(enchantable),m_enchantedData(enchantedData) {}
 
       int16_t getItemId() const { return m_itemId; }
       int8_t getCount() const { return m_count; }
       int16_t getDamage() const { return m_damage; }
       int16_t getUses() const { return m_damage; }
-      bool getEnchanted() const { return m_enchanted; }
+      bool getEnchantable() const { return m_enchantable; }
       Mineserver::NBT getEnchantedData() const { return m_enchantedData; }
 
       void setItemId(int16_t itemId) { m_itemId = itemId; }
       void setCount(int8_t count) { m_count = count; }
       void setDamage(int16_t damage) { m_damage = damage; }
       void setUses(int16_t uses) { m_damage = uses; }
-      void setEnchanted(bool enchanted) { m_enchanted = enchanted; }
+      void setEnchantable(bool enchantable) { m_enchantable = enchantable; }
       void setEnchantedData(Mineserver::NBT enchantedData) { m_enchantedData = enchantedData; }
   };
 }

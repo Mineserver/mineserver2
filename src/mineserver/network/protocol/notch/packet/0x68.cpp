@@ -54,7 +54,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x68::_read(Mineserver::Network_Pr
       ps >> count >> uses;
       // TODO: Parse enchanted data, need to know if itemId is enchantable or not first.
     }
-    
+
     msg->slots.push_back(Game_Object_Slot(itemId, uses, count, (enchantedSize > 0), enchantedData));
   }
 
@@ -73,7 +73,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x68::_write(Mineserver::Network_P
     if (it->getItemId() != -1) {
       ps << it->getCount() << it->getDamage();
 
-      if (it->getEnchanted()) {
+      if (it->getEnchantable()) {
         std::vector<uint8_t>* data = it->getEnchantedData().GetByteArray();
         ps << static_cast<int16_t>(data->size());
         ps.bytesFrom(*data);
