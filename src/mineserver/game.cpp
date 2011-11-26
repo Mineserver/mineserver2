@@ -290,7 +290,8 @@ void Mineserver::Game::messageWatcherDigging(Mineserver::Game::pointer_t game, M
     Mineserver::World_ChunkPosition cPosition = Mineserver::World_ChunkPosition(msg->x & 15, msg->y, msg->z & 15);
     Mineserver::WorldBlockPosition wPosition = Mineserver::WorldBlockPosition(msg->x, msg->y, msg->z);
 
-    chunk->setBlockType(msg->x & 15, msg->y, msg->z & 15, 0);
+    chunk->setBlockType(cPosition.x, cPosition.y, cPosition.z, 0);
+    chunk->setBlockMeta(cPosition.x, cPosition.y, cPosition.z, 0);
 
     blockBreakPostWatcher(shared_from_this(), getPlayerForClient(client), world, wPosition, chunk, cPosition);
   }
@@ -317,8 +318,12 @@ void Mineserver::Game::messageWatcherBlockPlacement(Mineserver::Game::pointer_t 
   else
   {
     Mineserver::World_Chunk::pointer_t chunk = world->getChunk(chunk_x, chunk_z);
+    Mineserver::World_ChunkPosition cPosition = Mineserver::World_ChunkPosition(msg->x & 15, msg->y, msg->z & 15);
+    Mineserver::WorldBlockPosition wPosition = Mineserver::WorldBlockPosition(msg->x, msg->y, msg->z);
 
-    int type = chunk->getBlockType(msg->x & 15, msg->y, msg->z & 15);
+    uint8_t type = chunk->getBlockType(cPosition.x, cPosition.y, cPosition.z);
+    uint8_t meta = chunk->getBlockMeta(cPosition.x, cPosition.y, cPosition.z);
+
     // TODO: Do pre/post block interaction
   }
 }
