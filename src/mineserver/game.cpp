@@ -293,7 +293,7 @@ void Mineserver::Game::messageWatcherDigging(Mineserver::Game::pointer_t game, M
   // status 0x04: drop item
   // status 0x05: shoot arrow
 
-  if (msg->status != 2) { return; }
+  if (msg->status != 0 && msg->status != 2) { return; }
 
   Mineserver::World::pointer_t world = getWorld(0);
 
