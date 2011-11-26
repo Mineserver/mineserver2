@@ -163,6 +163,7 @@ void Mineserver::Network_Client::handleRead(const boost::system::error_code& e, 
 
 void Mineserver::Network_Client::handleWrite(const boost::system::error_code& e, size_t n)
 {
+  printf("Trying to erase %lu bytes from %lu bytes in buffer", n, m_outgoingBuffer.size());
 	m_outgoingBuffer.erase(m_outgoingBuffer.begin(), m_outgoingBuffer.begin() + n);
   printf("Wrote %lu bytes, %lu left\n", n, m_outgoingBuffer.size());
 }
