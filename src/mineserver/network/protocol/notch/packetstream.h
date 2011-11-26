@@ -49,8 +49,8 @@ namespace Mineserver
   public:
     Network_Protocol_Notch_PacketStream() : m_buffer(NULL),m_pos(0),m_valid(false)
     {
-      m_iconvUcsHandler = iconv_open("UTF8", "UCS-2BE");
-      m_iconvUtfHandler = iconv_open("UCS-2BE", "UTF8");
+      m_iconvUcsHandler = iconv_open("UTF-8", "UCS-2BE");
+      m_iconvUtfHandler = iconv_open("UCS-2BE", "UTF-8");
     }
 
     ~Network_Protocol_Notch_PacketStream()
