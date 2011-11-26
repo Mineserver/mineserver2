@@ -70,7 +70,6 @@ SET(mineserver_source
   src/mineserver/network/server.cpp
   src/mineserver/network/client.cpp
   src/mineserver/world/generator/flatlands.cpp
-  src/mineserver/watcher/blockchange.cpp
   src/mineserver/watcher/serverlistping.cpp
   # These need to be put into a separate .so file or something...
   src/mineserver/network/protocol/notch/protocol.cpp
