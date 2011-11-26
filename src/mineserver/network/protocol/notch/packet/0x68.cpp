@@ -51,7 +51,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x68::_read(Mineserver::Network_Pr
       ps >> count >> uses;
     }
 
-    msg->slots.push_back(std::make_pair(itemId, std::make_pair(count, uses)));
+    //msg->slots.push_back(std::make_pair(itemId, std::make_pair(count, uses)));
   }
 
   return STATE_GOOD;
@@ -64,10 +64,16 @@ int Mineserver::Network_Protocol_Notch_Packet_0x68::_write(Mineserver::Network_P
   ps << msg->mid << msg->windowId << msg->count;
 
   for (Network_Message_WindowItems::slotList_t::const_iterator it = msg->slots.begin(); it != msg->slots.end(); ++it) {
-    ps << it->first;
+    ps << it->getItemId();
 
-    if (it->first != -1) {
-      ps << it->second.first << it->second.second;
+    if (it->getItemId() != -1) {
+      ps << it->getCount() << it->getDamage();
+
+      if (it->getEnchanted()) {
+        std::vector<uint8_t>* data = it->getEnchantedData()->getByteArray();
+        ps << static_cast<int16_t>(data->size());
+        ps.bytesFrom(*data);
+      }
     }
   }
 

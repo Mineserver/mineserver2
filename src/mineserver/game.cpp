@@ -55,6 +55,7 @@
 #include <mineserver/network/message/serverlistping.h>
 #include <mineserver/network/message/kick.h>
 #include <mineserver/game.h>
+#include <mineserver/game/object/slot.h>
 
 bool is_dead(Mineserver::Network_Client::pointer_t client) {
   return client->alive() == false;
@@ -214,17 +215,17 @@ void Mineserver::Game::messageWatcherLogin(Mineserver::Game::pointer_t game, Min
   windowItemsMessage->count = 44;
   windowItemsMessage->slots.resize(windowItemsMessage->count);
   for (Network_Message_WindowItems::slotList_t::iterator it = windowItemsMessage->slots.begin(); it != windowItemsMessage->slots.end(); ++it) {
-    (*it) = std::make_pair(-1, std::make_pair(0, 0));
+    (*it) = Game_Object_Slot(-1, 0, 0);
   }
-  //windowItemsMessage->slots[36].first = 278; windowItemsMessage->slots[36].second.first = 1;
-  //windowItemsMessage->slots[37].first = 277; windowItemsMessage->slots[37].second.first = 1;
-  //windowItemsMessage->slots[38].first = 279; windowItemsMessage->slots[38].second.first = 1;
+  /*windowItemsMessage->slots[36].first = 278; windowItemsMessage->slots[36].second.first = 1;
+  windowItemsMessage->slots[37].first = 277; windowItemsMessage->slots[37].second.first = 1;
+  windowItemsMessage->slots[38].first = 279; windowItemsMessage->slots[38].second.first = 1;
   windowItemsMessage->slots[39].first = 1;   windowItemsMessage->slots[39].second.first = 64;
   windowItemsMessage->slots[40].first = 3;   windowItemsMessage->slots[40].second.first = 64;
   windowItemsMessage->slots[41].first = 5;   windowItemsMessage->slots[41].second.first = 64;
   windowItemsMessage->slots[42].first = 58;  windowItemsMessage->slots[42].second.first = 64;
   windowItemsMessage->slots[43].first = 54;  windowItemsMessage->slots[43].second.first = 64;
-  windowItemsMessage->slots[44].first = 102; windowItemsMessage->slots[44].second.first = 64;
+  windowItemsMessage->slots[44].first = 102; windowItemsMessage->slots[44].second.first = 64;*/
   client->outgoing().push_back(windowItemsMessage);
 
   std::cout << "Spawning player at " << player->getPosition().x << "," << player->getPosition().y << "," << player->getPosition().z << std::endl;

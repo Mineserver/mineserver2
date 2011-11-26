@@ -25,26 +25,41 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_NETWORK_PACKET_WINDOWITEMS_H
-#define MINESERVER_NETWORK_PACKET_WINDOWITEMS_H
+#ifndef MINESERVER_GAME_OBJECT_SLOT_H
+#define MINESERVER_GAME_OBJECT_SLOT_H
 
 #include <vector>
 
 #include <mineserver/byteorder.h>
-#include <mineserver/network/message.h>
-#include <mineserver/game/object/slot.h>
+#include <mineserver/nbt.h>
 
 namespace Mineserver
 {
-  struct Network_Message_WindowItems : public Mineserver::Network_Message
+  struct Game_Object_Slot
   {
-    public:
-      typedef std::vector<Game_Object_Slot> slotList_t;
+    private:
+      int16_t m_itemId;
+      int8_t m_count;
+      int16_t m_damage;
+      bool m_enchanted;
+      Mineserver::NBT m_enchantedData;
 
     public:
-      int8_t windowId;
-      int16_t count;
-      slotList_t slots;
+      Game_Object_Slot(int16_t itemId = 0, int8_t count = 0, int16_t damage = 0) : m_itemId(itemId),m_count(count),m_damage(damage),m_enchanted(false),m_enchantedData(Mineserver::NBT(Mineserver::NBT::TAG_COMPOUND, Mineserver::NBT::TAG_SHORT)) {}
+
+      int16_t getItemId() { return m_itemId; }
+      int8_t getCount() { return m_count; }
+      int16_t getDamage() { return m_damage; }
+      int16_t getUses() { return m_damage; }
+      bool getEnchanted() { return m_enchanted; }
+      Mineserver::NBT getEnchantedData() { return m_enchantedData; }
+
+      void setItemId(int16_t itemId) { m_itemId = itemId; }
+      void setCount(int8_t count) { m_count = count; }
+      void setDamage(int16_t damage) { m_damage = damage; }
+      void setUses(int16_t uses) { m_damage = uses; }
+      void setEnchanted(bool enchanted) { m_enchanted = enchanted; }
+      void setEnchantedData(Mineserver::NBT enchantedData) { m_enchantedData = enchantedData; }
   };
 }
 
