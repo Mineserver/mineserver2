@@ -311,11 +311,10 @@ void Mineserver::Game::messageWatcherDigging(Mineserver::Game::pointer_t game, M
 
 void Mineserver::Game::messageWatcherBlockPlacement(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)
 {
-  std::cout << "BlockPlacement watcher called! ";
 
   const Mineserver::Network_Message_BlockPlacement* msg = reinterpret_cast<Mineserver::Network_Message_BlockPlacement*>(&(*message));
-  std::cout << "Item id " << msg->itemId << " at {" << msg->x << "," << msg->y << "," << msg->z <<
-    "} direction " << msg->direction << std::endl;
+  std::cout << "BlockPlacement watcher called! " << "Item id " << int(msg->itemId);
+
   if (!clientIsAssociated(client)) { return; }
 
   Mineserver::World::pointer_t world = game->getWorld(0);
@@ -326,6 +325,9 @@ void Mineserver::Game::messageWatcherBlockPlacement(Mineserver::Game::pointer_t 
 
   switch (msg->direction)
   {
+    case -1:
+      // Block interaction, not placement
+      break;
     case 0:
       translatedY--;
       break;
@@ -346,6 +348,9 @@ void Mineserver::Game::messageWatcherBlockPlacement(Mineserver::Game::pointer_t 
       break;
   }
 
+  std::cout << " at {" << int(msg->x) << "," << int(msg->y) << "," << int(msg->z) <<
+               "} direction " << int(msg->direction) << std::endl;
+
   int chunk_x, chunk_z;
   chunk_x = ((translatedX) >> 4);
   chunk_z = ((translatedZ) >> 4);
@@ -357,24 +362,28 @@ void Mineserver::Game::messageWatcherBlockPlacement(Mineserver::Game::pointer_t 
   else
   {
     Mineserver::World_Chunk::pointer_t chunk = world->getChunk(chunk_x, chunk_z);
-    Mineserver::World_ChunkPosition cPosition = Mineserver::World_ChunkPosition(translatedX & 15, translatedy, translatedZ & 15);
-    Mineserver::WorldBlockPosition wPosition = Mineserver::WorldBlockPosition(translatedX, translatedy, translatedz);
+    Mineserver::World_ChunkPosition cPosition = Mineserver::World_ChunkPosition(translatedX & 15, translatedY, translatedZ & 15);
+    Mineserver::WorldBlockPosition wPosition = Mineserver::WorldBlockPosition(translatedX, translatedY, translatedZ);
 
-    uint8_t type = chunk->getBlockType(cPosition.x, cPosition.y, cPosition.z);
-    uint8_t meta = chunk->getBlockMeta(cPosition.x, cPosition.y, cPosition.z);
+    uint8_t itemId = chunk->getBlockType(cPosition.x, cPosition.y, cPosition.z);
+    uint8_t itemMeta = chunk->getBlockMeta(cPosition.x, cPosition.y, cPosition.z);
 
-    if ((msg->itemId != -1) && (type != 0))
+    if ((msg->x != -1 && msg->y != -1 && msg->z != -1 && msg->direction != -1) && (itemId == 0))
     {
       // TODO: blockPlacePreWatcher
 
-      chunk->setBlockType(cPosition.x, cPosition.y, cPosition.z, msg->type);
-      chunk->setBlockMeta(cPosition.x, cPosition.y, cPosition.z, msg->meta);
+      chunk->setBlockType(cPosition.x, cPosition.y, cPosition.z, msg->itemId);
+      chunk->setBlockMeta(cPosition.x, cPosition.y, cPosition.z, msg->damage);
 
-      blockPlacePostWatcher(shared_from_this(), getPlayerForClient(client), world, wPosition, chunk, cPosition, msg->type, msg->meta);
+      blockPlacePostWatcher(shared_from_this(), getPlayerForClient(client), world, wPosition, chunk, cPosition, msg->itemId, msg->damage);
     }
-    else if (msg->itemId == -1)
+    else if (msg->x == -1 && msg->y == -1 && msg->z == -1 && msg->direction == -1)
     {
       // TODO: Do pre/post block interaction
+    }
+    else
+    {
+      std::cout << "derp" << std::endl;
     }
 
   }
