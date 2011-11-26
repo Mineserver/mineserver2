@@ -311,17 +311,49 @@ void Mineserver::Game::messageWatcherDigging(Mineserver::Game::pointer_t game, M
 
 void Mineserver::Game::messageWatcherBlockPlacement(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)
 {
-  std::cout << "BlockPlacement watcher called!" << std::endl;
 
   const Mineserver::Network_Message_BlockPlacement* msg = reinterpret_cast<Mineserver::Network_Message_BlockPlacement*>(&(*message));
+  std::cout << "BlockPlacement watcher called! " << "Item id " << int(msg->itemId);
+
   if (!clientIsAssociated(client)) { return; }
-  //if (msg->itemId==-1) { return; }
 
   Mineserver::World::pointer_t world = game->getWorld(0);
 
+  int32_t translatedX = msg->x;
+  int32_t translatedY = msg->y;
+  int32_t translatedZ = msg->z;
+
+  switch (msg->direction)
+  {
+    case -1:
+      // Block interaction, not placement
+      break;
+    case 0:
+      translatedY--;
+      break;
+    case 1:
+      translatedY++;
+      break;
+    case 2:
+      translatedZ--;
+      break;
+    case 3:
+      translatedZ++;
+      break;
+    case 4:
+      translatedX--;
+      break;
+    case 5:
+      translatedX++;
+      break;
+  }
+
+  std::cout << " at {" << int(msg->x) << "," << int(msg->y) << "," << int(msg->z) <<
+               "} direction " << int(msg->direction) << std::endl;
+
   int chunk_x, chunk_z;
-  chunk_x = ((msg->x) >> 4);
-  chunk_z = ((msg->z) >> 4);
+  chunk_x = ((translatedX) >> 4);
+  chunk_z = ((translatedZ) >> 4);
 
   if (!world->hasChunk(chunk_x, chunk_z))
   {
@@ -330,13 +362,30 @@ void Mineserver::Game::messageWatcherBlockPlacement(Mineserver::Game::pointer_t 
   else
   {
     Mineserver::World_Chunk::pointer_t chunk = world->getChunk(chunk_x, chunk_z);
-    Mineserver::World_ChunkPosition cPosition = Mineserver::World_ChunkPosition(msg->x & 15, msg->y, msg->z & 15);
-    Mineserver::WorldBlockPosition wPosition = Mineserver::WorldBlockPosition(msg->x, msg->y, msg->z);
+    Mineserver::World_ChunkPosition cPosition = Mineserver::World_ChunkPosition(translatedX & 15, translatedY, translatedZ & 15);
+    Mineserver::WorldBlockPosition wPosition = Mineserver::WorldBlockPosition(translatedX, translatedY, translatedZ);
 
-    uint8_t type = chunk->getBlockType(cPosition.x, cPosition.y, cPosition.z);
-    uint8_t meta = chunk->getBlockMeta(cPosition.x, cPosition.y, cPosition.z);
+    uint8_t itemId = chunk->getBlockType(cPosition.x, cPosition.y, cPosition.z);
+    uint8_t itemMeta = chunk->getBlockMeta(cPosition.x, cPosition.y, cPosition.z);
 
-    // TODO: Do pre/post block interaction
+    if ((msg->x != -1 && msg->y != -1 && msg->z != -1 && msg->direction != -1) && (itemId == 0))
+    {
+      // TODO: blockPlacePreWatcher
+
+      chunk->setBlockType(cPosition.x, cPosition.y, cPosition.z, msg->itemId);
+      chunk->setBlockMeta(cPosition.x, cPosition.y, cPosition.z, msg->damage);
+
+      blockPlacePostWatcher(shared_from_this(), getPlayerForClient(client), world, wPosition, chunk, cPosition, msg->itemId, msg->damage);
+    }
+    else if (msg->x == -1 && msg->y == -1 && msg->z == -1 && msg->direction == -1)
+    {
+      // TODO: Do pre/post block interaction
+    }
+    else
+    {
+      std::cout << "derp" << std::endl;
+    }
+
   }
 }
 
@@ -361,10 +410,8 @@ void Mineserver::Game::messageWatcherBlockChange(Mineserver::Game::pointer_t gam
     Mineserver::World_ChunkPosition cPosition = Mineserver::World_ChunkPosition(msg->x & 15, msg->y, msg->z & 15);
     Mineserver::WorldBlockPosition wPosition = Mineserver::WorldBlockPosition(msg->x, msg->y, msg->z);
 
-    chunk->setBlockType(cPosition.x, cPosition.y, cPosition.z, msg->type);
-    chunk->setBlockMeta(cPosition.x, cPosition.y, cPosition.z, msg->meta);
-
-    blockPlacePostWatcher(shared_from_this(), getPlayerForClient(client), world, wPosition, chunk, cPosition, msg->type, msg->meta);
+    // TODO: What is this watcher supposed to do? Minecraft doesn't seem to send this packet to us,
+    //       even though the http://wiki.vg/Protocol says it can go both ways... :S
   }
 }
 
