@@ -349,7 +349,9 @@ void Mineserver::Game::messageWatcherBlockPlacement(Mineserver::Game::pointer_t 
   }
 
   std::cout << " at {" << int(msg->x) << "," << int(msg->y) << "," << int(msg->z) <<
-               "} direction " << int(msg->direction) << std::endl;
+               "} direction " << int(msg->direction) << " -> translated to {" <<
+               int(translatedX) << "," << int(translatedY) << "," << int(translatedZ) <<
+               "}" << std::endl;
 
   int chunk_x, chunk_z;
   chunk_x = ((translatedX) >> 4);
@@ -383,7 +385,7 @@ void Mineserver::Game::messageWatcherBlockPlacement(Mineserver::Game::pointer_t 
     }
     else
     {
-      std::cout << "derp" << std::endl;
+      std::cout << "BlockPlacement watcher is doing something funny.";
     }
 
   }
