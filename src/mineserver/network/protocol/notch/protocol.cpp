@@ -113,8 +113,8 @@ int Mineserver::Network_Protocol_Notch_Protocol::parse(std::vector<uint8_t>& byt
   m_packetStream.setPos(0);
   m_packetStream.setValid(true);
 
-  Mineserver::Network_Protocol_Notch_Packet* packet;
-  Mineserver::Network_Message* message;
+  Mineserver::Network_Protocol_Notch_Packet* packet = NULL;
+  Mineserver::Network_Message* message = NULL;
 
   int state = Mineserver::Network_Protocol::STATE_ERROR;
   int packetState = Mineserver::Network_Protocol_Notch_Packet::STATE_ERROR;
