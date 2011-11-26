@@ -41,8 +41,6 @@
 #include <mineserver/network/protocol/notch/protocol.h>
 #include <mineserver/network/server.h>
 
-#include <mineserver/watcher/digging.h>
-#include <mineserver/watcher/blockplacement.h>
 #include <mineserver/watcher/blockchange.h>
 #include <mineserver/watcher/serverlistping.h>
 
@@ -62,13 +60,13 @@ int main()
   game->addMessageWatcher(0x0B, boost::bind(&Mineserver::Game::messageWatcherPosition, game, _1, _2, _3));
   game->addMessageWatcher(0x0C, boost::bind(&Mineserver::Game::messageWatcherOrientation, game, _1, _2, _3));
   game->addMessageWatcher(0x0D, boost::bind(&Mineserver::Game::messageWatcherPositionAndOrientation, game, _1, _2, _3));
+  game->addMessageWatcher(0x0E, boost::bind(&Mineserver::Game::messageWatcherDigging, game, _1, _2, _3));
+  game->addMessageWatcher(0x0F, boost::bind(&Mineserver::Game::messageWatcherBlockPlacement, game, _1, _2, _3));
   game->addMovementPostWatcher(boost::bind(&Mineserver::Game::movementPostWatcher, game, _1, _2, _3));
-  game->addBlockBreakPostWatcher(boost::bind(&Mineserver::Game::blockBreakPostWatcher, game, _1, _2, _3, _4, _5));
-  game->addBlockPlacePostWatcher(boost::bind(&Mineserver::Game::blockPlacePostWatcher, game, _1, _2, _3, _4, _5, _6, _7));
+  game->addBlockBreakPostWatcher(boost::bind(&Mineserver::Game::blockBreakPostWatcher, game, _1, _2, _3, _4, _5, _6));
+  game->addBlockPlacePostWatcher(boost::bind(&Mineserver::Game::blockPlacePostWatcher, game, _1, _2, _3, _4, _5, _6, _7, _8));
 
   // TODO: Merge these into the Game class
-  game->addMessageWatcher(0x0E, Mineserver::Watcher_Digging());
-  game->addMessageWatcher(0x0F, Mineserver::Watcher_BlockPlacement());
   game->addMessageWatcher(0x35, Mineserver::Watcher_BlockChange());
   game->addMessageWatcher(0xFE, Mineserver::Watcher_ServerListPing());
 

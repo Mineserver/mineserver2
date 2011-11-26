@@ -49,6 +49,8 @@
 #include <mineserver/network/message/entityteleport.h>
 #include <mineserver/network/message/entityrelativemove.h>
 #include <mineserver/network/message/entityrelativemoveandlook.h>
+#include <mineserver/network/message/digging.h>
+#include <mineserver/network/message/blockplacement.h>
 #include <mineserver/network/message/blockchange.h>
 #include <mineserver/game.h>
 
@@ -263,6 +265,74 @@ void Mineserver::Game::messageWatcherPositionAndOrientation(Mineserver::Game::po
   }
 }
 
+void Mineserver::Game::messageWatcherDigging(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)
+{
+  std::cout << "Digging watcher called!" << std::endl;
+
+  const Mineserver::Network_Message_Digging* msg = reinterpret_cast<Mineserver::Network_Message_Digging*>(&(*message));
+  if (!clientIsAssociated(client)) { return; }
+
+  // status 0x00: start digging
+  // status 0x02: finish digging
+  // status 0x04: drop item
+  // status 0x05: shoot arrow
+
+  if (msg->status != 2) { return; }
+
+  Mineserver::World::pointer_t world = getWorld(0);
+
+  int chunk_x, chunk_z;
+  chunk_x = ((msg->x) >> 4);
+  chunk_z = ((msg->z) >> 4);
+
+  if (!world->hasChunk(chunk_x, chunk_z))
+  {
+    std::cout << "Chunk " << chunk_x << "," << chunk_z << " not found!" << std::endl;
+  }
+  else
+  {
+    Mineserver::World_Chunk::pointer_t chunk = world->getChunk(chunk_x, chunk_z);
+    Mineserver::World_ChunkPosition cPosition = Mineserver::World_ChunkPosition(msg->x & 15, msg->y, msg->z & 15);
+    Mineserver::WorldBlockPosition wPosition = Mineserver::WorldBlockPosition(msg->x, msg->y, msg->z);
+
+    chunk->setBlockType(cPosition.x, cPosition.y, cPosition.z, 0);
+    chunk->setBlockMeta(cPosition.x, cPosition.y, cPosition.z, 0);
+
+    blockBreakPostWatcher(shared_from_this(), getPlayerForClient(client), world, wPosition, chunk, cPosition);
+  }
+}
+
+void Mineserver::Game::messageWatcherBlockPlacement(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)
+{
+  std::cout << "BlockPlacement watcher called!" << std::endl;
+
+  const Mineserver::Network_Message_BlockPlacement* msg = reinterpret_cast<Mineserver::Network_Message_BlockPlacement*>(&(*message));
+  if (!clientIsAssociated(client)) { return; }
+  //if (msg->itemId==-1) { return; }
+
+  Mineserver::World::pointer_t world = game->getWorld(0);
+
+  int chunk_x, chunk_z;
+  chunk_x = ((msg->x) >> 4);
+  chunk_z = ((msg->z) >> 4);
+
+  if (!world->hasChunk(chunk_x, chunk_z))
+  {
+    std::cout << "Chunk " << chunk_x << "," << chunk_z << " not found!" << std::endl;
+  }
+  else
+  {
+    Mineserver::World_Chunk::pointer_t chunk = world->getChunk(chunk_x, chunk_z);
+    Mineserver::World_ChunkPosition cPosition = Mineserver::World_ChunkPosition(msg->x & 15, msg->y, msg->z & 15);
+    Mineserver::WorldBlockPosition wPosition = Mineserver::WorldBlockPosition(msg->x, msg->y, msg->z);
+
+    uint8_t type = chunk->getBlockType(cPosition.x, cPosition.y, cPosition.z);
+    uint8_t meta = chunk->getBlockMeta(cPosition.x, cPosition.y, cPosition.z);
+
+    // TODO: Do pre/post block interaction
+  }
+}
+
 bool Mineserver::Game::chatPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, std::string message)
 {
   boost::shared_ptr<Mineserver::Network_Message_Chat> chatMessage = boost::make_shared<Mineserver::Network_Message_Chat>();
@@ -421,15 +491,15 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
   return true;
 }
 
-bool Mineserver::Game::blockBreakPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::World::pointer_t world, Mineserver::World_Chunk::pointer_t chunk, Mineserver::World_ChunkPosition position)
+bool Mineserver::Game::blockBreakPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::World::pointer_t world, Mineserver::WorldBlockPosition wPosition, Mineserver::World_Chunk::pointer_t chunk, Mineserver::World_ChunkPosition cPosition)
 {
   std::cout << "blockBreakPostWatcher called!" << std::endl;
 
   boost::shared_ptr<Mineserver::Network_Message_BlockChange> blockChangeMessage = boost::make_shared<Mineserver::Network_Message_BlockChange>();
   blockChangeMessage->mid = 0x35;
-  blockChangeMessage->x = position.x;
-  blockChangeMessage->y = position.y;
-  blockChangeMessage->z = position.z;
+  blockChangeMessage->x = wPosition.x;
+  blockChangeMessage->y = wPosition.y;
+  blockChangeMessage->z = wPosition.z;
   blockChangeMessage->type = 0;
   blockChangeMessage->meta = 0;
 
@@ -440,15 +510,15 @@ bool Mineserver::Game::blockBreakPostWatcher(Mineserver::Game::pointer_t game, M
   return true;
 }
 
-bool Mineserver::Game::blockPlacePostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::World::pointer_t world, Mineserver::World_Chunk::pointer_t chunk, Mineserver::World_ChunkPosition position, uint8_t type, uint8_t meta)
+bool Mineserver::Game::blockPlacePostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::World::pointer_t world, Mineserver::WorldBlockPosition wPosition, Mineserver::World_Chunk::pointer_t chunk, Mineserver::World_ChunkPosition cPosition, uint8_t type, uint8_t meta)
 {
   std::cout << "blockPlacePostWatcher called!" << std::endl;
 
   boost::shared_ptr<Mineserver::Network_Message_BlockChange> blockChangeMessage = boost::make_shared<Mineserver::Network_Message_BlockChange>();
   blockChangeMessage->mid = 0x35;
-  blockChangeMessage->x = position.x;
-  blockChangeMessage->y = position.y;
-  blockChangeMessage->z = position.z;
+  blockChangeMessage->x = wPosition.x;
+  blockChangeMessage->y = wPosition.y;
+  blockChangeMessage->z = wPosition.z;
   blockChangeMessage->type = type;
   blockChangeMessage->meta = meta;
 
