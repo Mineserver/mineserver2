@@ -28,6 +28,7 @@
 #include <utility>
 
 #include <mineserver/byteorder.h>
+#include <mineserver/nbt.h>
 #include <mineserver/network/message/windowitems.h>
 #include <mineserver/network/protocol/notch/packet.h>
 #include <mineserver/network/protocol/notch/packet/0x68.h>
@@ -41,6 +42,8 @@ int Mineserver::Network_Protocol_Notch_Packet_0x68::_read(Mineserver::Network_Pr
 
   int16_t itemId, uses;
   int8_t count;
+  int16_t enchantedSize = 0;
+  Mineserver::NBT enchantedData = Mineserver::NBT(Mineserver::NBT::TAG_COMPOUND, Mineserver::NBT::TAG_SHORT);
 
   for (int16_t i=0;i<count;++i) {
     itemId = uses = count = 0;
@@ -49,9 +52,10 @@ int Mineserver::Network_Protocol_Notch_Packet_0x68::_read(Mineserver::Network_Pr
 
     if (itemId != -1) {
       ps >> count >> uses;
+      // TODO: Parse enchanted data, need to know if itemId is enchantable or not first.
     }
-
-    //msg->slots.push_back(std::make_pair(itemId, std::make_pair(count, uses)));
+    
+    msg->slots.push_back(Game_Object_Slot(itemId, uses, count, (enchantedSize > 0), enchantedData));
   }
 
   return STATE_GOOD;

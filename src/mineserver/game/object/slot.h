@@ -45,7 +45,10 @@ namespace Mineserver
       Mineserver::NBT m_enchantedData;
 
     public:
-      Game_Object_Slot(int16_t itemId = 0, int8_t count = 0, int16_t damage = 0) : m_itemId(itemId),m_count(count),m_damage(damage),m_enchanted(false),m_enchantedData(Mineserver::NBT(Mineserver::NBT::TAG_COMPOUND, Mineserver::NBT::TAG_SHORT)) {}
+      Game_Object_Slot() : m_itemId(-1),m_count(0),m_damage(0),m_enchanted(false),m_enchantedData(Mineserver::NBT(Mineserver::NBT::TAG_COMPOUND, Mineserver::NBT::TAG_SHORT)) {}
+      Game_Object_Slot(int16_t itemId) : m_itemId(itemId),m_count(1),m_damage(0),m_enchanted(false),m_enchantedData(Mineserver::NBT(Mineserver::NBT::TAG_COMPOUND, Mineserver::NBT::TAG_SHORT)) {}
+      Game_Object_Slot(int16_t itemId, int8_t count, int16_t damage) : m_itemId(itemId),m_count(count),m_damage(damage),m_enchanted(false),m_enchantedData(Mineserver::NBT(Mineserver::NBT::TAG_COMPOUND, Mineserver::NBT::TAG_SHORT)) {}
+      Game_Object_Slot(int16_t itemId, int8_t count, int16_t damage, bool enchanted, Mineserver::NBT enchantedData) : m_itemId(itemId),m_count(count),m_damage(damage),m_enchanted(enchanted),m_enchantedData(enchantedData) {}
 
       int16_t getItemId() const { return m_itemId; }
       int8_t getCount() const { return m_count; }
