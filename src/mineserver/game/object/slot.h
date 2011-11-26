@@ -47,12 +47,12 @@ namespace Mineserver
     public:
       Game_Object_Slot(int16_t itemId = 0, int8_t count = 0, int16_t damage = 0) : m_itemId(itemId),m_count(count),m_damage(damage),m_enchanted(false),m_enchantedData(Mineserver::NBT(Mineserver::NBT::TAG_COMPOUND, Mineserver::NBT::TAG_SHORT)) {}
 
-      int16_t getItemId() { return m_itemId; }
-      int8_t getCount() { return m_count; }
-      int16_t getDamage() { return m_damage; }
-      int16_t getUses() { return m_damage; }
-      bool getEnchanted() { return m_enchanted; }
-      Mineserver::NBT getEnchantedData() { return m_enchantedData; }
+      int16_t getItemId() const { return m_itemId; }
+      int8_t getCount() const { return m_count; }
+      int16_t getDamage() const { return m_damage; }
+      int16_t getUses() const { return m_damage; }
+      bool getEnchanted() const { return m_enchanted; }
+      Mineserver::NBT getEnchantedData() const { return m_enchantedData; }
 
       void setItemId(int16_t itemId) { m_itemId = itemId; }
       void setCount(int8_t count) { m_count = count; }
