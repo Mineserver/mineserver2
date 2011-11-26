@@ -208,10 +208,15 @@ void Mineserver::Game::messageWatcherLogin(Mineserver::Game::pointer_t game, Min
   spawnPositionMessage->z = world->getSpawnPosition().z;
   client->outgoing().push_back(spawnPositionMessage);
 
+  // TODO: Inventory items doesn't seem to show dirt (id 3) for every single slot???
   boost::shared_ptr<Mineserver::Network_Message_WindowItems> windowItemsMessage = boost::make_shared<Mineserver::Network_Message_WindowItems>();
   windowItemsMessage->mid = 0x68;
-  windowItemsMessage->windowId = -1;
-  windowItemsMessage->count = 0;
+  windowItemsMessage->windowId = 0;
+  windowItemsMessage->count = 44;
+  windowItemsMessage->slots.resize(windowItemsMessage->count);
+  for (Network_Message_WindowItems::slotList_t::iterator it = windowItemsMessage->slots.begin(); it != windowItemsMessage->slots.end(); ++it) {
+    (*it) = std::make_pair(3, std::make_pair(64, 0));
+  }
   client->outgoing().push_back(windowItemsMessage);
 
   std::cout << "Spawning player at " << player->getPosition().x << "," << player->getPosition().y << "," << player->getPosition().z << std::endl;
