@@ -117,8 +117,10 @@ void Mineserver::Network_Client::write()
 
   printf("We want to send %lu bytes\n", m_outgoingBuffer.size());
 
-  if (!m_outgoingBuffer.empty())
+  if (!m_writing)
   {
+    m_writing = true;
+
     m_socket.async_write_some(
       boost::asio::buffer(m_outgoingBuffer),
       boost::bind(
@@ -163,7 +165,13 @@ void Mineserver::Network_Client::handleRead(const boost::system::error_code& e, 
 
 void Mineserver::Network_Client::handleWrite(const boost::system::error_code& e, size_t n)
 {
-  printf("Trying to erase %lu bytes from %lu bytes in buffer\n", n, m_outgoingBuffer.size());
 	m_outgoingBuffer.erase(m_outgoingBuffer.begin(), m_outgoingBuffer.begin() + n);
+
   printf("Wrote %lu bytes, %lu left\n", n, m_outgoingBuffer.size());
+
+  m_writing = false;
+
+  if (m_outgoingBuffer.size() > 0) {
+    write();
+  }
 }
