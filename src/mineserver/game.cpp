@@ -44,6 +44,11 @@
 #include <mineserver/network/message/position.h>
 #include <mineserver/network/message/orientation.h>
 #include <mineserver/network/message/positionandorientation.h>
+#include <mineserver/network/message/namedentityspawn.h>
+#include <mineserver/network/message/destroyentity.h>
+#include <mineserver/network/message/entityteleport.h>
+#include <mineserver/network/message/entityrelativemove.h>
+#include <mineserver/network/message/entityrelativemoveandlook.h>
 #include <mineserver/network/message/digging.h>
 #include <mineserver/network/message/blockplacement.h>
 #include <mineserver/network/message/blockchange.h>
@@ -387,6 +392,145 @@ bool Mineserver::Game::chatPostWatcher(Mineserver::Game::pointer_t game, Mineser
 bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::Game_PlayerPosition position)
 {
   std::cout << "movementPostWatcher called!" << std::endl;
+
+  Mineserver::Game_PlayerPosition oldPos = player->getPosition();
+  player->setPosition(position);
+  boost::shared_ptr<Mineserver::Network_Message> player_move;
+  double dX = (oldPos.x - position.x)*(-1);
+  double dY = (oldPos.y - position.y)*(-1);
+  double dZ = (oldPos.z - position.z)*(-1);
+  if( dX > 4 || dX < -4 || dY > 4 || dY < -4 || dZ > 4 || dZ < -4 ) {
+    // send player teleport 0x22
+    boost::shared_ptr<Mineserver::Network_Message_EntityTeleport> tmp = boost::make_shared<Mineserver::Network_Message_EntityTeleport>();
+    tmp->mid = 0x22;
+    tmp->entityId = player->getEid();
+    tmp->x = (int32_t)position.x*32;
+    tmp->y = (int32_t)position.y*32;
+    tmp->z = (int32_t)position.z*32;
+    tmp->pitch = (int8_t)position.yaw;
+    tmp->yaw = (int8_t)position.pitch;
+    player_move = tmp;
+    std::cout << "player teleported by " << dX << ":" << dY << ":" << dZ << std::endl;
+  } else {
+    // TODO: check if we moved, if not => use 0x20
+    if(oldPos.yaw != position.yaw || oldPos.pitch != position.pitch) {
+      // send 0x21
+      boost::shared_ptr<Mineserver::Network_Message_EntityRelativeMoveAndLook> tmp = boost::make_shared<Mineserver::Network_Message_EntityRelativeMoveAndLook>();
+      tmp->mid = 0x21;
+      tmp->entityId = player->getEid();
+      tmp->x = (char)(dX * 32);
+      tmp->y = (char)(dY * 32);
+      tmp->z = (char)(dZ * 32);
+      tmp->yaw = (int8_t)position.pitch;
+      tmp->pitch = (int8_t)position.yaw;
+      player_move = tmp;
+    } else {
+      // send 0xF1
+      boost::shared_ptr<Mineserver::Network_Message_EntityRelativeMove> tmp = boost::make_shared<Mineserver::Network_Message_EntityRelativeMove>();
+      tmp->mid = 0xF1;
+      tmp->entityId = player->getEid();
+      tmp->x = (char)(dX * 32);
+      tmp->y = (char)(dY * 32);
+      tmp->z = (char)(dZ * 32);
+      player_move = tmp;
+    }
+    std::cout << "player moved by " << dX << ":" << dY << ":" << dZ << std::endl;
+  }
+  std::cout << "new player position: " << position.x << ":" << position.y << ":" << position.z << std::endl; 
+  uint8_t in_distance = 16*3;    // 160 => 10 chunks
+  uint8_t out_distance = 16*5;   // 192 => 12 chunks
+  // check if we in range of another player now
+  double delta_x, delta_y, old_distance, new_distance;
+
+  entityIdSet_t others = m_playerInRange[player];
+  clientList_t other_clients;
+  clientList_t my_clients = getClientsForPlayer(player);
+
+  std::cout << "others: ";
+  for(entityIdSet_t::iterator it=others.begin();it!=others.end();it++) { std::cout << (*it) << ", "; }
+  std::cout << std::endl;
+  
+  for (playerList_t::iterator player_it=m_players.begin();player_it!=m_players.end();++player_it) {
+    Mineserver::Game_Player::pointer_t other(player_it->second);
+    if(other == player) { 
+        continue;
+    }
+    other_clients = getClientsForPlayer(other);
+
+    // calc new distance
+    delta_x = position.x - other->getPosition().x;
+    delta_y = position.y - other->getPosition().y;
+    new_distance = sqrt(delta_x*delta_x+delta_y*delta_y);
+    std::cout << " [" << other->getEid() << "] in range of [" << player->getEid() << "]?" << std::endl;
+    std::cout << " [" << other->getEid() << "] distance to [" << player->getEid() << "]: " << new_distance << std::endl;
+    if(others.count(other->getEid()) >= 1) {  // we are in range of this one
+      if(new_distance > out_distance) { // but now we are out
+        // send destroy entity 
+        boost::shared_ptr<Mineserver::Network_Message_DestroyEntity> destroyEntity = boost::make_shared<Mineserver::Network_Message_DestroyEntity>();
+        destroyEntity->mid = 0x1D;
+        destroyEntity->entityId = player->getEid();
+        for(clientList_t::iterator it=other_clients.begin();it != other_clients.end(); it++) {
+            std::cout << " [" << other->getEid() << "] << destroy entity #" + player->getEid() << std::endl;
+          (*it)->outgoing().push_back(destroyEntity);
+        }
+        // destroy entity on both sides!
+        destroyEntity = boost::make_shared<Mineserver::Network_Message_DestroyEntity>();
+        destroyEntity->mid = 0x1D;
+        destroyEntity->entityId = other->getEid();
+        for(clientList_t::iterator it=my_clients.begin();it!=my_clients.end();it++) {
+            std::cout << " [" << player->getEid() << "] << destroy entity #" + other->getEid() << std::endl;
+          (*it)->outgoing().push_back(destroyEntity);
+        }
+        // remove player from set
+        others.erase(other->getEid());
+        std::cout << "     he was" << std::endl;
+      } else { // still range
+        // update entity position => send 
+        for(clientList_t::iterator it=other_clients.begin();it != other_clients.end(); it++) {
+            (*it)->outgoing().push_back(player_move);
+        }
+        std::cout << "     still is" << std::endl;
+      }
+    } else { // player is NOT in range of this one
+      if(new_distance < in_distance) { // but we just entered the range
+        boost::shared_ptr<Mineserver::Network_Message_NamedEntitySpawn> spawnEntity = boost::make_shared<Mineserver::Network_Message_NamedEntitySpawn>();
+        spawnEntity->mid = 0x14;
+        spawnEntity->entityId = player->getEid();
+        spawnEntity->name     = player->getName();
+        spawnEntity->x        = (int32_t)position.x*32;
+        spawnEntity->y        = (int32_t)position.y*32;
+        spawnEntity->z        = (int32_t)position.z*32;
+        spawnEntity->rotation = (int8_t)position.pitch;
+        spawnEntity->pitch    = (int8_t)position.yaw;
+        spawnEntity->currentItem = 0;
+        for(clientList_t::iterator it=other_clients.begin();it != other_clients.end(); it++) {
+          std::cout << " [" << other->getEid() << "] << spawn entity #" << player->getEid() << std::endl;
+          (*it)->outgoing().push_back(spawnEntity);
+        }
+        spawnEntity = boost::make_shared<Mineserver::Network_Message_NamedEntitySpawn>();
+        spawnEntity->mid = 0x14;
+        spawnEntity->entityId = other->getEid();
+        spawnEntity->name     = other->getName();
+        spawnEntity->x        = (int32_t)other->getPosition().x*32;
+        spawnEntity->y        = (int32_t)other->getPosition().y*32;
+        spawnEntity->z        = (int32_t)other->getPosition().z*32;
+        spawnEntity->rotation = (int8_t)other->getPosition().pitch;
+        spawnEntity->pitch    = (int8_t)other->getPosition().yaw;
+        spawnEntity->currentItem = 0;
+        for(clientList_t::iterator it=my_clients.begin();it != my_clients.end(); it++) {
+          std::cout << " [" << player->getEid() << "] << spawn entity #" << other->getEid() << std::endl;
+          (*it)->outgoing().push_back(spawnEntity);
+        }
+        others.insert(other->getEid());
+        m_playerInRange[other].insert(player->getEid());
+        std::cout << "      is now" << std::endl;
+      }
+    }
+  }
+  std::cout << "others: ";
+  for(entityIdSet_t::iterator it=others.begin();it!=others.end();it++) { std::cout << (*it) << ", "; }
+  std::cout << std::endl;
+  m_playerInRange[player] = others;
   return true;
 }
 
