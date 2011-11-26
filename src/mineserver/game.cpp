@@ -155,7 +155,7 @@ void Mineserver::Game::messageWatcherLogin(Mineserver::Game::pointer_t game, Min
     player->getPosition().x = world->getSpawnPosition().x;
     player->getPosition().y = world->getSpawnPosition().y;
     player->getPosition().z = world->getSpawnPosition().z;
-    player->getPosition().stance = world->getSpawnPosition().y + 1.62;
+    player->getPosition().stance = player->getPosition().y + 1.62;
     player->getPosition().onGround = true;
     addPlayer(player);
   } else {
