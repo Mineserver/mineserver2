@@ -92,7 +92,8 @@ namespace Mineserver
     Game() : m_nextEid(0) {}
 
     int32_t getNextEid() { return m_nextEid++; }
-
+    
+    void postLeavingWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player);
     void messageWatcherKeepAlive(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message);
     void messageWatcherLogin(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message);
     void messageWatcherHandshake(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message);
