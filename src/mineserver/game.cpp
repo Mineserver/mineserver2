@@ -289,7 +289,7 @@ void Mineserver::Game::messageWatcherPosition(Mineserver::Game::pointer_t game, 
 
   if (clientIsAssociated(client)) {
     Mineserver::Game_Player::pointer_t player = getPlayerForClient(client);
-    Mineserver::Game_PlayerPosition position(msg->x, msg->y, msg->z, msg->stance, player->getPosition().yaw, player->getPosition().pitch, msg->onGround);
+    Mineserver::Game_PlayerPosition position(msg->x, msg->y, msg->z, msg->stance, player->getPosition().pitch, player->getPosition().yaw, msg->onGround);
     movementPostWatcher(shared_from_this(), getPlayerForClient(client), position);
   }
 }
@@ -302,7 +302,7 @@ void Mineserver::Game::messageWatcherOrientation(Mineserver::Game::pointer_t gam
 
   if (clientIsAssociated(client)) {
     Mineserver::Game_Player::pointer_t player = getPlayerForClient(client);
-    Mineserver::Game_PlayerPosition position(player->getPosition().x, player->getPosition().y, player->getPosition().z, player->getPosition().stance, msg->yaw, msg->pitch, msg->onGround);
+    Mineserver::Game_PlayerPosition position(player->getPosition().x, player->getPosition().y, player->getPosition().z, player->getPosition().stance, msg->pitch, msg->yaw, msg->onGround);
     movementPostWatcher(shared_from_this(), getPlayerForClient(client), position);
   }
 }
@@ -315,7 +315,7 @@ void Mineserver::Game::messageWatcherPositionAndOrientation(Mineserver::Game::po
 
   if (clientIsAssociated(client)) {
     Mineserver::Game_Player::pointer_t player = getPlayerForClient(client);
-    Mineserver::Game_PlayerPosition position(msg->x, msg->y, msg->z, msg->stance, msg->yaw, msg->pitch, msg->onGround);
+    Mineserver::Game_PlayerPosition position(msg->x, msg->y, msg->z, msg->stance, msg->pitch, msg->yaw, msg->onGround);
     movementPostWatcher(shared_from_this(), getPlayerForClient(client), position);
   }
 }
@@ -512,13 +512,12 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
     boost::shared_ptr<Mineserver::Network_Message_EntityTeleport> tmp = boost::make_shared<Mineserver::Network_Message_EntityTeleport>();
     tmp->mid = 0x22;
     tmp->entityId = player->getEid();
-    tmp->x = (int32_t)position.x*32;
-    tmp->y = (int32_t)position.y*32;
-    tmp->z = (int32_t)position.z*32;
-    tmp->pitch = (int8_t)position.yaw;
-    tmp->yaw = (int8_t)position.pitch;
+    tmp->x      = (int32_t)position.x*32;
+    tmp->y      = (int32_t)position.y*32;
+    tmp->z      = (int32_t)position.z*32;
+    tmp->pitch  = (int8_t)(position.pitch / 360 * 256);
+    tmp->yaw    = (int8_t)(position.yaw / 360 * 256);
     player_move = tmp;
-    std::cout << "player teleported by " << dX << ":" << dY << ":" << dZ << std::endl;
   } else {
     // TODO: check if we moved, if not => use 0x20
     if(oldPos.yaw != position.yaw || oldPos.pitch != position.pitch) {
@@ -526,11 +525,11 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
       boost::shared_ptr<Mineserver::Network_Message_EntityRelativeMoveAndLook> tmp = boost::make_shared<Mineserver::Network_Message_EntityRelativeMoveAndLook>();
       tmp->mid = 0x21;
       tmp->entityId = player->getEid();
-      tmp->x = (char)(dX * 32);
-      tmp->y = (char)(dY * 32);
-      tmp->z = (char)(dZ * 32);
-      tmp->yaw = (int8_t)position.pitch;
-      tmp->pitch = (int8_t)position.yaw;
+      tmp->x      = (char)(dX * 32);
+      tmp->y      = (char)(dY * 32);
+      tmp->z      = (char)(dZ * 32);
+      tmp->yaw    = (int8_t)(position.yaw / 360 * 256);
+      tmp->pitch  = (int8_t)(position.pitch / 360 * 256);
       player_move = tmp;
     } else {
       // send 0xF1
@@ -542,9 +541,7 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
       tmp->z = (char)(dZ * 32);
       player_move = tmp;
     }
-    std::cout << "player moved by " << dX << ":" << dY << ":" << dZ << std::endl;
   }
-  std::cout << "new player position: " << position.x << ":" << position.y << ":" << position.z << std::endl; 
   uint8_t in_distance = 16*3;    // 160 => 10 chunks
   uint8_t out_distance = 16*5;   // 192 => 12 chunks
   // check if we in range of another player now
@@ -554,10 +551,6 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
   clientList_t other_clients;
   clientList_t my_clients = getClientsForPlayer(player);
 
-  std::cout << "others: ";
-  for(entityIdSet_t::iterator it=others.begin();it!=others.end();it++) { std::cout << (*it) << ", "; }
-  std::cout << std::endl;
-  
   for (playerList_t::iterator player_it=m_players.begin();player_it!=m_players.end();++player_it) {
     Mineserver::Game_Player::pointer_t other(player_it->second);
     if(other == player) { 
@@ -578,7 +571,7 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
         destroyEntity->mid = 0x1D;
         destroyEntity->entityId = player->getEid();
         for(clientList_t::iterator it=other_clients.begin();it != other_clients.end(); it++) {
-            std::cout << " [" << other->getEid() << "] << destroy entity #" + player->getEid() << std::endl;
+          std::cout << " [" << other->getEid() << "] << destroy entity #" + player->getEid() << std::endl;
           (*it)->outgoing().push_back(destroyEntity);
         }
         // destroy entity on both sides!
@@ -586,18 +579,16 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
         destroyEntity->mid = 0x1D;
         destroyEntity->entityId = other->getEid();
         for(clientList_t::iterator it=my_clients.begin();it!=my_clients.end();it++) {
-            std::cout << " [" << player->getEid() << "] << destroy entity #" + other->getEid() << std::endl;
+          std::cout << " [" << player->getEid() << "] << destroy entity #" + other->getEid() << std::endl;
           (*it)->outgoing().push_back(destroyEntity);
         }
         // remove player from set
         others.erase(other->getEid());
-        std::cout << "     he was" << std::endl;
       } else { // still range
         // update entity position => send 
         for(clientList_t::iterator it=other_clients.begin();it != other_clients.end(); it++) {
             (*it)->outgoing().push_back(player_move);
         }
-        std::cout << "     still is" << std::endl;
       }
     } else { // player is NOT in range of this one
       if(new_distance < in_distance) { // but we just entered the range
@@ -608,8 +599,8 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
         spawnEntity->x        = (int32_t)position.x*32;
         spawnEntity->y        = (int32_t)position.y*32;
         spawnEntity->z        = (int32_t)position.z*32;
-        spawnEntity->rotation = (int8_t)position.pitch;
-        spawnEntity->pitch    = (int8_t)position.yaw;
+        spawnEntity->rotation = (int8_t)(position.yaw / 360 * 256);
+        spawnEntity->pitch    = (int8_t)(position.pitch / 360 * 256);
         spawnEntity->currentItem = 0;
         for(clientList_t::iterator it=other_clients.begin();it != other_clients.end(); it++) {
           std::cout << " [" << other->getEid() << "] << spawn entity #" << player->getEid() << std::endl;
@@ -622,8 +613,8 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
         spawnEntity->x        = (int32_t)other->getPosition().x*32;
         spawnEntity->y        = (int32_t)other->getPosition().y*32;
         spawnEntity->z        = (int32_t)other->getPosition().z*32;
-        spawnEntity->rotation = (int8_t)other->getPosition().pitch;
-        spawnEntity->pitch    = (int8_t)other->getPosition().yaw;
+        spawnEntity->rotation = (int8_t)(other->getPosition().yaw / 360 * 256);
+        spawnEntity->pitch    = (int8_t)(other->getPosition().pitch / 360 * 256);
         spawnEntity->currentItem = 0;
         for(clientList_t::iterator it=my_clients.begin();it != my_clients.end(); it++) {
           std::cout << " [" << player->getEid() << "] << spawn entity #" << other->getEid() << std::endl;
@@ -631,13 +622,9 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
         }
         others.insert(other->getEid());
         m_playerInRange[other].insert(player->getEid());
-        std::cout << "      is now" << std::endl;
       }
     }
   }
-  std::cout << "others: ";
-  for(entityIdSet_t::iterator it=others.begin();it!=others.end();it++) { std::cout << (*it) << ", "; }
-  std::cout << std::endl;
   m_playerInRange[player] = others;
   return true;
 }
