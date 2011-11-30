@@ -152,19 +152,19 @@ void Mineserver::Game::messageWatcherChat(Mineserver::Game::pointer_t game, Mine
 void Mineserver::Game::postLeavingWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player)
 {
   std::cout << "Leave watcher called!" << std::endl;
-  std::cout << "player " << player->getName() << " left" << std::endl;
+  std::cout << "Player leave: " << player->getName() << std::endl;
 
-  clientList_t other_clients; 
+  clientList_t other_clients;
   for(playerList_t::iterator player_it=m_players.begin();player_it!=m_players.end();++player_it) {
     Mineserver::Game_Player::pointer_t other(player_it->second);
-    if(other == player) { 
+    if(other == player) {
         continue;
     }
     if(m_playerInRange[player].count(other->getEid()) < 1) {  // we are not in range of this one
         continue;
     }
 
-    // send destroy entity 
+    // send destroy entity
     boost::shared_ptr<Mineserver::Network_Message_DestroyEntity> destroyEntity = boost::make_shared<Mineserver::Network_Message_DestroyEntity>();
     destroyEntity->mid = 0x1D;
     destroyEntity->entityId = player->getEid();
@@ -349,11 +349,17 @@ void Mineserver::Game::messageWatcherDigging(Mineserver::Game::pointer_t game, M
     Mineserver::World_Chunk::pointer_t chunk = world->getChunk(chunk_x, chunk_z);
     Mineserver::World_ChunkPosition cPosition = Mineserver::World_ChunkPosition(msg->x & 15, msg->y, msg->z & 15);
     Mineserver::WorldBlockPosition wPosition = Mineserver::WorldBlockPosition(msg->x, msg->y, msg->z);
+    
+    uint8_t type = chunk->getBlockType(cPosition.x, cPosition.y, cPosition.z);
 
-    chunk->setBlockType(cPosition.x, cPosition.y, cPosition.z, 0);
-    chunk->setBlockMeta(cPosition.x, cPosition.y, cPosition.z, 0);
+    if (type != 0x07) // if type is not bedrock
+    {
+      chunk->setBlockType(cPosition.x, cPosition.y, cPosition.z, 0);
+      chunk->setBlockMeta(cPosition.x, cPosition.y, cPosition.z, 0);
 
-    blockBreakPostWatcher(shared_from_this(), getPlayerForClient(client), world, wPosition, chunk, cPosition);
+      blockBreakPostWatcher(shared_from_this(), getPlayerForClient(client), world, wPosition, chunk, cPosition);
+    }
+
   }
 }
 

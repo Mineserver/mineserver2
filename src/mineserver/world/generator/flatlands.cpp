@@ -36,16 +36,19 @@ bool Mineserver::World_Generator_Flatlands::processChunk(Mineserver::World_Chunk
     switch (y)
     {
       case 0:
-        blockType = 0x07;
+        blockType = 0x07; // Bedrock
         break;
       case 1:
-        blockType = 0x03;
+        blockType = 0x01; // Stone
+        break;
+      case 54:
+        blockType = 0x03; // Dirt
         break;
       case 59:
-        blockType = 0x02;
+        blockType = 0x02; // Grass
         break;
       case 60:
-        blockType = 0x00;
+        blockType = 0x00; // Air
         break;
     }
 
