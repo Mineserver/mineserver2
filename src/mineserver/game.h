@@ -187,7 +187,7 @@ namespace Mineserver
       return (m_clientMap.find(client) != m_clientMap.end());
     }
 
-    Mineserver::Game_Player::pointer_t getPlayerForClient(Mineserver::Network_Client::pointer_t client)
+    Mineserver::Game_Player::pointer_t getPlayerForClient(const Mineserver::Network_Client::pointer_t& client)
     {
       return m_clientMap[client];
     }
