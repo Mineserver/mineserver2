@@ -81,8 +81,19 @@ void Mineserver::Game::run()
       std::cout << "Found a dead client." << std::endl;
 
       if (m_clientMap.find(client) != m_clientMap.end()) {
-        m_players.erase(m_clientMap[client]->getName());
+        Mineserver::Game_Player::pointer_t player(m_clientMap[client]);
+        int remaining = 0;
+        int dbg = 0;
+    
+        std::cout << " player had " << m_playerMap[player].size() << " clients" << std::endl;
+        m_playerMap[player].erase(std::remove(m_playerMap[player].begin(), m_playerMap[player].end(), client), m_playerMap[player].end());
+        std::cout << " player has " << m_playerMap[player].size() << " clients" << std::endl;
+        if(m_playerMap[player].size() == 0) { // last client closed the connection
+            m_players.erase(m_clientMap[client]->getName()); // drop player
+            this->postLeavingWatcher(shared_from_this(), player);
+        }
         m_clientMap.erase(client);
+
       }
 
       continue;
@@ -136,6 +147,34 @@ void Mineserver::Game::messageWatcherChat(Mineserver::Game::pointer_t game, Mine
   const Mineserver::Network_Message_Chat* msg = reinterpret_cast<Mineserver::Network_Message_Chat*>(&(*message));
 
   chatPostWatcher(shared_from_this(), getPlayerForClient(client), msg->message);
+}
+
+void Mineserver::Game::postLeavingWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player)
+{
+  std::cout << "Leave watcher called!" << std::endl;
+  std::cout << "player " << player->getName() << " left" << std::endl;
+
+  clientList_t other_clients; 
+  for(playerList_t::iterator player_it=m_players.begin();player_it!=m_players.end();++player_it) {
+    Mineserver::Game_Player::pointer_t other(player_it->second);
+    if(other == player) { 
+        continue;
+    }
+    if(m_playerInRange[player].count(other->getEid()) < 1) {  // we are not in range of this one
+        continue;
+    }
+
+    // send destroy entity 
+    boost::shared_ptr<Mineserver::Network_Message_DestroyEntity> destroyEntity = boost::make_shared<Mineserver::Network_Message_DestroyEntity>();
+    destroyEntity->mid = 0x1D;
+    destroyEntity->entityId = player->getEid();
+    other_clients = getClientsForPlayer(other);
+    for(clientList_t::iterator it=other_clients.begin();it != other_clients.end(); it++) {
+        std::cout << " [" << other->getEid() << "] << destroy entity #" <<  player->getEid() << std::endl;
+        (*it)->outgoing().push_back(destroyEntity);
+    }
+  }
+
 }
 
 void Mineserver::Game::messageWatcherLogin(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)
