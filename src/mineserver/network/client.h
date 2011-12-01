@@ -58,8 +58,8 @@ namespace Mineserver
     std::vector<Mineserver::Network_Message::pointer_t> m_outgoing;
     bool m_writing;
     bool m_alive;
-    int m_inactiveTicks;
-    int m_inactiveTicksReply;
+    uint32_t m_inactiveTicks;
+    uint32_t m_inactiveTicksReply;
 
   public:
     Network_Client(boost::asio::io_service* service, Mineserver::Network_Protocol::pointer_t protocol) : m_socket(*service),m_protocol(protocol),m_writing(false),m_alive(true),m_inactiveTicks(0),m_inactiveTicksReply(0) {}
@@ -84,12 +84,12 @@ namespace Mineserver
       return m_alive;
     }
 
-    int inactiveTicks()
+    uint32_t inactiveTicks()
     {
       return m_inactiveTicks;
     }
 
-    int inactiveTicksReply()
+    uint32_t inactiveTicksReply()
     {
       return m_inactiveTicksReply;
     }

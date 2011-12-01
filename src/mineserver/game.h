@@ -64,7 +64,8 @@ namespace Mineserver
     typedef boost::signals2::signal<bool (Mineserver::Game::pointer_t, Mineserver::Game_Player::pointer_t, Mineserver::World::pointer_t, Mineserver::WorldBlockPosition wPosition, Mineserver::World_Chunk::pointer_t, Mineserver::World_ChunkPosition cPosition)> blockBreakWatcher_t;
     typedef boost::signals2::signal<bool (Mineserver::Game::pointer_t, Mineserver::Game_Player::pointer_t, Mineserver::World::pointer_t, Mineserver::WorldBlockPosition wPosition, Mineserver::World_Chunk::pointer_t, Mineserver::World_ChunkPosition cPosition, uint8_t type, uint8_t meta)> blockPlaceWatcher_t;
 
-    static const int timeOutTicks = 1200;
+    static const uint32_t timeOutTicks = 1200;
+    static const uint32_t playerListItemUpdateInterval = 20;
     enum {
       chatSelf, chatNearby, chatWorld, chatGlobal
     } messageTypes;
@@ -84,6 +85,7 @@ namespace Mineserver
     blockPlaceWatcher_t m_blockPlacePreWatcher;
     blockPlaceWatcher_t m_blockPlacePostWatcher;
     playerSetMap_t  m_playerInRange;
+    uint32_t m_lastPlayerListItemUpdate;
 
   public:
     void run();
