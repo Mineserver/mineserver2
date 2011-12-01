@@ -299,7 +299,7 @@ void Mineserver::Game::messageWatcherLogin(Mineserver::Game::pointer_t game, Min
     chatMessage->mid = 0x03;
     chatMessage->message += "§e";
     chatMessage->message += msg->username;
-    chatMessage->message += " joined the minecraft server!";
+    chatMessage->message += " joined the game.";
     cclient->outgoing().push_back(chatMessage);
   }
 }
