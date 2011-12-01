@@ -53,6 +53,7 @@
 #include <mineserver/network/message/digging.h>
 #include <mineserver/network/message/blockplacement.h>
 #include <mineserver/network/message/blockchange.h>
+#include <mineserver/network/message/playerlistitem.h>
 #include <mineserver/network/message/serverlistping.h>
 #include <mineserver/network/message/kick.h>
 #include <mineserver/game.h>
@@ -98,6 +99,21 @@ void Mineserver::Game::run()
       }
 
       continue;
+    }
+
+    for (clientList_t::iterator client2_it=m_clients.begin();client2_it!=m_clients.end();++client2_it) {
+      Mineserver::Network_Client::pointer_t client2(*client2_it);
+        if (m_clientMap.find(client2) != m_clientMap.end()) {
+          Mineserver::Game_Player::pointer_t player(m_clientMap[client2]);
+
+          boost::shared_ptr<Mineserver::Network_Message_PlayerListItem> response = boost::make_shared<Mineserver::Network_Message_PlayerListItem>();
+          response->mid = 0xC9;
+          response->name = player->getName();
+          response->online = true;
+          response->ping = 0; // TODO: Calculate a player's ping
+          client->outgoing().push_back(response);
+
+        }
     }
 
     std::cout << "There are " << client->incoming().size() << " messages." << std::endl;
@@ -158,6 +174,12 @@ void Mineserver::Game::postLeavingWatcher(Mineserver::Game::pointer_t game, Mine
   for(clientList_t::iterator it = m_clients.begin(); it != m_clients.end(); ++it)
   {
     Mineserver::Network_Client::pointer_t cclient = *it;
+    boost::shared_ptr<Mineserver::Network_Message_PlayerListItem> playerListItemMessage = boost::make_shared<Mineserver::Network_Message_PlayerListItem>();
+    playerListItemMessage->mid = 0xC9;
+    playerListItemMessage->name = player->getName();
+    playerListItemMessage->online = false;
+    playerListItemMessage->ping = 0;
+    cclient->outgoing().push_back(playerListItemMessage);
     boost::shared_ptr<Mineserver::Network_Message_Chat> chatMessage = boost::make_shared<Mineserver::Network_Message_Chat>();
     chatMessage->mid = 0x03;
     chatMessage->message += "§e";
