@@ -594,7 +594,7 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
         destroyEntity->mid = 0x1D;
         destroyEntity->entityId = player->getEid();
         for(clientList_t::iterator it=other_clients.begin();it != other_clients.end(); it++) {
-          std::cout << " [" << other->getEid() << "] << destroy entity #" + player->getEid() << std::endl;
+          std::cout << " [" << other->getEid() << "] << destroy entity #" << player->getEid() << std::endl;
           (*it)->outgoing().push_back(destroyEntity);
         }
         // destroy entity on both sides!
@@ -602,7 +602,7 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
         destroyEntity->mid = 0x1D;
         destroyEntity->entityId = other->getEid();
         for(clientList_t::iterator it=my_clients.begin();it!=my_clients.end();it++) {
-          std::cout << " [" << player->getEid() << "] << destroy entity #" + other->getEid() << std::endl;
+          std::cout << " [" << player->getEid() << "] << destroy entity #" << other->getEid() << std::endl;
           (*it)->outgoing().push_back(destroyEntity);
         }
         // remove player from set
