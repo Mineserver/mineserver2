@@ -504,6 +504,9 @@ bool Mineserver::Game::chatPostWatcher(Mineserver::Game::pointer_t game, Mineser
   return true;
 }
 
+// START TODO:
+// This entire function needs rewriting.
+//
 bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::Game_PlayerPosition position)
 {
   std::cout << "movementPostWatcher called!" << std::endl;
@@ -651,6 +654,7 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
   m_playerInRange[player] = others;
   return true;
 }
+// END TODO
 
 bool Mineserver::Game::blockBreakPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::World::pointer_t world, Mineserver::WorldBlockPosition wPosition, Mineserver::World_Chunk::pointer_t chunk, Mineserver::World_ChunkPosition cPosition)
 {
