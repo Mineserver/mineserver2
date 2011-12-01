@@ -509,13 +509,14 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
 
   Mineserver::Game_PlayerPosition oldPos = player->getPosition();
   player->setPosition(position);
+
   boost::shared_ptr<Mineserver::Network_Message> player_move;
   double dX = (position.x - oldPos.x);
   double dY = (position.y - oldPos.y);
   double dZ = (position.z - oldPos.z);
   if( dX > 4 || dX < -4 || dY > 4 || dY < -4 || dZ > 4 || dZ < -4 )
   {
-    // send player teleport 0x22
+    // Entity Teleport
     boost::shared_ptr<Mineserver::Network_Message_EntityTeleport> tmp = boost::make_shared<Mineserver::Network_Message_EntityTeleport>();
     tmp->mid = 0x22;
     tmp->entityId = player->getEid();
@@ -526,37 +527,48 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
     tmp->yaw    = (int8_t)(position.yaw / 360 * 256);
     player_move = tmp;
   }
+  else if ((oldPos.yaw != position.yaw || oldPos.pitch != position.pitch)
+        && (oldPos.x == positon.x && oldPos.y == position.y && oldPos.z == position.z))
+  {
+    // Entity Look
+    boost::shared_ptr<Mineserver::Network_Message_EntityLook> tmp = boost::make_shared<Mineserver::Network_Message_EntityLook>();
+    tmp->mid = 0x20;
+    tmp->entityId = player->getEid();
+    tmp->yaw    = (int8_t)(position.yaw / 360 * 256);
+    tmp->pitch  = (int8_t)(position.pitch / 360 * 256);
+    player_move = tmp;
+  }
+  else if ((oldPos.yaw == position.yaw && oldPos.pitch == position.pitch)
+        && (oldPos.x != positon.x || oldPos.y != position.y || oldPos.z != position.z))
+  {
+    // Entity Relative Move
+    boost::shared_ptr<Mineserver::Network_Message_EntityRelativeMove> tmp = boost::make_shared<Mineserver::Network_Message_EntityRelativeMove>();
+    tmp->mid = 0x1F;
+    tmp->entityId = player->getEid();
+    tmp->x      = (int8_t)(dX * 32);
+    tmp->y      = (int8_t)(dY * 32);
+    tmp->z      = (int8_t)(dZ * 32);
+    player_move = tmp;
+  }
   else
   {
-    // TODO: check if we moved, if not => use 0x20
-    if(oldPos.yaw != position.yaw || oldPos.pitch != position.pitch)
-    {
-      // send 0x21
-      boost::shared_ptr<Mineserver::Network_Message_EntityRelativeMoveAndLook> tmp = boost::make_shared<Mineserver::Network_Message_EntityRelativeMoveAndLook>();
-      tmp->mid = 0x21;
-      tmp->entityId = player->getEid();
-      tmp->x      = (int8_t)(dX * 32);
-      tmp->y      = (int8_t)(dY * 32);
-      tmp->z      = (int8_t)(dZ * 32);
-      tmp->yaw    = (int8_t)(position.yaw / 360 * 256);
-      tmp->pitch  = (int8_t)(position.pitch / 360 * 256);
-      player_move = tmp;
-    }
-    else
-    {
-      // send 0x1F
-      boost::shared_ptr<Mineserver::Network_Message_EntityRelativeMove> tmp = boost::make_shared<Mineserver::Network_Message_EntityRelativeMove>();
-      tmp->mid = 0x1F;
-      tmp->entityId = player->getEid();
-      tmp->x = (int8_t)(dX * 32.0);
-      tmp->y = (int8_t)(dY * 32.0);
-      tmp->z = (int8_t)(dZ * 32.0);
-      player_move = tmp;
-    }
+    // Entity Relative Move & Look
+    boost::shared_ptr<Mineserver::Network_Message_EntityRelativeMoveAndLook> tmp = boost::make_shared<Mineserver::Network_Message_EntityRelativeMoveAndLook>();
+    tmp->mid = 0x21;
+    tmp->entityId = player->getEid();
+    tmp->x      = (int8_t)(dX * 32);
+    tmp->y      = (int8_t)(dY * 32);
+    tmp->z      = (int8_t)(dZ * 32);
+    tmp->yaw    = (int8_t)(position.yaw / 360 * 256);
+    tmp->pitch  = (int8_t)(position.pitch / 360 * 256);
+    player_move = tmp;
   }
+
   uint8_t in_distance = (16 * 3);    // 160 => 10 chunks
   uint8_t out_distance = (16 * 5);   // 192 => 12 chunks
-  // check if we in range of another player now
+
+  // check if we are within range of another player now
+
   double delta_x, delta_y, old_distance, new_distance;
 
   entityIdSet_t others = m_playerInRange[player];
@@ -565,9 +577,7 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
 
   for (playerList_t::iterator player_it=m_players.begin();player_it!=m_players.end();++player_it) {
     Mineserver::Game_Player::pointer_t other(player_it->second);
-    if(other == player) { 
-        continue;
-    }
+    if(other == player) { continue; }
     other_clients = getClientsForPlayer(other);
 
     // calc new distance
