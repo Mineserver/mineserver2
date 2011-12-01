@@ -155,6 +155,17 @@ void Mineserver::Game::postLeavingWatcher(Mineserver::Game::pointer_t game, Mine
   std::cout << "Leave watcher called!" << std::endl;
   std::cout << "Player leave: " << player->getName() << std::endl;
 
+  for(clientList_t::iterator it = m_clients.begin(); it != m_clients.end(); ++it)
+  {
+    Mineserver::Network_Client::pointer_t cclient = *it;
+    boost::shared_ptr<Mineserver::Network_Message_Chat> chatMessage = boost::make_shared<Mineserver::Network_Message_Chat>();
+    chatMessage->mid = 0x03;
+    chatMessage->message += "§e";
+    chatMessage->message += player->getName();
+    chatMessage->message += " left the game.";
+    cclient->outgoing().push_back(chatMessage);
+  }
+
   clientList_t other_clients;
   for(playerList_t::iterator player_it=m_players.begin();player_it!=m_players.end();++player_it) {
     Mineserver::Game_Player::pointer_t other(player_it->second);
@@ -280,6 +291,17 @@ void Mineserver::Game::messageWatcherLogin(Mineserver::Game::pointer_t game, Min
   positionAndOrientationMessage->pitch = player->getPosition().pitch;
   positionAndOrientationMessage->onGround = player->getPosition().onGround;
   client->outgoing().push_back(positionAndOrientationMessage);
+
+  for(clientList_t::iterator it = m_clients.begin(); it != m_clients.end(); ++it)
+  {
+    Mineserver::Network_Client::pointer_t cclient = *it;
+    boost::shared_ptr<Mineserver::Network_Message_Chat> chatMessage = boost::make_shared<Mineserver::Network_Message_Chat>();
+    chatMessage->mid = 0x03;
+    chatMessage->message += "§e";
+    chatMessage->message += msg->username;
+    chatMessage->message += " joined the minecraft server!";
+    cclient->outgoing().push_back(chatMessage);
+  }
 }
 
 void Mineserver::Game::messageWatcherPosition(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message)
