@@ -510,46 +510,52 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
   Mineserver::Game_PlayerPosition oldPos = player->getPosition();
   player->setPosition(position);
   boost::shared_ptr<Mineserver::Network_Message> player_move;
-  double dX = (oldPos.x - position.x)*(-1);
-  double dY = (oldPos.y - position.y)*(-1);
-  double dZ = (oldPos.z - position.z)*(-1);
-  if( dX > 4 || dX < -4 || dY > 4 || dY < -4 || dZ > 4 || dZ < -4 ) {
+  double dX = (position.x - oldPos.x);
+  double dY = (position.y - oldPos.y);
+  double dZ = (position.z - oldPos.z);
+  if( dX > 4 || dX < -4 || dY > 4 || dY < -4 || dZ > 4 || dZ < -4 )
+  {
     // send player teleport 0x22
     boost::shared_ptr<Mineserver::Network_Message_EntityTeleport> tmp = boost::make_shared<Mineserver::Network_Message_EntityTeleport>();
     tmp->mid = 0x22;
     tmp->entityId = player->getEid();
-    tmp->x      = (int32_t)position.x*32;
-    tmp->y      = (int32_t)position.y*32;
-    tmp->z      = (int32_t)position.z*32;
+    tmp->x      = (int32_t)(position.x * 32);
+    tmp->y      = (int32_t)(position.y * 32);
+    tmp->z      = (int32_t)(position.z * 32);
     tmp->pitch  = (int8_t)(position.pitch / 360 * 256);
     tmp->yaw    = (int8_t)(position.yaw / 360 * 256);
     player_move = tmp;
-  } else {
+  }
+  else
+  {
     // TODO: check if we moved, if not => use 0x20
-    if(oldPos.yaw != position.yaw || oldPos.pitch != position.pitch) {
+    if(oldPos.yaw != position.yaw || oldPos.pitch != position.pitch)
+    {
       // send 0x21
       boost::shared_ptr<Mineserver::Network_Message_EntityRelativeMoveAndLook> tmp = boost::make_shared<Mineserver::Network_Message_EntityRelativeMoveAndLook>();
       tmp->mid = 0x21;
       tmp->entityId = player->getEid();
-      tmp->x      = (char)(dX * 32);
-      tmp->y      = (char)(dY * 32);
-      tmp->z      = (char)(dZ * 32);
+      tmp->x      = (int8_t)(dX * 32);
+      tmp->y      = (int8_t)(dY * 32);
+      tmp->z      = (int8_t)(dZ * 32);
       tmp->yaw    = (int8_t)(position.yaw / 360 * 256);
       tmp->pitch  = (int8_t)(position.pitch / 360 * 256);
       player_move = tmp;
-    } else {
-      // send 0xF1
+    }
+    else
+    {
+      // send 0x1F
       boost::shared_ptr<Mineserver::Network_Message_EntityRelativeMove> tmp = boost::make_shared<Mineserver::Network_Message_EntityRelativeMove>();
-      tmp->mid = 0xF1;
+      tmp->mid = 0x1F;
       tmp->entityId = player->getEid();
-      tmp->x = (char)(dX * 32);
-      tmp->y = (char)(dY * 32);
-      tmp->z = (char)(dZ * 32);
+      tmp->x = (int8_t)(dX * 32.0);
+      tmp->y = (int8_t)(dY * 32.0);
+      tmp->z = (int8_t)(dZ * 32.0);
       player_move = tmp;
     }
   }
-  uint8_t in_distance = 16*3;    // 160 => 10 chunks
-  uint8_t out_distance = 16*5;   // 192 => 12 chunks
+  uint8_t in_distance = (16 * 3);    // 160 => 10 chunks
+  uint8_t out_distance = (16 * 5);   // 192 => 12 chunks
   // check if we in range of another player now
   double delta_x, delta_y, old_distance, new_distance;
 
