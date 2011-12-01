@@ -47,6 +47,7 @@
 #include <mineserver/network/message/namedentityspawn.h>
 #include <mineserver/network/message/destroyentity.h>
 #include <mineserver/network/message/entityteleport.h>
+#include <mineserver/network/message/entitylook.h>
 #include <mineserver/network/message/entityrelativemove.h>
 #include <mineserver/network/message/entityrelativemoveandlook.h>
 #include <mineserver/network/message/digging.h>
@@ -528,7 +529,7 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
     player_move = tmp;
   }
   else if ((oldPos.yaw != position.yaw || oldPos.pitch != position.pitch)
-        && (oldPos.x == positon.x && oldPos.y == position.y && oldPos.z == position.z))
+        && (oldPos.x == position.x && oldPos.y == position.y && oldPos.z == position.z))
   {
     // Entity Look
     boost::shared_ptr<Mineserver::Network_Message_EntityLook> tmp = boost::make_shared<Mineserver::Network_Message_EntityLook>();
@@ -539,7 +540,7 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
     player_move = tmp;
   }
   else if ((oldPos.yaw == position.yaw && oldPos.pitch == position.pitch)
-        && (oldPos.x != positon.x || oldPos.y != position.y || oldPos.z != position.z))
+        && (oldPos.x != position.x || oldPos.y != position.y || oldPos.z != position.z))
   {
     // Entity Relative Move
     boost::shared_ptr<Mineserver::Network_Message_EntityRelativeMove> tmp = boost::make_shared<Mineserver::Network_Message_EntityRelativeMove>();
