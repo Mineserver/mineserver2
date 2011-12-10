@@ -94,8 +94,7 @@ namespace Mineserver
     Game() : m_nextEid(0) {}
 
     int32_t getNextEid() { return m_nextEid++; }
-    
-    void postLeavingWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player);
+
     void messageWatcherKeepAlive(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message);
     void messageWatcherLogin(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message);
     void messageWatcherHandshake(Mineserver::Game::pointer_t game, Mineserver::Network_Client::pointer_t client, Mineserver::Network_Message::pointer_t message);
@@ -112,6 +111,7 @@ namespace Mineserver
     bool movementPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::Game_PlayerPosition position);
     bool blockBreakPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::World::pointer_t world, Mineserver::WorldBlockPosition wPosition, Mineserver::World_Chunk::pointer_t chunk, Mineserver::World_ChunkPosition cPosition);
     bool blockPlacePostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player, Mineserver::World::pointer_t world, Mineserver::WorldBlockPosition wPosition, Mineserver::World_Chunk::pointer_t chunk, Mineserver::World_ChunkPosition cPosition, uint8_t type, uint8_t meta);
+    void leavingPostWatcher(Mineserver::Game::pointer_t game, Mineserver::Game_Player::pointer_t player);
 
     boost::signals2::connection addMessageWatcher(uint8_t messageId, const messageWatcher_t::slot_type& slot)
     {
