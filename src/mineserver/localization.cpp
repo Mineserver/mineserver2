@@ -42,7 +42,6 @@ void Mineserver::Localization::removeLocaleEntry(std::string key)
 
 std::string Mineserver::Localization::getLocaleEntry(std::string key)
 {
-  std::string temp;
   if (hasLocaleEntry(key))
     return m_localeMap[key];
   else
@@ -51,7 +50,6 @@ std::string Mineserver::Localization::getLocaleEntry(std::string key)
 
 std::string Mineserver::Localization::getLocaleEntry(std::string key, std::string expected)
 {
-  std::string temp;
   if (hasLocaleEntry(key))
     return m_localeMap[key];
   else
