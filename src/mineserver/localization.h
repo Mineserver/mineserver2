@@ -34,21 +34,24 @@
 #include <boost/signals2.hpp>
 
 // TODO:
-// Plan out how to do localization. I have already added this file to the
-// files that will probably (or will) use this. Any new files that will
-// display text to stdio or over notch's protocol will need to include
-// this file when it's ready.
+// Plan out how to do localization.
 
 namespace Mineserver
 {
   class Localization : public boost::enable_shared_from_this<Mineserver::Localization>
   {
-  public:
-
   private:
+    std::map<std::string,std::string> m_localeMap;
+
+  public:
+    void setLocaleEntry(std::string key, std::string value);
+    void removeLocaleEntry(std::string key);
+
+    std::string getLocaleEntry(std::string key);
+    std::string getLocaleEntry(std::string key, std::string expected);
+    bool hasLocaleEntry(std::string key);
 
   };
 }
 
 #endif
-

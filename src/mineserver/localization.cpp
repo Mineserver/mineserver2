@@ -28,8 +28,37 @@
 #include <mineserver/localization.h>
 
 // TODO:
-// Plan out how to do localization. I have already added this file's header
-// to the files that will probably (or will) use this. Any new files that will
-// display text to stdio or over notch's protocol will need to include this
-// file's header when it's ready.
+// Plan out how to do localization.
 
+void Mineserver::Localization::setLocaleEntry(std::string key, std::string value)
+{
+  m_localeMap[key] = value;
+}
+
+void Mineserver::Localization::removeLocaleEntry(std::string key)
+{
+  m_localeMap.erase(key);
+}
+
+std::string Mineserver::Localization::getLocaleEntry(std::string key)
+{
+  std::string temp;
+  if (hasLocaleEntry(key))
+    return m_localeMap[key];
+  else
+    return "";
+}
+
+std::string Mineserver::Localization::getLocaleEntry(std::string key, std::string expected)
+{
+  std::string temp;
+  if (hasLocaleEntry(key))
+    return m_localeMap[key];
+  else
+    return expected;
+}
+
+bool Mineserver::Localization::hasLocaleEntry(std::string key)
+{
+  return (m_localeMap.find(key) != m_localeMap.end());
+}
