@@ -43,6 +43,8 @@
 
 int main()
 {
+  std::cout << "Mineserver 2.0" << std::endl;
+
   boost::asio::io_service service;
 
   Mineserver::Game::pointer_t game = boost::make_shared<Mineserver::Game>();
