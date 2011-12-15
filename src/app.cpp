@@ -68,6 +68,10 @@ int main()
   Mineserver::Network_Protocol::pointer_t protocol = boost::make_shared<Mineserver::Network_Protocol_Notch_Protocol>();
   Mineserver::Network_Server::pointer_t server = boost::make_shared<Mineserver::Network_Server>(game, protocol, &service);
 
+  std::cout << "Server is now waiting for connections." << std::endl << "--" << std::endl;
+
+  // TODO: Listen for SIGTERM, on event: close active connections, save world (when implemented), etc.
+
   while (true) {
     try {
       service.poll();
