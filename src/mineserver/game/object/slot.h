@@ -28,8 +28,6 @@
 #ifndef MINESERVER_GAME_OBJECT_SLOT_H
 #define MINESERVER_GAME_OBJECT_SLOT_H
 
-#include <vector>
-
 #include <mineserver/byteorder.h>
 #include <mineserver/nbt.h>
 
