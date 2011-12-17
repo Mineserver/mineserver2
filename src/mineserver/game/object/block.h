@@ -62,7 +62,7 @@ namespace Mineserver
 
         if (!m_world->hasChunk(chunk_x, chunk_z)) { return NULL; }
 
-        return world->getChunk(chunk_x, chunk_z);
+        return m_world->getChunk(chunk_x, chunk_z);
       }
   };
 }
