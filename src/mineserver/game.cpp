@@ -636,11 +636,11 @@ bool Mineserver::Game::movementPostWatcher(Mineserver::Game::pointer_t game, Min
         spawnEntity->mid = 0x14;
         spawnEntity->entityId = player->getEid();
         spawnEntity->name     = player->getName();
-        spawnEntity->x        = (int32_t)position.x*32;
-        spawnEntity->y        = (int32_t)position.y*32;
-        spawnEntity->z        = (int32_t)position.z*32;
-        spawnEntity->rotation = (int8_t)(position.yaw / 360 * 256);
-        spawnEntity->pitch    = (int8_t)(position.pitch / 360 * 256);
+        spawnEntity->x        = (int32_t)oldPos.x*32;
+        spawnEntity->y        = (int32_t)oldPos.y*32;
+        spawnEntity->z        = (int32_t)oldPos.z*32;
+        spawnEntity->rotation = (int8_t)(oldPos.yaw / 360 * 256);
+        spawnEntity->pitch    = (int8_t)(oldPos.pitch / 360 * 256);
         spawnEntity->currentItem = 0;
         for(clientList_t::iterator it=other_clients.begin();it != other_clients.end(); it++) {
           std::cout << " [" << other->getEid() << "] << spawn entity #" << player->getEid() << std::endl;
