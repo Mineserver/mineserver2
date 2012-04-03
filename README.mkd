@@ -18,8 +18,8 @@ speed and efficiency Mineserver is known for.
 NOTE
 ----
 
-This is very much a work in progress! We'll be slowly pulling in bits of code
-from the original Mineserver repository to make this functional.
+This is very much a work in progress! MS1 is still more functional and works with latest Minecraft client. 
+We'll be slowly pulling in bits of code from the original Mineserver repository to make this functional.
 
 Planned features
 ----------------
