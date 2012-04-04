@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2011, The Mineserver Project
+  Copyright (c) 2011-2012, The Mineserver Project
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,7 @@
 #include <vector>
 #include <iostream>
 #include <cstdio>
+#include <stdarg.h>
 
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
@@ -40,6 +41,7 @@
 #include <mineserver/network/client.h>
 #include <mineserver/network/message/keepalive.h>
 #include <mineserver/network/message/kick.h>
+#include <mineserver/network/message/chat.h>
 
 void Mineserver::Network_Client::run()
 {
@@ -57,7 +59,7 @@ void Mineserver::Network_Client::run()
     boost::shared_ptr<Mineserver::Network_Message_KeepAlive> response = boost::make_shared<Mineserver::Network_Message_KeepAlive>();
     response->mid = 0x00;
     response->keepalive_id = 0;
-    outgoing().push_back(response);
+    this->outgoing().push_back(response);
     resetInactiveTicksReply();
   }
 }
@@ -77,14 +79,14 @@ void Mineserver::Network_Client::timedOut()
   boost::shared_ptr<Mineserver::Network_Message_Kick> responseMessage(new Mineserver::Network_Message_Kick);
   responseMessage->mid = 0xFF;
   responseMessage->reason = "Timed-out";
-  outgoing().push_back(responseMessage);
-  stop();
+  this->outgoing().push_back(responseMessage);
+  this->stop();
   // Jailout2000: Does the kick message get sent before closing the socket? I guess it doesn't *really* matter...
 }
 
 void Mineserver::Network_Client::start()
 {
-  read();
+  this->read();
 }
 
 void Mineserver::Network_Client::stop()
@@ -173,5 +175,47 @@ void Mineserver::Network_Client::handleWrite(const boost::system::error_code& e,
 
   if (m_outgoingBuffer.size() > 0) {
     write();
+  }
+}
+
+void Mineserver::Network_Client::Message(const std::string &str)
+{
+  boost::shared_ptr<Mineserver::Network_Message_Chat> chatMessage(new Mineserver::Network_Message_Chat);
+  chatMessage->mid = 0x03;
+  chatMessage->message = str;
+  this->outgoing().push_back(chatMessage);
+}
+
+void Mineserver::Network_Client::Message(const char* fmt, ...)
+{
+  va_list args;
+  char buffer[65535] = "";
+  if(fmt)
+  {
+    va_start(args, fmt);
+    vsnprintf(buffer, sizeof(buffer), fmt, args);
+    this->Message(std::string(buffer));
+    va_end(args);
+  }
+}
+
+void Mineserver::Network_Client::Kick(const std::string &str)
+{
+  boost::shared_ptr<Mineserver::Network_Message_Kick> response(new Mineserver::Network_Message_Kick);
+  response->mid = 0xFF;
+  response->reason = str;
+  this->outgoing().push_back(response);
+}
+
+void Mineserver::Network_Client::Kick(const char* fmt, ...)
+{
+  va_list args;
+  char buffer[65535] = "";
+  if(fmt)
+  {
+    va_start(args, fmt);
+    vsnprintf(buffer, sizeof(buffer), fmt, args);
+    this->Kick(std::string(buffer));
+    va_end(args);
   }
 }

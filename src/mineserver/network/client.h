@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2011, The Mineserver Project
+  Copyright (c) 2011-2012, The Mineserver Project
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -105,6 +105,13 @@ namespace Mineserver
     void stop();
     void timedOut();
     void write();
+
+    //Added by Justasic, not sure where these should go..
+    void Kick(const std::string&);
+    void Kick(const char*, ...);
+
+    void Message(const std::string&);
+    void Message(const char*, ...);
 
   private:
     void handleRead(const boost::system::error_code& e, size_t n);

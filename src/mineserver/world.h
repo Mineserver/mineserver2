@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2011, The Mineserver Project
+  Copyright (c) 2011-2012, The Mineserver Project
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -33,8 +33,9 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
-#include <mineserver/world/chunk.h>
 #include <mineserver/world/generator.h>
+#include <mineserver/world/chunk.h>
+#include <mineserver/world.h>
 
 namespace Mineserver
 {
@@ -112,7 +113,6 @@ namespace Mineserver
   private:
     chunkList_t m_chunks;
     generatorList_t m_generators;
-
     long m_worldSeed;
     GameMode m_gameMode;
     Dimension m_dimension;
@@ -148,6 +148,8 @@ namespace Mineserver
       m_chunks[std::make_pair(x,z)] = chunk;
     }
 
+    //Are the chunk coords ment to be unsigned, it just looks a bit odd when i used the
+    //coordinates for libnoise. I will make them signed when they are passed to processChunk
     Mineserver::World_Chunk::pointer_t generateChunk(uint32_t x, uint32_t z)
     {
       if (!hasChunk(x, z)) {
@@ -157,7 +159,7 @@ namespace Mineserver
         chunk->z = z;
 
         for (generatorList_t::const_iterator it = m_generators.begin(); it != m_generators.end(); ++it) {
-          (*it)->processChunk(chunk);
+          (*it)->processChunk(chunk,x,z);
         }
 
         setChunk(x, z, chunk);
@@ -165,10 +167,13 @@ namespace Mineserver
 
       return getChunk(x, z);
     }
-    
+
     void addGenerator(Mineserver::World_Generator::pointer_t generator)
     {
       m_generators.push_back(generator);
+
+      //Just temperary will add multi-world support
+      m_generators[0]->init(m_worldSeed);
     }
 
     long getWorldSeed() { return m_worldSeed; }

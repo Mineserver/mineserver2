@@ -13,9 +13,36 @@ PROJECT(mineserver)
 #
 # Project version
 #
-SET(${PROJECT_NAME}_MAJOR_VERSION 0)
-SET(${PROJECT_NAME}_MINOR_VERSION 0)
-SET(${PROJECT_NAME}_PATCH_LEVEL 0)
+
+# Get the git revision location for the branch we're on
+if(EXISTS "${${PROJECT_NAME}_SOURCE_DIR}/.git/HEAD")
+  file(STRINGS ${${PROJECT_NAME}_SOURCE_DIR}/.git/HEAD GIT_HEAD_LOC REGEX ".*")
+  #file(GIT_HEAD_LOC ${${PROJECT_NAME}_SOURCE_DIR}/.git/HEAD REGEX ".*")
+  string(LENGTH ${GIT_HEAD_LOC} HEAD_LEN)
+  math(EXPR LEN "${HEAD_LEN} - 5")
+  string(SUBSTRING ${GIT_HEAD_LOC} 5 ${LEN} GIT_HEAD)
+endif(EXISTS "${${PROJECT_NAME}_SOURCE_DIR}/.git/HEAD")
+
+# Get the git revision we're on for the version string
+if(EXISTS "${${PROJECT_NAME}_SOURCE_DIR}/.git/${GIT_HEAD}")
+  #read_from_file(${${PROJECT_NAME}_SOURCE_DIR}/.git/${GIT_HEAD} ".*" VERSION_STR)
+  file(STRINGS ${${PROJECT_NAME}_SOURCE_DIR}/.git/${GIT_HEAD} VERSION_STR REGEX ".*")
+  # Get the length of the string
+  string(LENGTH ${VERSION_STR} VERSION_LEN)
+  # Subtract 7 from the string's length
+  math(EXPR VERSION_NUM_LEN "${VERSION_LEN} - ${VERSION_LEN} + 7")
+  # Extract the value from the string
+  string(SUBSTRING ${VERSION_STR} 0 ${VERSION_NUM_LEN} VERSION_GIT)
+endif(EXISTS "${${PROJECT_NAME}_SOURCE_DIR}/.git/${GIT_HEAD}")
+
+# Set the actual version strings, these are used inside the program later
+SET(${PROJECT_NAME}_MAJOR_VERSION 2) # Version Major
+SET(${PROJECT_NAME}_MINOR_VERSION 0) # Version Minor
+SET(${PROJECT_NAME}_PATCH_LEVEL 0)   # Version patch
+
+# the rest is automatic
+SET(${PROJECT_NAME}_VERSION_SIMPLE "${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION}.${${PROJECT_NAME}_PATCH_LEVEL}")
+SET(${PROJECT_NAME}_VERSION_COMPLETE "${${PROJECT_NAME}_VERSION_SIMPLE}-${VERSION_GIT}")
 
 #
 # set default build to Debug
@@ -26,6 +53,23 @@ IF(NOT CMAKE_BUILD_TYPE)
     FORCE
   )
 ENDIF()
+
+# Add an optional variable for using run-cc.pl for building, Perl will be checked below regardless of this setting
+option(USE_RUN_CC_PL "Use run-cc.pl for building" ON)
+
+#
+# Find perl for run-cc.pl
+#
+find_program(PERL perl)
+
+#
+# Use run-cc.pl
+#
+if(PERL AND USE_RUN_CC_PL)
+  set(CMAKE_CXX_COMPILE_OBJECT "${PERL} ${${PROJECT_NAME}_SOURCE_DIR}/run-cc.pl -q ${CMAKE_CXX_COMPILE_OBJECT}")
+  set(CMAKE_CXX_LINK_EXECUTABLE "${PERL} ${${PROJECT_NAME}_SOURCE_DIR}/run-cc.pl -q ${CMAKE_CXX_LINK_EXECUTABLE}")
+  set(CMAKE_CXX_CREATE_SHARED_MODULE "${PERL} ${${PROJECT_NAME}_SOURCE_DIR}/run-cc.pl -q ${CMAKE_CXX_CREATE_SHARED_MODULE}")
+endif(PERL AND USE_RUN_CC_PL)
 
 #
 # Configure paths
@@ -56,21 +100,47 @@ IF(MSVC_IDE)
   SET(CMAKE_CXX_FLAGS_RELEASE "/MT /D_SECURE_SCL=0")
 ENDIF(MSVC_IDE)
 
+# used for the functions below
+include(CheckFunctionExists)
+include(CheckIncludeFile)
+include(CheckTypeSize)
+include(CheckLibraryExists)
+include(CheckCXXCompilerFlag)
+
+# functions/includes needed during compile
+check_function_exists(backtrace HAVE_BACKTRACE)
+check_include_file(sys/utsname.h HAVE_SYS_UTSNAME_H)
+
+# our system specific configuration file :P
+configure_file(${${PROJECT_NAME}_SOURCE_DIR}/src/sysconfig.h.cmake ${${PROJECT_NAME}_SOURCE_DIR}/src/mineserver/sysconfig.h)
+
 FIND_PACKAGE(Boost COMPONENTS system filesystem signals thread REQUIRED)
 FIND_PACKAGE(ZLIB)
 FIND_PACKAGE(Iconv)
 FIND_PACKAGE(Threads)
 FIND_PACKAGE(Noise)
 
+#
+# Justasic: TODO: this mess with all the sources needs to be cleaned up into a CMake list compile..
+# because making a static list of files is lame and gay.
+#
+
 SET(mineserver_source
   src/app.cpp
   src/mineserver/nbt.cpp
   src/mineserver/game.cpp
+  src/mineserver/signal.cpp
   src/mineserver/game/player.cpp
+  src/mineserver/game/command.cpp
   src/mineserver/localization.cpp
   src/mineserver/network/server.cpp
   src/mineserver/network/client.cpp
-  src/mineserver/world/generator/flatlands.cpp
+  src/mineserver/world/generator/mapgen.cpp
+  src/mineserver/world/generator/terrain.cpp
+  src/mineserver/world/generator/boime.cpp
+  src/mineserver/world/generator/cavegen.cpp
+  src/mineserver/world/generator/objectgen.cpp
+  src/mineserver/world/generator/collision.cpp
   # These need to be put into a separate .so file or something...
   src/mineserver/network/protocol/notch/protocol.cpp
   src/mineserver/network/protocol/notch/packetstream.cpp
@@ -135,6 +205,7 @@ SET(mineserver_source
   src/mineserver/network/protocol/notch/packet/0x83.cpp
   src/mineserver/network/protocol/notch/packet/0xC8.cpp
   src/mineserver/network/protocol/notch/packet/0xC9.cpp
+  src/mineserver/network/protocol/notch/packet/0xFA.cpp
   src/mineserver/network/protocol/notch/packet/0xFE.cpp
   src/mineserver/network/protocol/notch/packet/0xFF.cpp
 )

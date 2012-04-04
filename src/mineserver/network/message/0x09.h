@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2011, The Mineserver Project
+  Copyright (c) 2011-2012, The Mineserver Project
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@
 
 #include <mineserver/byteorder.h>
 #include <mineserver/network/message.h>
+#include <string>
 
 namespace Mineserver
 {
@@ -40,6 +41,7 @@ namespace Mineserver
     int8_t mode;
     int16_t height;
     int64_t seed;
+    std::string levelType;
   };
 }
 

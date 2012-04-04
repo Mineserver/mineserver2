@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2011, The Mineserver Project
+  Copyright (c) 2011-2012, The Mineserver Project
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -40,11 +40,13 @@ namespace Mineserver
     int32_t version;
     std::string username;
     int64_t seed;
+    std::string levelType;
     int32_t mode;
     int8_t dimension;
     int8_t difficulty;
     uint8_t worldHeight;
     uint8_t maxPlayers;
+    std::string levelType;
   };
 }
 

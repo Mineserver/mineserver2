@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2011, The Mineserver Project
+  Copyright (c) 2011-2012, The Mineserver Project
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -37,20 +37,25 @@
 #include <mineserver/game.h>
 #include <mineserver/world.h>
 #include <mineserver/world/generator.h>
-#include <mineserver/world/generator/flatlands.h>
+#include <mineserver/world/generator/mapgen.h>
 #include <mineserver/network/protocol/notch/protocol.h>
 #include <mineserver/network/server.h>
+#include <mineserver/signal.h>
+#include <mineserver/sysconfig.h>
 
 int main()
 {
-  std::cout << "Mineserver 2.0" << std::endl;
+  std::cout << "Mineserver " << VERSION_COMPLETE << std::endl;
 
   boost::asio::io_service service;
 
   Mineserver::Game::pointer_t game = boost::make_shared<Mineserver::Game>();
 
+  // Initialize our signal handler
+  InitSignals(game);
+
   game->setWorld(0, boost::make_shared<Mineserver::World>());
-  game->getWorld(0)->addGenerator(boost::make_shared<Mineserver::World_Generator_Flatlands>());
+  game->getWorld(0)->addGenerator(boost::make_shared<Mineserver::mapGen>());
 
   game->addMessageWatcher(0x00, boost::bind(&Mineserver::Game::messageWatcherKeepAlive, game, _1, _2, _3));
   game->addMessageWatcher(0x01, boost::bind(&Mineserver::Game::messageWatcherLogin, game, _1, _2, _3));
@@ -71,8 +76,6 @@ int main()
   Mineserver::Network_Server::pointer_t server = boost::make_shared<Mineserver::Network_Server>(game, protocol, &service);
 
   std::cout << "Server is now waiting for connections." << std::endl << "--" << std::endl;
-
-  // TODO: Listen for SIGTERM, on event: close active connections, save world (when implemented), etc.
 
   while (true) {
     try {

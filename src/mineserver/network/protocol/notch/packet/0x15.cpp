@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2011, The Mineserver Project
+  Copyright (c) 2011-2012, The Mineserver Project
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x15::_read(Mineserver::Network_Pr
   Mineserver::Network_Message_0x15* msg = new Mineserver::Network_Message_0x15;
   *message = msg;
 
-  ps >> msg->mid >> msg->entityId >> msg->itemId >> msg->count >> msg->data >> msg->x >> msg->y >> msg->z >> msg->rotation >> msg->pitch >> msg->currentItem;
+  ps >> msg->mid >> msg->entityId >> msg->itemId >> msg->count >> msg->data >> msg->x >> msg->y >> msg->z >> msg->rotation >> msg->pitch >> msg->roll;
 
   return STATE_GOOD;
 }
@@ -44,7 +44,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x15::_write(Mineserver::Network_P
 {
   const Mineserver::Network_Message_0x15* msg = static_cast<const Mineserver::Network_Message_0x15*>(&message);
 
-  ps << msg->mid << msg->entityId << msg->itemId << msg->count << msg->data << msg->x << msg->y << msg->z << msg->rotation << msg->pitch << msg->currentItem;
+  ps << msg->mid << msg->entityId << msg->itemId << msg->count << msg->data << msg->x << msg->y << msg->z << msg->rotation << msg->pitch << msg->roll;
 
   return STATE_GOOD;
 }

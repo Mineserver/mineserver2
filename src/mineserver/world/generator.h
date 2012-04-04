@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2011, The Mineserver Project
+  Copyright (c) 2011-2012, The Mineserver Project
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,8 @@ namespace Mineserver
     typedef boost::shared_ptr<Mineserver::World_Generator> pointer_t;
 
   public:
-    virtual bool processChunk(Mineserver::World_Chunk::pointer_t chunk) = 0;
+    virtual bool processChunk(Mineserver::World_Chunk::pointer_t tempChunk,int32_t chunkX,int32_t chunkZ) = 0;
+    virtual void init(long seed) = 0;
   };
 }
 

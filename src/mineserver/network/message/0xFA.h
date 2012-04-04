@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2011, The Mineserver Project
+  Copyright (c) 2011-2012, The Mineserver Project
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -25,42 +25,23 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <mineserver/world/chunk.h>
-#include <mineserver/world/generator/flatlands.h>
+#ifndef MINESERVER_NETWORK_PACKET_0xFA_H
+#define MINESERVER_NETWORK_PACKET_0xFA_H
 
-bool Mineserver::World_Generator_Flatlands::processChunk(Mineserver::World_Chunk::pointer_t chunk)
+#include <string>
+
+#include <mineserver/byteorder.h>
+#include <mineserver/network/message.h>
+
+namespace Mineserver
 {
-  uint8_t blockType;
-
-  for (uint8_t y=0;y<=127;++y) {
-    switch (y)
-    {
-      case 0:
-        blockType = 0x07; // Bedrock
-        break;
-      case 1:
-        blockType = 0x01; // Stone
-        break;
-      case 54:
-        blockType = 0x03; // Dirt
-        break;
-      case 59:
-        blockType = 0x02; // Grass
-        break;
-      case 60:
-        blockType = 0x00; // Air
-        break;
-    }
-
-    for (uint8_t x=0;x<=15;++x) {
-      for (uint8_t z=0;z<=15;++z) {
-        chunk->setBlockType(x, y, z, blockType);
-        chunk->setBlockMeta(x, y, z, 0);
-      }
-    }
-
-  }
-
-  return true;
+  struct Network_Message_0xFA : public Mineserver::Network_Message
+  {
+    std::string channel;
+    int16_t length;
+    void **data; // FIXME: Because I dont know what the packet requires, I just set it to a void pointer array
+		 // this pointer array does not work with the packet..
+  };
 }
 
+#endif

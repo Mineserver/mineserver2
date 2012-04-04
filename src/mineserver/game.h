@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2011, The Mineserver Project
+ C opyright (c) 2011-2012, The Mineserver Project
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -45,6 +45,9 @@
 #include <mineserver/network/message.h>
 #include <mineserver/network/client.h>
 
+// Justasic: Our protocol version..
+#define PROTOCOL_VERSION 23
+
 namespace Mineserver
 {
   class Game : public boost::enable_shared_from_this<Mineserver::Game>
@@ -54,11 +57,11 @@ namespace Mineserver
     typedef std::vector<Mineserver::Network_Client::pointer_t> clientList_t;
     typedef std::map<std::string,Mineserver::Game_Player::pointer_t> playerList_t;
     typedef std::map<Mineserver::Network_Client::pointer_t,Mineserver::Game_Player::pointer_t> clientMap_t;
-    typedef std::map<int,Mineserver::World::pointer_t> worldList_t; 
+    typedef std::map<int,Mineserver::World::pointer_t> worldList_t;
     typedef std::set<Mineserver::Game_Player::pointer_t> playerSet_t;
     typedef std::set<uint32_t> entityIdSet_t;
     typedef std::map<Mineserver::Game_Player::pointer_t,clientList_t> playerMap_t;
-    typedef std::map<Mineserver::Game_Player::pointer_t,entityIdSet_t > playerSetMap_t; // this name sucks! 
+    typedef std::map<Mineserver::Game_Player::pointer_t,entityIdSet_t > playerSetMap_t; // this name sucks!
     typedef boost::signals2::signal<void (Mineserver::Game::pointer_t, Mineserver::Network_Client::pointer_t, Mineserver::Network_Message::pointer_t message)> messageWatcher_t;
     typedef boost::signals2::signal<bool (Mineserver::Game::pointer_t, Mineserver::Game_Player::pointer_t, Mineserver::Game_PlayerPosition position)> movementWatcher_t;
     typedef boost::signals2::signal<bool (Mineserver::Game::pointer_t, Mineserver::Game_Player::pointer_t, Mineserver::World::pointer_t, Mineserver::WorldBlockPosition wPosition, Mineserver::World_Chunk::pointer_t, Mineserver::World_ChunkPosition cPosition)> blockBreakWatcher_t;
@@ -71,6 +74,8 @@ namespace Mineserver
     } messageTypes;
 
   private:
+    int32_t oldChunkX;
+    int32_t oldChunkZ;
     int32_t m_nextEid;
     playerList_t m_players;
     clientList_t m_clients;
@@ -89,7 +94,7 @@ namespace Mineserver
 
   public:
     void run();
-		void chat(Mineserver::Network_Client::pointer_t client, std::string message);
+    void chat(Mineserver::Network_Client::pointer_t client, std::string message);
 
     Game() : m_nextEid(0) {}
 
@@ -158,9 +163,15 @@ namespace Mineserver
       return (m_players.find(name) != m_players.end());
     }
 
-    uint32_t countPlayers() 
+    uint32_t countPlayers()
     {
         return m_players.size();
+    }
+    
+    void disconnectAllClients(const std::string &reason)
+    {
+      for(clientList_t::iterator it = this->m_clients.begin(); it != this->m_clients.end(); ++it)
+	(*it)->Kick(reason);
     }
 
     Mineserver::Game_Player::pointer_t getPlayer(const std::string& name)
@@ -172,7 +183,11 @@ namespace Mineserver
     {
       return m_playerMap[player];
     }
-
+    
+    clientList_t getClientList()
+    {
+      return m_clients;
+    }
     void addClient(Mineserver::Network_Client::pointer_t client)
     {
       m_clients.push_back(client);
@@ -193,15 +208,15 @@ namespace Mineserver
     {
       return m_clientMap[client];
     }
-
+    
     void setWorld(int n, Mineserver::World::pointer_t world)
     {
-			m_worlds[n] = world;
+	m_worlds[n] = world;
     }
 
     bool hasWorld(int n)
     {
-			return (m_worlds.find(n) == m_worlds.end());
+	return (m_worlds.find(n) == m_worlds.end());
     }
 
     Mineserver::World::pointer_t getWorld(int n)

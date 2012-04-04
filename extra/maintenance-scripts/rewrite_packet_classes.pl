@@ -34,7 +34,7 @@ $write_function =~ s/\s+$//sg;
 
 print <<HDR
 /*
-  Copyright (c) 2011, The Mineserver Project
+  Copyright (c) 2011-2012, The Mineserver Project
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without

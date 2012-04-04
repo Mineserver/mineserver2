@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2011, The Mineserver Project
+  Copyright (c) 2011-2012, The Mineserver Project
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@ namespace Mineserver
     int32_t z;
     int8_t rotation;
     int8_t pitch;
-    int16_t currentItem;
+    int8_t roll;
   };
 }
 

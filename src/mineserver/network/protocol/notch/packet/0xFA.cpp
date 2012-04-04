@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2011, The Mineserver Project
+  Copyright (c) 2011-2012, The Mineserver Project
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,26 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINESERVER_WORLD_GENERATOR_FLATLANDS_H
-#define MINESERVER_WORLD_GENERATOR_FLATLANDS_H
+#include <mineserver/byteorder.h>
+#include <mineserver/network/message/0xFA.h>
+#include <mineserver/network/protocol/notch/packet.h>
+#include <mineserver/network/protocol/notch/packet/0xFA.h>
 
-#include <boost/shared_ptr.hpp>
-
-#include <mineserver/world/chunk.h>
-#include <mineserver/world/generator.h>
-
-namespace Mineserver
+int Mineserver::Network_Protocol_Notch_Packet_0xFA::_read(Mineserver::Network_Protocol_Notch_PacketStream& ps, Mineserver::Network_Message** message)
 {
-  struct World_Generator_Flatlands : public Mineserver::World_Generator
-  {
-  public:
-    typedef boost::shared_ptr<Mineserver::World_Generator> pointer_t;
+  Mineserver::Network_Message_0xFA* msg = new Mineserver::Network_Message_0xFA;
+  *message = msg;
 
-  public:
-    bool processChunk(Mineserver::World_Chunk::pointer_t chunk);
-  };
+  ps >> msg->channel >> msg->length; // >> msg->data;
+
+  return STATE_GOOD;
 }
 
-#endif
+int Mineserver::Network_Protocol_Notch_Packet_0xFA::_write(Mineserver::Network_Protocol_Notch_PacketStream& ps, const Mineserver::Network_Message& message)
+{
+  const Mineserver::Network_Message_0xFA* msg = static_cast<const Mineserver::Network_Message_0xFA*>(&message);
 
+  ps << msg->channel << msg->length; //<< msg->data;
+
+  return STATE_GOOD;
+}

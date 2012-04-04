@@ -1,6 +1,6 @@
 Mineserver 2.0
 ==============
-
+ 
 ![Mineserver 2.0 Preview](http://i.imgur.com/1cwmH.png)
 
 [Forum Announcement](https://mineserver.be/forums/index.php?topic=470)

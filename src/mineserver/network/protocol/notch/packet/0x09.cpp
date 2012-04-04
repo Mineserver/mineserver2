@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2011, The Mineserver Project
+  Copyright (c) 2011-2012, The Mineserver Project
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x09::_read(Mineserver::Network_Pr
   Mineserver::Network_Message_0x09* msg = new Mineserver::Network_Message_0x09;
   *message = msg;
 
-  ps >> msg->mid >> msg->world >> msg->difficulty >> msg->mode >> msg->height >> msg->seed;
+  ps >> msg->mid >> msg->world >> msg->difficulty >> msg->mode >> msg->height >> msg->seed >> msg->levelType;
 
   return STATE_GOOD;
 }
@@ -44,7 +44,7 @@ int Mineserver::Network_Protocol_Notch_Packet_0x09::_write(Mineserver::Network_P
 {
   const Mineserver::Network_Message_0x09* msg = static_cast<const Mineserver::Network_Message_0x09*>(&message);
 
-  ps << msg->mid << msg->world << msg->difficulty << msg->mode << msg->height << msg->seed;
+  ps << msg->mid << msg->world << msg->difficulty << msg->mode << msg->height << msg->seed << msg->levelType;
 
   return STATE_GOOD;
 }
