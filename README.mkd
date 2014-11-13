@@ -8,7 +8,7 @@ Mineserver 2.0
 Overview
 --------
 
-We've learnt a lot from writing the first version of Mineserver. One of those
+We've learnt a lot from writing [the first version of Mineserver](https://github.com/fador/mineserver). One of those
 lessons was that to maintain a large application, it's necessary to design the
 application with the right concepts in mind from the very start. This was one of
 the driving forces behind the rewrite for 2.0. To that end, we've tried breaking
